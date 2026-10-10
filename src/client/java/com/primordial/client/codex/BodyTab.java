@@ -221,9 +221,7 @@ final class BodyTab implements CodexTab {
 				Component problem = CreatureService.equipProblem(body, progress, slot, id);
 				if (problem == null) {
 					UiKit.line(lines, Component.translatable("screen.primordial.body.click_equip"), UiKit.ACCENT);
-					if (!progress.hasBought(id) && !def.base()) {
-						UiKit.line(lines, Component.translatable("screen.primordial.editor.cost", def.cost()), UiKit.ACCENT);
-					}
+					UiKit.line(lines, Component.translatable("screen.primordial.editor.cost", CreatureService.equipCost(progress, def, id)), UiKit.ACCENT);
 				} else {
 					UiKit.wrap(s.font(), lines, problem, 220, UiKit.BAD);
 				}
@@ -232,7 +230,7 @@ final class BodyTab implements CodexTab {
 		return lines;
 	}
 
-	private static String format(double v) {
+	static String format(double v) {
 		String text = String.format(Locale.ROOT, "%+.2f", v);
 		if (text.contains(".")) {
 			text = text.replaceAll("0+$", "").replaceAll("\\.$", "");

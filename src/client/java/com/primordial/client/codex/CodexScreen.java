@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 public class CodexScreen extends Screen {
 	private static int lastTab;
 
-	private final List<CodexTab> tabs = List.of(new BodyTab(), new AbilityTab(), new MutationTab(), new BestiaryTab(), new ChallengeTab());
+	private final List<CodexTab> tabs = List.of(new CharacterTab(), new BodyTab(), new AbilityTab(), new MutationTab(), new BestiaryTab(), new ChallengeTab());
 	private int tab;
 	private int wx0;
 	private int wy0;

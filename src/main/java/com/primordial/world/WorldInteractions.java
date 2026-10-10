@@ -32,8 +32,8 @@ import net.minecraft.world.phys.HitResult;
  * cascalho de fóssil (achar Melhorias), roer coral (DNA) e plantar algas para formar um jardim.
  */
 public final class WorldInteractions {
-	private static final int SAND_HITS = 4;
-	private static final int FOSSIL_HITS = 6;
+	private static final int SAND_HITS = 16;
+	private static final int FOSSIL_HITS = 24;
 	private static final Map<Long, Integer> HITS = new HashMap<>();
 	private static final Map<UUID, Long> LAST_PLANT = new HashMap<>();
 
@@ -125,6 +125,9 @@ public final class WorldInteractions {
 		CreatureService.playSound(player, SoundEvents.CORAL_BLOCK_BREAK, 0.8F, 1.2F);
 		com.primordial.journal.JournalService.bump(player, "coral", 1);
 		CreatureService.addDna(player, 2 + power);
+		if (power >= 3) {
+			player.heal(2.0F);
+		}
 		CreatureService.addXp(player, 2);
 	}
 

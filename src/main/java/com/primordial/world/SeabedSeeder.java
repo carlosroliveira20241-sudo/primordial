@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,8 +23,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
  * sorteado de novo, então nada precisa ser guardado em disco.
  */
 public final class SeabedSeeder {
-	private static final int SAND_ODDS = 260;
-	private static final int FOSSIL_ODDS = 420;
+	private static final int SAND_ODDS = 780;
+	private static final int FOSSIL_ODDS = 1260;
 	private static final int CHUNK_RADIUS = 3;
 
 	private static final Map<Identifier, LongSet> SCANNED = new HashMap<>();
@@ -38,14 +37,11 @@ public final class SeabedSeeder {
 		return state.is(Blocks.SUSPICIOUS_SAND) || state.is(Blocks.SUSPICIOUS_GRAVEL);
 	}
 
-	/** Chamado por tick pelo jogador: varre 1 chunk novo por vez e solta partículas nos sítios já conhecidos. */
+	/** Chamado por tick pelo jogador: varre 1 chunk novo por vez e espalha os sítios de escavação (sem brilho nenhum). */
 	public static void tick(ServerLevel level, ServerPlayer player) {
 		Identifier dim = level.dimension().identifier();
 		if (player.tickCount % 10 == 0) {
 			scanNextChunk(level, player, dim);
-		}
-		if (player.tickCount % 20 == 0) {
-			hint(level, player, dim);
 		}
 	}
 
@@ -107,28 +103,5 @@ public final class SeabedSeeder {
 		h *= 0xBF58476D1CE4E5B9L;
 		h ^= h >>> 32;
 		return Math.floorMod(h, (long) odds) == 0;
-	}
-
-	/** Um brilhinho em cima dos sítios próximos, para o jogador perceber que ali tem algo. */
-	private static void hint(ServerLevel level, ServerPlayer player, Identifier dim) {
-		Long2ObjectOpenHashMap<List<BlockPos>> known = KNOWN.get(dim);
-		if (known == null) {
-			return;
-		}
-		int cx = player.blockPosition().getX() >> 4;
-		int cz = player.blockPosition().getZ() >> 4;
-		for (int dx = -1; dx <= 1; dx++) {
-			for (int dz = -1; dz <= 1; dz++) {
-				List<BlockPos> list = known.get(ChunkPos.pack(cx + dx, cz + dz));
-				if (list == null) {
-					continue;
-				}
-				for (BlockPos pos : list) {
-					if (isDigSite(level.getBlockState(pos)) && pos.distSqr(player.blockPosition()) < 18 * 18) {
-						level.sendParticles(ParticleTypes.END_ROD, pos.getX() + 0.5, pos.getY() + 1.2, pos.getZ() + 0.5, 1, 0.2, 0.1, 0.2, 0.0);
-					}
-				}
-			}
-		}
 	}
 }

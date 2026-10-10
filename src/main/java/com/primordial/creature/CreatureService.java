@@ -202,10 +202,15 @@ public final class CreatureService {
 				return Component.translatable("msg.primordial.already_equipped");
 			}
 		}
-		if (!progress.hasBought(partId) && progress.dna() < def.cost()) {
-			return Component.translatable("msg.primordial.not_enough_dna", def.cost());
+		if (progress.dna() < equipCost(progress, def, partId)) {
+			return Component.translatable("msg.primordial.not_enough_dna", equipCost(progress, def, partId));
 		}
 		return null;
+	}
+
+	/** Trocar de parte sempre gasta DNA: o custo cheio na primeira vez; depois, metade (mínimo 5). */
+	public static int equipCost(CreatureProgress progress, PartDefinition def, Identifier id) {
+		return progress.hasBought(id) ? Math.max(5, (def.cost() + 1) / 2) : Math.max(5, def.cost());
 	}
 
 	public static void equip(ServerPlayer player, BodySlot slot, Optional<Identifier> part) {
@@ -229,10 +234,8 @@ public final class CreatureService {
 			return;
 		}
 		PartDefinition def = PartRegistry.get(id);
-		if (!progress.hasBought(id)) {
-			progress = progress.withDna(progress.dna() - def.cost()).withBought(id);
-			setProgress(player, progress);
-		}
+		progress = progress.withDna(progress.dna() - equipCost(progress, def, id)).withBought(id);
+		setProgress(player, progress);
 		setBody(player, body.withPart(slot, new PartRef(id, Math.max(1, progress.partLevel(id)))));
 		playSound(player, SoundEvents.ALLAY_ITEM_TAKEN, 0.8F, 1.2F);
 	}

@@ -11,6 +11,9 @@ import net.minecraft.util.Mth;
 public final class FishLook {
 	public static final Identifier TEXTURE = Primordial.id("textures/entity/modular_body.png");
 
+	/** Verdadeiro enquanto o menu desenha o seu personagem: sempre em pose de nado. */
+	public static boolean previewing;
+
 	private FishLook() {
 	}
 
@@ -21,6 +24,9 @@ public final class FishLook {
 
 	public static void setupRotations(LivingEntityRenderState state, PoseStack poseStack) {
 		poseStack.mulPose(Axis.YP.rotationDegrees(4.3F * Mth.sin(0.6F * state.ageInTicks)));
+		if (previewing) {
+			return;
+		}
 		if (state.isInWater) {
 			poseStack.mulPose(Axis.XP.rotationDegrees(-state.xRot));
 		} else {

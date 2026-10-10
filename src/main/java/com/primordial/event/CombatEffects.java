@@ -30,11 +30,21 @@ public final class CombatEffects {
 						attacker.hurtServer(level, defender.damageSources().thorns(defender), (float) thorns);
 					}
 				}
+				// Tinta reflexa (Glândula de Tinta desperta): às vezes, ao ser atingido, solta tinta e cega o agressor.
+				if (victim instanceof ServerPlayer inked && Creatures.passiveLevel(inked, "ink_immunity") >= 3
+					&& source.getEntity() instanceof LivingEntity culprit && inked.getRandom().nextFloat() < 0.25F) {
+					culprit.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.BLINDNESS, 60, 0));
+					level.sendParticles(ParticleTypes.SQUID_INK, inked.getX(), inked.getY() + 0.3, inked.getZ(), 30, 0.6, 0.4, 0.6, 0.05);
+				}
 				// Golpes da criatura: roubo de vida e choque extra.
 				if (source.getEntity() instanceof ServerPlayer hitter && Creatures.isCreature(hitter) && victim != hitter) {
 					double steal = hitter.getAttributeValue(PrimordialAttributes.LIFESTEAL);
 					if (steal > 0) {
 						hitter.heal((float) (damage * steal));
+					}
+					// Sangue de Magma (Glândula de Brasa desperta): os golpes queimam o alvo por dentro.
+					if (Creatures.passiveLevel(hitter, "heat_adapt") >= 3) {
+						victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, 40, 0));
 					}
 					double shock = hitter.getAttributeValue(PrimordialAttributes.SHOCK_DAMAGE);
 					if (shock > 0) {

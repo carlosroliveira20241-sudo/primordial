@@ -72,13 +72,43 @@ public final class Passives {
 					}
 				}
 				// Enxerga no escuro das profundezas.
-				case "abyssal_sight", "lantern" -> give(player, MobEffects.NIGHT_VISION, 400, 0);
+				// Visão abissal: enxerga no escuro; desperta (Olhar do Abismo), quem você encara de perto fica lento.
+				case "abyssal_sight" -> {
+					give(player, MobEffects.NIGHT_VISION, 400, 0);
+					if (level >= 3 && player.tickCount % 20 == 0 && player.level() instanceof net.minecraft.server.level.ServerLevel world) {
+						net.minecraft.world.phys.Vec3 look = player.getLookAngle();
+						for (net.minecraft.world.entity.LivingEntity target : world.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, player.getBoundingBox().inflate(8.0), e -> e != player)) {
+							net.minecraft.world.phys.Vec3 to = target.position().subtract(player.position()).normalize();
+							if (to.dot(look) > 0.85) {
+								target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1));
+							}
+						}
+					}
+				}
+				// Lanterna: sua luz atrai peixes pequenos (isca viva); desperta, de mais longe.
+				case "lantern" -> {
+					if (player.tickCount % 20 == 0 && player.level() instanceof net.minecraft.server.level.ServerLevel world) {
+						double radius = level >= 3 ? 22.0 : 12.0;
+						int pulled = 0;
+						for (net.minecraft.world.entity.animal.fish.AbstractFish fish : world.getEntitiesOfClass(net.minecraft.world.entity.animal.fish.AbstractFish.class,
+							player.getBoundingBox().inflate(radius), f -> !(f instanceof com.primordial.entity.Predador) && f.distanceTo(player) > 3.0F)) {
+							if (pulled++ < 6) {
+								fish.getNavigation().moveTo(player, 1.2);
+							}
+						}
+					}
+				}
 				// Imune a tinta.
 				case "ink_immunity" -> player.removeEffect(MobEffects.BLINDNESS);
-				// Brilho: à noite, na água, a luz do corpo cura devagar.
+				// Brilho: à noite, na água, cura devagar; desperto, também de dia e cura os amigos perto.
 				case "glow" -> {
-					if (water && dark && player.tickCount % 80 == 0) {
+					if (water && (dark || level >= 3) && player.tickCount % 80 == 0) {
 						give(player, MobEffects.REGENERATION, 60, 0);
+						if (level >= 3 && player.level() instanceof net.minecraft.server.level.ServerLevel world) {
+							for (ServerPlayer friend : world.getEntitiesOfClass(ServerPlayer.class, player.getBoundingBox().inflate(8.0), p -> p != player)) {
+								friend.heal(1.0F);
+							}
+						}
 					}
 				}
 				// Bexiga: um colchão de ar que absorve dano de vez em quando.

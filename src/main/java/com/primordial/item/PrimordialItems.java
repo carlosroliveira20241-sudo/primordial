@@ -2,6 +2,9 @@ package com.primordial.item;
 
 import com.primordial.Primordial;
 import com.primordial.part.PartDefinition;
+import com.primordial.part.PartRegistry;
+import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -12,6 +15,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemLore;
 
 public final class PrimordialItems {
 	/** Qual parte do corpo esta Melhoria desbloqueia. */
@@ -32,6 +37,18 @@ public final class PrimordialItems {
 		ItemStack stack = new ItemStack(MORSEL);
 		stack.set(PART, part);
 		stack.set(DataComponents.CUSTOM_NAME, Component.translatable("item.primordial.melhoria", PartDefinition.name(part)));
+		PartDefinition def = PartRegistry.get(part);
+		if (def != null) {
+			stack.set(DataComponents.RARITY, switch (def.rarity()) {
+				case COMMON -> Rarity.COMMON;
+				case RARE -> Rarity.RARE;
+				default -> Rarity.EPIC;
+			});
+		}
+		stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+		stack.set(DataComponents.LORE, new ItemLore(List.of(
+			PartDefinition.description(part).copy().withStyle(ChatFormatting.GRAY),
+			Component.translatable("item.primordial.melhoria.hint").withStyle(ChatFormatting.YELLOW))));
 		return stack;
 	}
 

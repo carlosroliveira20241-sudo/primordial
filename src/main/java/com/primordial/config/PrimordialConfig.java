@@ -40,6 +40,8 @@ public final class PrimordialConfig {
 	public boolean blockVanillaMobsInOtherDimensions = false;
 	/** Come a Melhoria sozinho ao encostar. Falso = você decide: aperte C perto dela para comer, ou deixe lá. */
 	public boolean autoEatMorsels = false;
+	/** Melhorias podem ser pegas do chão (viram item no inventário, dá para dropar e trocar). Falso = só comer direto no chão. */
+	public boolean autoPickupMorsels = true;
 	/** Eventos aleatórios do oceano (desova, frenesi, maré vermelha). */
 	public boolean oceanEvents = true;
 	public int eventMinMinutes = 10;

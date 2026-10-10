@@ -66,8 +66,11 @@ public final class PrimordialEvents {
 					&& killer != victim && Creatures.isCreature(killer)) {
 					CreatureService.addDna(killer, CreatureService.stealAmount(killer, victim, dnaBefore));
 				}
-			} else if (source.getEntity() instanceof ServerPlayer killer && Creatures.isCreature(killer)) {
-				MorselDrops.onKill(killer, entity);
+			} else {
+				feedScavengers(entity);
+				if (source.getEntity() instanceof ServerPlayer killer && Creatures.isCreature(killer)) {
+					MorselDrops.onKill(killer, entity);
+				}
 			}
 		});
 
@@ -101,7 +104,13 @@ public final class PrimordialEvents {
 			return InteractionResult.FAIL;
 		});
 		UseBlockCallback.EVENT.register((player, level, hand, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
-		UseItemCallback.EVENT.register((player, level, hand) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
+		UseItemCallback.EVENT.register((player, level, hand) -> {
+			net.minecraft.world.item.ItemStack stack = player.getItemInHand(hand);
+			if (stack.is(PrimordialItems.MORSEL)) {
+				return eatHeld(player, level, stack);
+			}
+			return Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS;
+		});
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
 
 		CombatEffects.init();
@@ -186,7 +195,62 @@ public final class PrimordialEvents {
 		level.sendParticles(ParticleTypes.SPLASH, player.getX(), player.getY() + 0.3, player.getZ(), 60, 1.5, 0.3, 1.5, 0.2);
 	}
 
+	/** Necrófago: quando uma criatura morre perto, quem tem a boca necrófaga se alimenta da carcaça. */
+	private static void feedScavengers(net.minecraft.world.entity.LivingEntity dead) {
+		if (!(dead.level() instanceof ServerLevel level) || com.primordial.entity.CreatureRegistry.of(dead.getType()) == null) {
+			return;
+		}
+		for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, dead.getBoundingBox().inflate(8.0))) {
+			int power = Creatures.passiveLevel(player, "scavenger");
+			if (power > 0 && Creatures.isCreature(player)) {
+				player.heal(power >= 3 ? 4.0F : 2.0F);
+				CreatureService.addDna(player, power >= 3 ? 3 : 1);
+				level.sendParticles(ParticleTypes.COMPOSTER, dead.getX(), dead.getY() + 0.3, dead.getZ(), 8, 0.3, 0.3, 0.3, 0.0);
+			}
+		}
+	}
+
 	private static final double EAT_REACH = 3.0;
+
+	/** Botão direito com a Melhoria na mão: come e adquire a parte (o item some). */
+	private static InteractionResult eatHeld(net.minecraft.world.entity.player.Player player, Level level, net.minecraft.world.item.ItemStack stack) {
+		Identifier part = stack.get(PrimordialItems.PART);
+		if (part == null || !Creatures.isCreature(player)) {
+			return InteractionResult.PASS;
+		}
+		if (!level.isClientSide() && player instanceof ServerPlayer server) {
+			CreatureService.eatMorsel(server, part);
+			if (!player.isCreative()) {
+				stack.shrink(1);
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	/** Come a primeira Melhoria do inventário (a da mão, se houver). */
+	private static void eatFromInventory(ServerPlayer player) {
+		net.minecraft.world.item.ItemStack held = player.getMainHandItem();
+		net.minecraft.world.item.ItemStack chosen = held.is(PrimordialItems.MORSEL) ? held : null;
+		if (chosen == null) {
+			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+				net.minecraft.world.item.ItemStack stack = player.getInventory().getItem(i);
+				if (stack.is(PrimordialItems.MORSEL)) {
+					chosen = stack;
+					break;
+				}
+			}
+		}
+		if (chosen == null) {
+			return;
+		}
+		Identifier part = chosen.get(PrimordialItems.PART);
+		if (part != null) {
+			CreatureService.eatMorsel(player, part);
+			if (!player.isCreative()) {
+				chosen.shrink(1);
+			}
+		}
+	}
 
 	/** Melhorias ficam paradas e brilhando. Comer é uma escolha: por padrão o jogador aperta C (ou ligue autoEatMorsels). */
 	private static void eatNearbyMorsels(ServerLevel level, ServerPlayer player) {
@@ -231,7 +295,9 @@ public final class PrimordialEvents {
 			}
 		}
 		if (closest == null) {
-			com.primordial.entity.Symbionts.tryFeed(player);
+			if (!com.primordial.entity.Symbionts.tryFeed(player)) {
+				eatFromInventory(player);
+			}
 			return;
 		}
 		CreatureService.eatMorsel(player, closest.getItem().get(PrimordialItems.PART));

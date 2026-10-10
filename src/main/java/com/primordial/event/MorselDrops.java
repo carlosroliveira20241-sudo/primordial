@@ -90,7 +90,9 @@ public final class MorselDrops {
 		drop.setGlowingTag(true);
 		drop.setCustomName(com.primordial.part.PartDefinition.name(part));
 		drop.setCustomNameVisible(true);
-		drop.setNeverPickUp();
+		if (!com.primordial.config.PrimordialConfig.get().autoPickupMorsels) {
+			drop.setNeverPickUp();
+		}
 		drop.setDeltaMovement(0, 0, 0);
 		level.addFreshEntity(drop);
 	}
