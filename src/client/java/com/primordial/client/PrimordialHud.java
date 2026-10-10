@@ -42,8 +42,7 @@ public final class PrimordialHud {
 		for (int i = 0; i < brain.slotCount(); i++) {
 			Identifier slotAbility = brain.slot(i);
 			if (slotAbility != null) {
-				boolean r = slotAbility.getPath().equals("tiro");
-				y = line(graphics, mc, Component.literal(r ? "[R] " : "- ").append(Component.translatable("ability." + slotAbility.getNamespace() + "." + slotAbility.getPath())), y, 0xFFE1A8FF);
+				y = line(graphics, mc, Component.literal("- ").append(Component.translatable("ability." + slotAbility.getNamespace() + "." + slotAbility.getPath())), y, 0xFFE1A8FF);
 			}
 		}
 		y = line(graphics, mc, Component.translatable("hud.primordial.inventory", com.primordial.capability.InventoryRules.slots(player)), y, 0xFFE3D5A1);

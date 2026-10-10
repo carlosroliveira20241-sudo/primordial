@@ -88,36 +88,6 @@ public final class AbilityManager {
 		ability.use(player, levelOf(player, id));
 	}
 
-	/** Tecla R (índice -1): usa a habilidade de inteligência que está no modo "r" (hoje, o Tiro). */
-	public static void useIntellect(ServerPlayer player, int index) {
-		if (!Creatures.isCreature(player)) {
-			return;
-		}
-		com.primordial.intellect.IntellectState state = com.primordial.intellect.IntellectService.state(player);
-		Identifier id = null;
-		for (int i = 0; i < state.slotCount(); i++) {
-			Identifier candidate = state.slot(i);
-			com.primordial.intellect.IntellectDef def = candidate == null ? null : com.primordial.intellect.IntellectRegistry.get(candidate);
-			if (def != null && def.usesR()) {
-				id = candidate;
-				break;
-			}
-		}
-		if (id == null || !Abilities.exists(id.getPath())) {
-			return;
-		}
-		Ability ability = Abilities.get(id.getPath());
-		String name = id.getPath();
-		long now = player.level().getGameTime();
-		Map<String, Long> used = LAST_USED.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
-		long readyAt = used.getOrDefault(name, 0L) + ability.cooldownTicks();
-		if (now < readyAt) {
-			return;
-		}
-		used.put(name, now);
-		ability.use(player, com.primordial.intellect.IntellectService.power(player));
-	}
-
 	public static void makeNest(ServerPlayer player) {
 		CreatureService.setNest(player);
 	}

@@ -163,17 +163,6 @@ public final class Payloads {
 		}
 	}
 
-	/** Usar a habilidade de inteligência do slot. */
-	public record UseIntellect(int slot) implements CustomPacketPayload {
-		public static final Type<UseIntellect> TYPE = typeOf("use_intellect");
-		public static final StreamCodec<ByteBuf, UseIntellect> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, UseIntellect::slot, UseIntellect::new);
-
-		@Override
-		public Type<UseIntellect> type() {
-			return TYPE;
-		}
-	}
-
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(
