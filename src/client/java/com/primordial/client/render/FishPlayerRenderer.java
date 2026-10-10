@@ -3,6 +3,7 @@ package com.primordial.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.primordial.creature.CreatureBody;
 import com.primordial.creature.Creatures;
+import com.primordial.creature.PartRef;
 import com.primordial.look.Look;
 import com.primordial.look.LookRegistry;
 import net.minecraft.client.model.animal.fish.CodModel;
@@ -38,10 +39,12 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 		state.id = entity.getId();
 		CreatureBody body = Creatures.body(entity);
 		Look look = LookRegistry.get(body.look());
-		state.tint = 0xFF000000 | body.primaryColor();
-		state.sx = look.sx();
-		state.sy = look.sy();
-		state.sz = look.sz();
+		PartVisuals.Result visual = PartVisuals.combine(look, body.primaryColor(),
+			body.parts().values().stream().map(PartRef::id).toList(), 0.25F);
+		state.tint = visual.tint();
+		state.sx = visual.sx();
+		state.sy = visual.sy();
+		state.sz = visual.sz();
 	}
 
 	@Override

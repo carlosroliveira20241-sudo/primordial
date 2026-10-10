@@ -1,3 +1,23 @@
-{ "slot": "tail", "cost": 20, "source": "primordial:atum_flecha", "ability": "primordial:investida",
-  "families": ["velocista"],
-  "modifiers": [ { "attribute": "primordial:swim_speed", "base": 0.1, "per_level": 0.05 } ] }
+{
+ "slot": "tail",
+ "cost": 20,
+ "source": "primordial:atum_flecha",
+ "ability": "primordial:investida",
+ "families": [
+  "velocista"
+ ],
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.1,
+   "per_level": 0.05
+  }
+ ],
+ "visual": {
+  "scale": [
+   0.9,
+   0.9,
+   1.25
+  ]
+ }
+}

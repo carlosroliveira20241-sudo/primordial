@@ -1,3 +1,23 @@
-{ "slot": "limbs", "min_stage": 2, "cost": 15, "source": "primordial:sardinha_prata",
-  "families": ["velocista"],
-  "modifiers": [ { "attribute": "primordial:swim_speed", "base": 0.18, "per_level": 0.08 } ] }
+{
+ "slot": "limbs",
+ "min_stage": 2,
+ "cost": 15,
+ "source": "primordial:sardinha_prata",
+ "families": [
+  "velocista"
+ ],
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.18,
+   "per_level": 0.08
+  }
+ ],
+ "visual": {
+  "scale": [
+   1.15,
+   1.0,
+   1.0
+  ]
+ }
+}

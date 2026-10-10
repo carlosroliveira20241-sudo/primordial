@@ -1,3 +1,19 @@
-{ "slot": "skin", "min_stage": 2, "cost": 15, "source": "primordial:enguia_eletrica",
-  "passives": ["slippery"],
-  "modifiers": [ { "attribute": "primordial:swim_speed", "base": 0.08, "per_level": 0.04 } ] }
+{
+ "slot": "skin",
+ "min_stage": 2,
+ "cost": 15,
+ "source": "primordial:enguia_eletrica",
+ "passives": [
+  "slippery"
+ ],
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.08,
+   "per_level": 0.04
+  }
+ ],
+ "visual": {
+  "tint": "#A8D5BA"
+ }
+}

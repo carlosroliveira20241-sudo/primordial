@@ -7,6 +7,9 @@ import com.primordial.client.render.FishBodyRenderer;
 import com.primordial.creature.Creatures;
 import com.primordial.entity.CreatureRegistry;
 import com.primordial.look.Look;
+import com.primordial.part.PartRegistry;
+import java.util.List;
+import net.minecraft.resources.Identifier;
 import com.primordial.look.LookRegistry;
 import net.minecraft.world.entity.EntityType;
 import com.primordial.event.PrimordialEvents;
@@ -37,7 +40,7 @@ public class PrimordialClient implements ClientModInitializer {
 		// Uma criatura por arquivo de creatures/*.json; o corpo vem da aparência (looks/*.json) que ela escolhe.
 		CreatureRegistry.types().forEach((id, type) -> {
 			Look look = LookRegistry.get(CreatureRegistry.get(id).look());
-			registerFish(type, look);
+			registerFish(type, look, PartRegistry.droppedBy(id));
 		});
 
 		ability1 = key("ability1", InputConstants.KEY_Z);
@@ -61,7 +64,7 @@ public class PrimordialClient implements ClientModInitializer {
 			}
 			while (looks.consumeClick()) {
 				if (Creatures.isCreature(mc.player)) {
-					mc.setScreenAndShow(new LookScreen());
+					mc.setScreenAndShow(new EditorScreen());
 				}
 			}
 			while (nest.consumeClick()) {
@@ -94,8 +97,8 @@ public class PrimordialClient implements ClientModInitializer {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static void registerFish(EntityType type, Look look) {
-		EntityRendererRegistry.register(type, ctx -> new FishBodyRenderer(ctx, look));
+	private static void registerFish(EntityType type, Look look, List<Identifier> parts) {
+		EntityRendererRegistry.register(type, ctx -> new FishBodyRenderer(ctx, look, parts));
 	}
 
 	private static KeyMapping key(String name, int code) {

@@ -14,5 +14,13 @@
    "per_level": 0.75
   }
  ],
- "ability": "primordial:mordida_dilacerante"
+ "ability": "primordial:mordida_dilacerante",
+ "visual": {
+  "scale": [
+   1.0,
+   1.0,
+   1.1
+  ],
+  "tint": "#8A8A8A"
+ }
 }

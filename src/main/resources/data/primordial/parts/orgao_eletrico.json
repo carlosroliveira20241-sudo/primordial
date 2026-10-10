@@ -1,3 +1,19 @@
-{ "slot": "organ", "cost": 25, "source": "primordial:enguia_eletrica", "ability": "primordial:choque",
-  "families": ["eletrico"],
-  "modifiers": [ { "attribute": "primordial:shock_damage", "base": 1.0, "per_level": 0.5 } ] }
+{
+ "slot": "organ",
+ "cost": 25,
+ "source": "primordial:enguia_eletrica",
+ "ability": "primordial:choque",
+ "families": [
+  "eletrico"
+ ],
+ "modifiers": [
+  {
+   "attribute": "primordial:shock_damage",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "tint": "#FFF176"
+ }
+}

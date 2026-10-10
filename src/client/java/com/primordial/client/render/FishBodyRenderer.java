@@ -2,6 +2,7 @@ package com.primordial.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.primordial.look.Look;
+import java.util.Collection;
 import net.minecraft.client.model.animal.fish.CodModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -17,12 +18,14 @@ public class FishBodyRenderer<E extends LivingEntity> extends LivingEntityRender
 	private final float sy;
 	private final float sz;
 
-	public FishBodyRenderer(EntityRendererProvider.Context context, Look look) {
+	/** @param parts as partes que essa criatura dropa: o corpo dela se parece com quem as equipa */
+	public FishBodyRenderer(EntityRendererProvider.Context context, Look look, Collection<Identifier> parts) {
 		super(context, new CodModel(context.bakeLayer(ModelLayers.COD)), look.shadow());
-		this.tint = 0xFF000000 | look.tint();
-		this.sx = look.sx();
-		this.sy = look.sy();
-		this.sz = look.sz();
+		PartVisuals.Result visual = PartVisuals.combine(look, look.tint(), parts, 0.4F);
+		this.tint = visual.tint();
+		this.sx = visual.sx();
+		this.sy = visual.sy();
+		this.sz = visual.sz();
 	}
 
 	@Override

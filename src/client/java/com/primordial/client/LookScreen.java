@@ -111,6 +111,15 @@ public class LookScreen extends Screen {
 	}
 
 	@Override
+	public void onClose() {
+		if (this.origin == null) {
+			this.minecraft.setScreenAndShow(new EditorScreen());
+		} else {
+			super.onClose();
+		}
+	}
+
+	@Override
 	public boolean shouldCloseOnEsc() {
 		return this.origin == null;
 	}

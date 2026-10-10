@@ -1,3 +1,16 @@
-{ "slot": "skin", "min_stage": 2, "cost": 20, "source": "primordial:agua_viva_eletrica", "ability": "primordial:pulso_luminoso",
-  "families": ["abissal"],
-  "passives": ["glow"] }
+{
+ "slot": "skin",
+ "min_stage": 2,
+ "cost": 20,
+ "source": "primordial:agua_viva_eletrica",
+ "ability": "primordial:pulso_luminoso",
+ "families": [
+  "abissal"
+ ],
+ "passives": [
+  "glow"
+ ],
+ "visual": {
+  "tint": "#7DF9FF"
+ }
+}
