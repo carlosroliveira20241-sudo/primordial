@@ -6,6 +6,7 @@ import com.primordial.creature.CreatureStats;
 import com.primordial.creature.Creatures;
 import com.primordial.item.PrimordialItems;
 import com.primordial.net.Payloads;
+import com.primordial.part.PartDefinition;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -17,9 +18,11 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -137,22 +140,54 @@ public final class PrimordialEvents {
 		}
 	}
 
-	/** Melhorias ficam paradas e brilhando na água; a criatura as come ao encostar. */
+	private static final double EAT_REACH = 3.0;
+
+	/** Melhorias ficam paradas e brilhando. Comer é uma escolha: por padrão o jogador aperta C (ou ligue autoEatMorsels). */
 	private static void eatNearbyMorsels(ServerLevel level, ServerPlayer player) {
+		boolean auto = PrimordialConfig.get().autoEatMorsels;
+		ItemEntity closest = null;
 		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(20.0), e -> e.getItem().is(PrimordialItems.MORSEL))) {
 			Identifier part = item.getItem().get(PrimordialItems.PART);
 			if (part == null) {
-				continue;
-			}
-			if (item.getBoundingBox().intersects(player.getBoundingBox().inflate(0.8))) {
-				CreatureService.eatMorsel(player, part);
-				item.discard();
 				continue;
 			}
 			item.setDeltaMovement(Vec3.ZERO);
 			if (item.tickCount % 10 == 0) {
 				level.sendParticles(ParticleTypes.GLOW, item.getX(), item.getY() + 0.3, item.getZ(), 2, 0.15, 0.15, 0.15, 0.0);
 			}
+			if (auto && item.getBoundingBox().intersects(player.getBoundingBox().inflate(0.8))) {
+				CreatureService.eatMorsel(player, part);
+				item.discard();
+			} else if (!auto && closeEnough(player, item) && (closest == null || item.distanceToSqr(player) < closest.distanceToSqr(player))) {
+				closest = item;
+			}
 		}
+		if (closest != null && player.tickCount % 10 == 0) {
+			Identifier part = closest.getItem().get(PrimordialItems.PART);
+			player.sendSystemMessage(Component.translatable("msg.primordial.eat_hint", PartDefinition.name(part)).withStyle(ChatFormatting.YELLOW), true);
+		}
+	}
+
+	private static boolean closeEnough(ServerPlayer player, ItemEntity item) {
+		return item.getBoundingBox().intersects(player.getBoundingBox().inflate(EAT_REACH));
+	}
+
+	/** O jogador apertou C: come a Melhoria mais próxima, se houver uma ao alcance. */
+	public static void eatNearestMorsel(ServerPlayer player) {
+		if (!Creatures.isCreature(player) || player.isSpectator()) {
+			return;
+		}
+		ServerLevel level = player.level();
+		ItemEntity closest = null;
+		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(EAT_REACH), e -> e.getItem().is(PrimordialItems.MORSEL))) {
+			if (item.getItem().get(PrimordialItems.PART) != null && (closest == null || item.distanceToSqr(player) < closest.distanceToSqr(player))) {
+				closest = item;
+			}
+		}
+		if (closest == null) {
+			return;
+		}
+		CreatureService.eatMorsel(player, closest.getItem().get(PrimordialItems.PART));
+		closest.discard();
 	}
 }

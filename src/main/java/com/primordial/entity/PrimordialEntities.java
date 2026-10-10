@@ -55,7 +55,10 @@ public final class PrimordialEntities {
 		CreatureRegistry.bind(id, type);
 
 		FabricDefaultAttributeRegistry.register(type, attributes);
-		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, WaterAnimal::checkSurfaceWaterAnimalSpawnRules);
+		boolean nightOnly = def.spawn().nightOnly();
+		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(t, level, reason, pos, random) -> (!nightOnly || level.getLevel().isDarkOutside())
+				&& WaterAnimal.checkSurfaceWaterAnimalSpawnRules(t, level, reason, pos, random));
 		var biomes = def.spawn().biomes().equals("deep_ocean") ? BiomeTags.IS_DEEP_OCEAN : BiomeTags.IS_OCEAN;
 		BiomeModifications.addSpawn(BiomeSelectors.tag(biomes), category, type, def.spawn().weight(), def.spawn().min(), def.spawn().max());
 	}

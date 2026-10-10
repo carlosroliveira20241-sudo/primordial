@@ -38,6 +38,8 @@ public final class PrimordialConfig {
 	public boolean blockVanillaMobsInOverworld = true;
 	/** Bloqueia também no Nether e no End (deixe falso até existirem criaturas próprias lá). */
 	public boolean blockVanillaMobsInOtherDimensions = false;
+	/** Come a Melhoria sozinho ao encostar. Falso = você decide: aperte C perto dela para comer, ou deixe lá. */
+	public boolean autoEatMorsels = false;
 	/** Modo leve para PC fraco: menos criaturas e menos partículas. */
 	public boolean lightMode = false;
 

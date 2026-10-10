@@ -68,6 +68,17 @@ public class Predador extends AbstractFish {
 	}
 
 	@Override
+	public void aiStep() {
+		super.aiStep();
+		// Zumbis são criaturas da noite: quando o dia nasce, eles se desfazem.
+		if (this.def != null && this.def.has("undead") && this.level() instanceof ServerLevel level
+			&& this.tickCount % 40 == 0 && !level.isDarkOutside()) {
+			level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.3, this.getZ(), 20, 0.4, 0.3, 0.4, 0.02);
+			this.discard();
+		}
+	}
+
+	@Override
 	public boolean doHurtTarget(ServerLevel level, Entity target) {
 		boolean hit = super.doHurtTarget(level, target);
 		if (hit && this.def != null && this.def.has("shock_hit") && target instanceof LivingEntity living) {

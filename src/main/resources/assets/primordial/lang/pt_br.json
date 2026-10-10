@@ -151,5 +151,11 @@
  "part.primordial.orgao_eletrico.desc": "Golpes com choque pequeno e dá o Choque. Deixa o corpo amarelado.",
  "part.primordial.muco_escorregadio.desc": "Escorrega de agarrões e nada mais rápido. Deixa a pele esverdeada e lisa.",
  "part.primordial.glandula_de_tinta.desc": "Imune a cegueira e dá a Nuvem de Tinta. Deixa o corpo arroxeado.",
- "part.primordial.pele_camaleonica.desc": "Pele que imita o ambiente: tom esverdeado."
+ "part.primordial.pele_camaleonica.desc": "Pele que imita o ambiente: tom esverdeado.",
+ "key.primordial.eat": "Comer Melhoria",
+ "msg.primordial.eat_hint": "Aperte C para comer: %s (opcional, ou deixe ali)",
+ "entity.primordial.peixe_zumbi": "Peixe-Zumbi",
+ "entity.primordial.tubarao_zumbi": "Tubarão-Zumbi",
+ "look.primordial.zumbi": "Corpo: Zumbi",
+ "look.primordial.tubarao_zumbi": "Corpo: Tubarão-Zumbi"
 }

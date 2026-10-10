@@ -32,6 +32,7 @@ public class PrimordialClient implements ClientModInitializer {
 	private static KeyMapping evolve;
 	private static KeyMapping nest;
 	private static KeyMapping looks;
+	private static KeyMapping eat;
 
 	@Override
 	public void onInitializeClient() {
@@ -48,6 +49,7 @@ public class PrimordialClient implements ClientModInitializer {
 		evolve = key("evolve", InputConstants.KEY_V);
 		nest = key("nest", InputConstants.KEY_N);
 		looks = key("looks", InputConstants.KEY_K);
+		eat = key("eat", InputConstants.KEY_C);
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
 			if (mc.player == null) {
@@ -61,6 +63,9 @@ public class PrimordialClient implements ClientModInitializer {
 			}
 			while (evolve.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.Evolve());
+			}
+			while (eat.consumeClick()) {
+				ClientPlayNetworking.send(new Payloads.EatMorsel());
 			}
 			while (looks.consumeClick()) {
 				if (Creatures.isCreature(mc.player)) {

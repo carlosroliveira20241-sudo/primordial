@@ -4,6 +4,7 @@ import com.primordial.config.PrimordialConfig;
 import com.primordial.creature.CreatureProgress;
 import com.primordial.creature.CreatureService;
 import com.primordial.creature.Creatures;
+import com.primordial.entity.CreatureDef;
 import com.primordial.entity.CreatureRegistry;
 import com.primordial.item.PrimordialItems;
 import com.primordial.part.PartRegistry;
@@ -26,6 +27,13 @@ public final class MorselDrops {
 		if (CreatureRegistry.isBig(victim.getType())) {
 			CreatureProgress before = Creatures.progress(killer);
 			CreatureService.setProgress(killer, before.withBigKills(before.bigKills() + 1));
+		}
+		CreatureDef def = CreatureRegistry.get(species);
+		if (def != null && def.has("undead")) {
+			// Zumbis dão um pouco de experiência, mas nunca uma Melhoria.
+			CreatureService.addDna(killer, 1);
+			CreatureService.addXp(killer, 5);
+			return;
 		}
 		List<Identifier> candidates = PartRegistry.droppedBy(species);
 		if (candidates.isEmpty()) {
@@ -57,6 +65,8 @@ public final class MorselDrops {
 		ItemEntity drop = new ItemEntity(level, victim.getX(), victim.getY() + 0.4, victim.getZ(), PrimordialItems.morsel(part));
 		drop.setNoGravity(true);
 		drop.setGlowingTag(true);
+		drop.setCustomName(com.primordial.part.PartDefinition.name(part));
+		drop.setCustomNameVisible(true);
 		drop.setNeverPickUp();
 		drop.setDeltaMovement(0, 0, 0);
 		level.addFreshEntity(drop);

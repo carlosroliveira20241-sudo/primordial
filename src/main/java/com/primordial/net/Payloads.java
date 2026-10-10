@@ -71,6 +71,17 @@ public final class Payloads {
 		}
 	}
 
+	/** Pedido para comer a Melhoria que está perto. Comer é opcional. */
+	public record EatMorsel() implements CustomPacketPayload {
+		public static final Type<EatMorsel> TYPE = typeOf("eat_morsel");
+		public static final StreamCodec<ByteBuf, EatMorsel> CODEC = StreamCodec.unit(new EatMorsel());
+
+		@Override
+		public Type<EatMorsel> type() {
+			return TYPE;
+		}
+	}
+
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(
