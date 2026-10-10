@@ -1,0 +1,21 @@
+{
+ "behavior": "salmon",
+ "size": [
+  0.7,
+  0.4
+ ],
+ "health": 6,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:peixe_alto",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 15,
+  "min": 2,
+  "max": 4
+ }
+}

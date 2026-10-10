@@ -1,0 +1,12 @@
+{
+ "slot": "eyes",
+ "min_stage": 2,
+ "cost": 20,
+ "source": "primordial:peixe_lanterna",
+ "families": [
+  "abissal"
+ ],
+ "passives": [
+  "abyssal_sight"
+ ]
+}

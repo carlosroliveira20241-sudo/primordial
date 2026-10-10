@@ -29,7 +29,7 @@ public final class Payloads {
 
 	// ---------------------------------------------------------------- C2S
 
-	public record ChooseOrigin(Origin origin, String speciesName, int primary, int secondary, Pattern pattern) implements CustomPacketPayload {
+	public record ChooseOrigin(Origin origin, String speciesName, int primary, int secondary, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<ChooseOrigin> TYPE = typeOf("choose_origin");
 		public static final StreamCodec<ByteBuf, ChooseOrigin> CODEC = StreamCodec.composite(
 			enumCodec(Origin.values()), ChooseOrigin::origin,
@@ -37,6 +37,7 @@ public final class Payloads {
 			ByteBufCodecs.INT, ChooseOrigin::primary,
 			ByteBufCodecs.INT, ChooseOrigin::secondary,
 			enumCodec(Pattern.values()), ChooseOrigin::pattern,
+			Identifier.STREAM_CODEC, ChooseOrigin::look,
 			ChooseOrigin::new
 		);
 
@@ -70,13 +71,14 @@ public final class Payloads {
 		}
 	}
 
-	public record SetLook(int primary, int secondary, int detail, Pattern pattern) implements CustomPacketPayload {
+	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT, SetLook::primary,
 			ByteBufCodecs.INT, SetLook::secondary,
 			ByteBufCodecs.INT, SetLook::detail,
 			enumCodec(Pattern.values()), SetLook::pattern,
+			Identifier.STREAM_CODEC, SetLook::look,
 			SetLook::new
 		);
 

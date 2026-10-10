@@ -1,0 +1,21 @@
+{
+ "behavior": "cod",
+ "size": [
+  0.8,
+  0.5
+ ],
+ "health": 8,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:peixe_robusto",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 20,
+  "min": 3,
+  "max": 5
+ }
+}

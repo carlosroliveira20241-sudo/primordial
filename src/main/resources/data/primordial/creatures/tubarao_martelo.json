@@ -1,0 +1,21 @@
+{
+ "behavior": "predator",
+ "size": [
+  1.6,
+  0.8
+ ],
+ "health": 30,
+ "damage": 6.0,
+ "speed": 0.55,
+ "power": 0.7,
+ "traits": [],
+ "look": "primordial:tubarao",
+ "big": true,
+ "spawn": {
+  "biomes": "deep_ocean",
+  "category": "creature",
+  "weight": 6,
+  "min": 1,
+  "max": 1
+ }
+}

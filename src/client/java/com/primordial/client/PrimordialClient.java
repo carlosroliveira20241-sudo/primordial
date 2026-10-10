@@ -3,7 +3,12 @@ package com.primordial.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.primordial.Primordial;
 import com.primordial.creature.FeedingService;
-import com.primordial.entity.PrimordialEntities;
+import com.primordial.client.render.FishBodyRenderer;
+import com.primordial.creature.Creatures;
+import com.primordial.entity.CreatureRegistry;
+import com.primordial.look.Look;
+import com.primordial.look.LookRegistry;
+import net.minecraft.world.entity.EntityType;
 import com.primordial.event.PrimordialEvents;
 import com.primordial.net.Payloads;
 import com.primordial.part.PartDefinition;
@@ -16,9 +21,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.CodRenderer;
-import net.minecraft.client.renderer.entity.PufferfishRenderer;
-import net.minecraft.client.renderer.entity.SalmonRenderer;
 import net.minecraft.network.chat.Component;
 
 public class PrimordialClient implements ClientModInitializer {
@@ -26,17 +28,23 @@ public class PrimordialClient implements ClientModInitializer {
 	private static KeyMapping ability2;
 	private static KeyMapping evolve;
 	private static KeyMapping nest;
+	private static KeyMapping looks;
 
 	@Override
 	public void onInitializeClient() {
-		EntityRendererRegistry.register(PrimordialEntities.SARDINHA_PRATA, CodRenderer::new);
-		EntityRendererRegistry.register(PrimordialEntities.PEIXE_PAPAGAIO, SalmonRenderer::new);
-		EntityRendererRegistry.register(PrimordialEntities.BAIACU, PufferfishRenderer::new);
+
+
+		// Uma criatura por arquivo de creatures/*.json; o corpo vem da aparência (looks/*.json) que ela escolhe.
+		CreatureRegistry.types().forEach((id, type) -> {
+			Look look = LookRegistry.get(CreatureRegistry.get(id).look());
+			registerFish(type, look);
+		});
 
 		ability1 = key("ability1", InputConstants.KEY_Z);
 		ability2 = key("ability2", InputConstants.KEY_X);
 		evolve = key("evolve", InputConstants.KEY_V);
 		nest = key("nest", InputConstants.KEY_N);
+		looks = key("looks", InputConstants.KEY_K);
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
 			if (mc.player == null) {
@@ -50,6 +58,11 @@ public class PrimordialClient implements ClientModInitializer {
 			}
 			while (evolve.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.Evolve());
+			}
+			while (looks.consumeClick()) {
+				if (Creatures.isCreature(mc.player)) {
+					mc.setScreenAndShow(new LookScreen());
+				}
 			}
 			while (nest.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.MakeNest());
@@ -78,6 +91,11 @@ public class PrimordialClient implements ClientModInitializer {
 			ctx.player().sendSystemMessage(Component.translatable("msg.primordial.you_evolved", payload.stage()).withStyle(ChatFormatting.GOLD)));
 
 		HudElementRegistry.addLast(Primordial.id("hud"), PrimordialHud::render);
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void registerFish(EntityType type, Look look) {
+		EntityRendererRegistry.register(type, ctx -> new FishBodyRenderer(ctx, look));
 	}
 
 	private static KeyMapping key(String name, int code) {

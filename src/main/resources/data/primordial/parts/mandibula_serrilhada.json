@@ -1,3 +1,18 @@
-{ "slot": "mouth", "cost": 30, "rarity": "rare", "source": "primordial:tubarao_martelo", "diet": "carnivore",
-  "families": ["predador"],
-  "modifiers": [ { "attribute": "minecraft:attack_damage", "base": 1.5, "per_level": 0.75 } ] }
+{
+ "slot": "mouth",
+ "cost": 30,
+ "rarity": "rare",
+ "source": "primordial:tubarao_martelo",
+ "diet": "carnivore",
+ "families": [
+  "predador"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 1.5,
+   "per_level": 0.75
+  }
+ ],
+ "ability": "primordial:mordida_dilacerante"
+}

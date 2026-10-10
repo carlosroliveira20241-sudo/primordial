@@ -1,10 +1,6 @@
 package com.primordial.client;
 
-import com.primordial.creature.CreatureBody;
 import com.primordial.creature.Origin;
-import com.primordial.creature.Pattern;
-import com.primordial.net.Payloads;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,8 +23,8 @@ public class OriginScreen extends Screen {
 	}
 
 	private void choose(Origin origin) {
-		ClientPlayNetworking.send(new Payloads.ChooseOrigin(origin, "", CreatureBody.DEFAULT_PRIMARY, CreatureBody.DEFAULT_SECONDARY, Pattern.LISO));
-		this.onClose();
+		// Depois da origem vem a escolha do corpo e da cor; o pedido ao servidor sai de lá.
+		this.minecraft.setScreenAndShow(new LookScreen(origin));
 	}
 
 	@Override

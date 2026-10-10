@@ -1,0 +1,23 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.8,
+  0.8
+ ],
+ "health": 10,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "ink"
+ ],
+ "look": "primordial:polvo",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 8,
+  "min": 1,
+  "max": 1
+ }
+}

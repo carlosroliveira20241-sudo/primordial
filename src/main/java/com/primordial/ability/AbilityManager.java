@@ -13,22 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
-/** Habilidades ativas. No protótipo existem duas: Investida e Inflar. */
+/** Liga as partes equipadas às habilidades registradas em {@link Abilities}: lista, recarga e uso. */
 public final class AbilityManager {
-	private static final Map<String, Integer> COOLDOWN_TICKS = Map.of("investida", 50, "inflar", 300);
 	private static final Map<UUID, Map<String, Long>> LAST_USED = new HashMap<>();
 
 	private AbilityManager() {
@@ -44,7 +35,7 @@ public final class AbilityManager {
 				continue;
 			}
 			PartDefinition def = PartRegistry.get(ref.id());
-			if (def != null && def.ability().isPresent() && COOLDOWN_TICKS.containsKey(def.ability().get().getPath())
+			if (def != null && def.ability().isPresent() && Abilities.exists(def.ability().get().getPath())
 				&& !result.contains(def.ability().get())) {
 				result.add(def.ability().get());
 			}
@@ -52,50 +43,35 @@ public final class AbilityManager {
 		return result;
 	}
 
+	/** Nível da parte equipada que dá essa habilidade. */
+	private static int levelOf(Player player, Identifier ability) {
+		CreatureBody body = Creatures.body(player);
+		for (PartRef ref : body.parts().values()) {
+			PartDefinition def = PartRegistry.get(ref.id());
+			if (def != null && def.ability().filter(ability::equals).isPresent()) {
+				return ref.level();
+			}
+		}
+		return 1;
+	}
+
 	public static void use(ServerPlayer player, int index) {
 		List<Identifier> abilities = abilitiesOf(player);
 		if (!Creatures.isCreature(player) || index < 0 || index >= abilities.size()) {
 			return;
 		}
-		String name = abilities.get(index).getPath();
+		Identifier id = abilities.get(index);
+		String name = id.getPath();
+		Ability ability = Abilities.get(name);
 		long now = player.level().getGameTime();
 		Map<String, Long> used = LAST_USED.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
-		long readyAt = used.getOrDefault(name, 0L) + COOLDOWN_TICKS.get(name);
+		long readyAt = used.getOrDefault(name, 0L) + ability.cooldownTicks();
 		if (now < readyAt) {
 			player.sendSystemMessage(Component.translatable("msg.primordial.cooldown", (readyAt - now + 19) / 20).withStyle(ChatFormatting.GRAY), true);
 			return;
 		}
 		used.put(name, now);
-		switch (name) {
-			case "investida" -> dash(player);
-			case "inflar" -> inflate(player);
-			default -> {
-			}
-		}
-	}
-
-	private static void dash(ServerPlayer player) {
-		ServerLevel level = player.level();
-		Vec3 look = player.getLookAngle();
-		player.setDeltaMovement(look.scale(1.6));
-		player.connection.send(new ClientboundSetEntityMotionPacket(player));
-		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(1.2).move(look.scale(1.5)), e -> e != player)) {
-			target.hurtServer(level, player.damageSources().playerAttack(player), 3.0F);
-		}
-		level.sendParticles(ParticleTypes.BUBBLE, player.getX(), player.getY() + 0.2, player.getZ(), 25, 0.3, 0.2, 0.3, 0.1);
-		CreatureService.playSound(player, SoundEvents.TRIDENT_RIPTIDE_1.value(), 0.6F, 1.6F);
-	}
-
-	private static void inflate(ServerPlayer player) {
-		ServerLevel level = player.level();
-		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 1, false, true, true));
-		player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1, false, false, true));
-		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(2.5), e -> e != player)) {
-			Vec3 away = target.position().subtract(player.position()).normalize().scale(0.8);
-			target.setDeltaMovement(away.x, 0.2, away.z);
-		}
-		level.sendParticles(ParticleTypes.POOF, player.getX(), player.getY() + 0.3, player.getZ(), 20, 0.4, 0.3, 0.4, 0.05);
-		CreatureService.playSound(player, SoundEvents.PUFFER_FISH_BLOW_UP, 0.8F, 1.0F);
+		ability.use(player, levelOf(player, id));
 	}
 
 	public static void makeNest(ServerPlayer player) {

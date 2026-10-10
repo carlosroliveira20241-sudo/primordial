@@ -9,6 +9,7 @@ import com.primordial.world.ReefFinder;
 import java.util.Optional;
 import java.util.Set;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.primordial.look.LookRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -47,7 +48,7 @@ public final class CreatureService {
 
 	// ------------------------------------------------------------------ origem
 
-	public static void chooseOrigin(ServerPlayer player, Origin origin, String rawName, int primary, int secondary, Pattern pattern) {
+	public static void chooseOrigin(ServerPlayer player, Origin origin, String rawName, int primary, int secondary, Pattern pattern, Identifier look) {
 		CreatureProgress progress = Creatures.progress(player);
 		if (progress.originChosen()) {
 			return;
@@ -70,6 +71,7 @@ public final class CreatureService {
 
 		CreatureBody body = CreatureBody.DEFAULT.withActive(true).withStage(Stage.LARVA)
 			.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, CreatureBody.DEFAULT_DETAIL, pattern)
+			.withBodyLook(validLook(look))
 			.withSpeciesName(name)
 			.withPart(BodySlot.MOUTH, new PartRef(origin.startingMouth(), 1))
 			.withPart(BodySlot.TAIL, new PartRef(com.primordial.Primordial.id("cauda_simples"), 1))
@@ -263,7 +265,12 @@ public final class CreatureService {
 		player.sendSystemMessage(Component.translatable("msg.primordial.equipped", PartDefinition.name(partId)).withStyle(ChatFormatting.AQUA));
 	}
 
-	public static void setLook(ServerPlayer player, int primary, int secondary, int detail, Pattern pattern) {
+	/** Só aceita aparências marcadas como escolhíveis; qualquer outra vira a padrão (o cliente não manda o que quiser). */
+	private static Identifier validLook(Identifier look) {
+		return look != null && LookRegistry.selectable().contains(look) ? look : com.primordial.look.Look.DEFAULT_ID;
+	}
+
+	public static void setLook(ServerPlayer player, int primary, int secondary, int detail, Pattern pattern, Identifier look) {
 		CreatureBody body = Creatures.body(player);
 		CreatureProgress progress = Creatures.progress(player);
 		if (!body.active()) {
@@ -274,7 +281,7 @@ public final class CreatureService {
 			return;
 		}
 		setProgress(player, progress.withDna(progress.dna() - LOOK_CHANGE_COST));
-		setBody(player, body.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, detail & 0xFFFFFF, pattern));
+		setBody(player, body.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, detail & 0xFFFFFF, pattern).withBodyLook(validLook(look)));
 	}
 
 	// ------------------------------------------------------------------ evolução

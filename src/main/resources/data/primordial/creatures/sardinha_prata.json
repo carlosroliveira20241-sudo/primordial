@@ -1,0 +1,21 @@
+{
+ "behavior": "cod",
+ "size": [
+  0.5,
+  0.3
+ ],
+ "health": 3,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:peixe_comum",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 25,
+  "min": 3,
+  "max": 6
+ }
+}

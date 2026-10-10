@@ -1,0 +1,14 @@
+{
+ "slot": "head",
+ "min_stage": 3,
+ "cost": 30,
+ "rarity": "rare",
+ "source": "primordial:peixe_lanterna",
+ "ability": "primordial:sonar",
+ "families": [
+  "abissal"
+ ],
+ "passives": [
+  "lantern"
+ ]
+}

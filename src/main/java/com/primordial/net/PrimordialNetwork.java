@@ -27,13 +27,13 @@ public final class PrimordialNetwork {
 		s2c.register(Payloads.Evolved.TYPE, Payloads.Evolved.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.ChooseOrigin.TYPE, (p, ctx) ->
-			CreatureService.chooseOrigin(ctx.player(), p.origin(), p.speciesName(), p.primary(), p.secondary(), p.pattern()));
+			CreatureService.chooseOrigin(ctx.player(), p.origin(), p.speciesName(), p.primary(), p.secondary(), p.pattern(), p.look()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EquipPart.TYPE, (p, ctx) ->
 			CreatureService.equip(ctx.player(), p.slot(), p.part()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.Evolve.TYPE, (p, ctx) ->
 			CreatureService.evolve(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetLook.TYPE, (p, ctx) ->
-			CreatureService.setLook(ctx.player(), p.primary(), p.secondary(), p.detail(), p.pattern()));
+			CreatureService.setLook(ctx.player(), p.primary(), p.secondary(), p.detail(), p.pattern(), p.look()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.UseAbility.TYPE, (p, ctx) ->
 			AbilityManager.use(ctx.player(), p.slot()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EatPlant.TYPE, (p, ctx) ->

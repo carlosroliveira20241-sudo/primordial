@@ -4,6 +4,7 @@ import com.primordial.config.PrimordialConfig;
 import com.primordial.creature.CreatureProgress;
 import com.primordial.creature.CreatureService;
 import com.primordial.creature.Creatures;
+import com.primordial.entity.CreatureRegistry;
 import com.primordial.item.PrimordialItems;
 import com.primordial.part.PartRegistry;
 import java.util.ArrayList;
@@ -22,6 +23,10 @@ public final class MorselDrops {
 
 	public static void onKill(ServerPlayer killer, LivingEntity victim) {
 		Identifier species = BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType());
+		if (CreatureRegistry.isBig(victim.getType())) {
+			CreatureProgress before = Creatures.progress(killer);
+			CreatureService.setProgress(killer, before.withBigKills(before.bigKills() + 1));
+		}
 		List<Identifier> candidates = PartRegistry.droppedBy(species);
 		if (candidates.isEmpty()) {
 			return;

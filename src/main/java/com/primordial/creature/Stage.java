@@ -15,7 +15,7 @@ public enum Stage implements StringRepresentable {
 		List.of(MOUTH, TAIL, ORGAN_1)),
 	PEIXE("peixe", 0.55F, 14, 2.0, 3, 3, 12, true, true,
 		List.of(MOUTH, EYES, FINS, BACK, SKIN, TAIL, ORGAN_1)),
-	PREDADOR("predador", 0.8F, 22, 3.5, 4, 8, 20, true, false,
+	PREDADOR("predador", 0.8F, 22, 3.5, 4, 8, 20, true, true,
 		List.of(MOUTH, EYES, HEAD, FINS, BACK, SKIN, TAIL, ORGAN_1, ORGAN_2)),
 	ANFIBIO("anfibio", 0.9F, 26, 4.0, 4, 12, 30, true, false,
 		List.of(MOUTH, EYES, HEAD, FINS, BACK, SKIN, TAIL, ORGAN_1, ORGAN_2)),

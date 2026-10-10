@@ -1,10 +1,13 @@
 package com.primordial;
 
+import com.primordial.ability.Abilities;
 import com.primordial.config.PrimordialConfig;
 import com.primordial.entity.PrimordialEntities;
 import com.primordial.event.PrimordialEvents;
 import com.primordial.item.PrimordialItems;
 import com.primordial.net.PrimordialNetwork;
+import com.primordial.entity.CreatureRegistry;
+import com.primordial.look.LookRegistry;
 import com.primordial.part.PartRegistry;
 import com.primordial.registry.PrimordialAttachments;
 import com.primordial.registry.PrimordialAttributes;
@@ -22,9 +25,12 @@ public class Primordial implements ModInitializer {
 		PrimordialConfig.load();
 		PrimordialAttributes.init();
 		PartRegistry.load();
+		LookRegistry.load();
+		CreatureRegistry.load();
 		PrimordialAttachments.init();
 		PrimordialItems.init();
 		PrimordialEntities.init();
+		Abilities.init();
 		PrimordialNetwork.init();
 		PrimordialEvents.init();
 		LOGGER.info("Primordial carregado: o oceano primordial te espera.");

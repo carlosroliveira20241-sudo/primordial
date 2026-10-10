@@ -107,6 +107,12 @@ public final class PrimordialEvents {
 				continue;
 			}
 			eatNearbyMorsels(level, player);
+			if (Creatures.hasPassive(player, "abyssal_sight")) {
+				MobEffectInstance sight = player.getEffect(MobEffects.NIGHT_VISION);
+				if (sight == null || sight.getDuration() < 240) {
+					player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false, false));
+				}
+			}
 			if (!Creatures.isAquatic(player) || player.isCreative()) {
 				continue;
 			}
