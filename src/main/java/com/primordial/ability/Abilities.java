@@ -3,7 +3,9 @@ package com.primordial.ability;
 import com.primordial.creature.CreatureService;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -315,6 +317,32 @@ public final class Abilities {
 			}
 			burst(world, ParticleTypes.SONIC_BOOM, player, 1, 0.0);
 			sound(player, SoundEvents.WARDEN_ROAR, 1.0F, 0.8F);
+		});
+
+		// Colher Coral: colhe o coral que você olha (até 5 blocos); ele vira item para fabricar a Ferramenta de Coral.
+		register("colher_coral", 10, (player, level) -> {
+			ServerLevel world = player.level();
+			net.minecraft.world.phys.HitResult hit = player.pick(5.5, 0.0F, false);
+			if (hit instanceof net.minecraft.world.phys.BlockHitResult block && hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
+				net.minecraft.core.BlockPos pos = block.getBlockPos();
+				net.minecraft.world.level.block.state.BlockState state = world.getBlockState(pos);
+				if (state.is(net.minecraft.tags.BlockTags.CORAL_BLOCKS) || state.is(net.minecraft.tags.BlockTags.CORALS) || state.is(net.minecraft.tags.BlockTags.WALL_CORALS)) {
+					net.minecraft.world.item.ItemStack coral = new net.minecraft.world.item.ItemStack(state.getBlock().asItem());
+					world.setBlock(pos, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState(), 3);
+					world.sendParticles(ParticleTypes.BUBBLE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
+					sound(player, SoundEvents.CORAL_BLOCK_BREAK, 0.8F, 1.2F);
+					if (!coral.isEmpty()) {
+						com.primordial.creature.FeedingService.drop(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, coral);
+					}
+					com.primordial.journal.JournalService.bump(player, "coral", 1);
+					CreatureService.addXp(player, 2);
+					if (Ability.awakened(level)) {
+						player.heal(2.0F);
+					}
+					return;
+				}
+			}
+			player.sendSystemMessage(Component.translatable("msg.primordial.coral_look").withStyle(ChatFormatting.RED), true);
 		});
 
 		// Mordida Dilacerante: mordida forte no alvo na frente; sangra (veneno do tipo "sangramento"); desperta, sangra mais.

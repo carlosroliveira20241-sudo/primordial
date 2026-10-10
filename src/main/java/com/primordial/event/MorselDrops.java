@@ -62,7 +62,7 @@ public final class MorselDrops {
 					}
 				}
 				if (!rare.isEmpty()) {
-					spawnMorsel(killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), rare.get(killer.getRandom().nextInt(rare.size())));
+					award(killer, killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), rare.get(killer.getRandom().nextInt(rare.size())));
 				}
 			}
 			if (candidates.isEmpty()) {
@@ -101,7 +101,7 @@ public final class MorselDrops {
 		List<Identifier> pool = fresh.isEmpty() ? candidates : fresh;
 		Identifier part = pool.get(killer.getRandom().nextInt(pool.size()));
 
-		spawnMorsel(killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), part);
+		award(killer, killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), part);
 	}
 
 	/** Todo bicho morto solta Carne: mais vida = mais carne. Alfas e o frenesi dobram. */
@@ -115,6 +115,17 @@ public final class MorselDrops {
 		}
 		com.primordial.creature.FeedingService.drop(killer.level(), victim.getX(), victim.getY() + 0.3, victim.getZ(),
 			new net.minecraft.world.item.ItemStack(PrimordialItems.CARNE, count));
+	}
+
+	/** A Melhoria vai direto para o inventário (é preciso comê-la para adquirir a parte). Sem espaço, cai no chão. */
+	public static void award(ServerPlayer player, ServerLevel level, double x, double y, double z, Identifier part) {
+		net.minecraft.world.item.ItemStack stack = PrimordialItems.morsel(part);
+		if (player.getInventory().add(stack) && stack.isEmpty()) {
+			player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("msg.primordial.morsel_in_inventory", com.primordial.part.PartDefinition.name(part))
+				.withStyle(net.minecraft.ChatFormatting.GOLD), true);
+			return;
+		}
+		spawnMorsel(level, x, y, z, part);
 	}
 
 	/** Solta uma Melhoria parada, brilhando e com o nome da parte em cima. */

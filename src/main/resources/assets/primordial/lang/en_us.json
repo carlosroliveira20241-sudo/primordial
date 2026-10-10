@@ -142,7 +142,7 @@
  "part.primordial.olhos_simples.desc": "Olhos básicos.",
  "part.primordial.barbatanas_simples.desc": "Barbatanas básicas: um pouco de velocidade de nado.",
  "part.primordial.mandibula_serrilhada.desc": "Mais dano de mordida. Dá a Mordida Dilacerante. Muda o focinho: mais comprido.",
- "part.primordial.bico_de_coral.desc": "Bico duro de peixe-papagaio: mais dano e come de tudo. Deixa o corpo alaranjado.",
+ "part.primordial.bico_de_coral.desc": "Bico duro de peixe-papagaio: mais dano e come de tudo. Dá a habilidade Colher Coral. Deixa o corpo alaranjado.",
  "part.primordial.barbatanas_velozes.desc": "Muito mais velocidade de nado. Deixa o corpo mais largo.",
  "part.primordial.cauda_propulsora.desc": "Nada mais rápido e dá a Investida. Deixa o corpo mais comprido e fino.",
  "part.primordial.espinhos.desc": "Espinhos que ferem quem te morde e dão a Rajada de Espinhos. Deixa o corpo mais gordo e amarelado.",
@@ -575,10 +575,11 @@
  "look.primordial.guardiao": "Corpo: Guardião",
  "entity.primordial.guardiao_de_coral": "Guardião de Coral",
  "ability.primordial.colher_coral": "Colher Coral",
- "ability.primordial.colher_coral.desc": "Com o botão esquerdo no coral, colhe o coral (ele vira item). Só assim se consegue coral para a Ferramenta de Coral. Precisa do Bico de Coral para o dano extra no nível III.",
- "msg.primordial.coral_needs_skill": "Você ainda não aprendeu a colher coral (habilidade Colher Coral).",
+ "ability.primordial.colher_coral.desc": "Colhe o coral que você olha (até 5 blocos): ele vira item. Com 3 corais e a habilidade Criar Ferramenta se faz a Ferramenta de Coral. Desperta: você se cura ao colher.",
  "challenge.primordial.caca_ao_guardiao": "Invasor de Covil",
  "challenge.primordial.caca_ao_guardiao.desc": "Derrote o Guardião de Coral que protege um covil do fundo do mar.",
  "challenge.primordial.saqueador": "Saqueador de Covis",
- "challenge.primordial.saqueador.desc": "Escave 4 fósseis raros de dentro dos covis (ruínas de prismarinho)."
+ "challenge.primordial.saqueador.desc": "Escave 4 fósseis raros de dentro dos covis (ruínas de prismarinho).",
+ "msg.primordial.coral_look": "Olhe para um coral (a até 5 blocos).",
+ "msg.primordial.morsel_in_inventory": "Uma Melhoria foi para o seu inventário: %s. Coma para adquirir a parte (botão direito ou C)."
 }

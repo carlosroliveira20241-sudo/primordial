@@ -3,9 +3,6 @@
  "cost": 15,
  "source": "primordial:peixe_papagaio",
  "diet": "omnivore",
- "passives": [
-  "coral_breaker"
- ],
  "modifiers": [
   {
    "attribute": "minecraft:attack_damage",
@@ -18,5 +15,6 @@
   "features": [
    "jaw"
   ]
- }
+ },
+ "ability": "primordial:colher_coral"
 }

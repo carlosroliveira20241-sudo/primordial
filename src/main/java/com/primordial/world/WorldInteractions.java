@@ -51,8 +51,6 @@ public final class WorldInteractions {
 			FeedingService.harvestPlant(player, pos);
 		} else if (SeabedSeeder.isDigSite(state)) {
 			dig(player, level, pos, state);
-		} else if (state.is(BlockTags.CORAL_BLOCKS) || state.is(BlockTags.CORALS) || state.is(BlockTags.WALL_CORALS)) {
-			gnawCoral(player, level, pos);
 		}
 	}
 
@@ -117,7 +115,7 @@ public final class WorldInteractions {
 			}
 			if (!pool.isEmpty()) {
 				Identifier part = pool.get(player.getRandom().nextInt(pool.size()));
-				MorselDrops.spawnMorsel(level, pos.getX() + 0.5, pos.getY() + 1.4, pos.getZ() + 0.5, part);
+				MorselDrops.award(player, level, pos.getX() + 0.5, pos.getY() + 1.4, pos.getZ() + 0.5, part);
 				player.sendSystemMessage(Component.translatable(tier > 0 ? "msg.primordial.dig_found_cave" : fossil ? "msg.primordial.dig_found_fossil" : "msg.primordial.dig_found_morsel")
 					.withStyle(ChatFormatting.GOLD), true);
 				return;
@@ -134,26 +132,6 @@ public final class WorldInteractions {
 			player.sendSystemMessage(Component.translatable("msg.primordial.dig_found_xp").withStyle(ChatFormatting.GREEN), true);
 		}
 		level.sendParticles(ParticleTypes.GLOW, pos.getX() + 0.5, pos.getY() + 1.3, pos.getZ() + 0.5, 20, 0.3, 0.3, 0.3, 0.05);
-	}
-
-	private static void gnawCoral(ServerPlayer player, ServerLevel level, BlockPos pos) {
-		int power = Creatures.passiveLevel(player, "coral_breaker");
-		if (!com.primordial.capability.Capabilities.has(player, "collect_coral")) {
-			player.sendSystemMessage(Component.translatable("msg.primordial.coral_needs_skill").withStyle(ChatFormatting.RED), true);
-			return;
-		}
-		net.minecraft.world.item.ItemStack coral = new net.minecraft.world.item.ItemStack(level.getBlockState(pos).getBlock().asItem());
-		level.setBlock(pos, Blocks.WATER.defaultBlockState(), 3);
-		level.sendParticles(ParticleTypes.BUBBLE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
-		CreatureService.playSound(player, SoundEvents.CORAL_BLOCK_BREAK, 0.8F, 1.2F);
-		com.primordial.journal.JournalService.bump(player, "coral", 1);
-		if (!coral.isEmpty()) {
-			FeedingService.drop(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, coral);
-		}
-		if (power >= 3) {
-			player.heal(2.0F);
-		}
-		CreatureService.addXp(player, 2);
 	}
 
 	/** Planta alga (ou kelp, se for fundo) no chão em que você está olhando. Custa 1 DNA. */
