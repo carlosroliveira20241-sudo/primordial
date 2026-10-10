@@ -104,6 +104,18 @@ public final class Payloads {
 		}
 	}
 
+	/** Nova ordem das habilidades (Z, X, ...). */
+	public record SetAbilityOrder(java.util.List<Identifier> order) implements CustomPacketPayload {
+		public static final Type<SetAbilityOrder> TYPE = typeOf("set_ability_order");
+		public static final StreamCodec<ByteBuf, SetAbilityOrder> CODEC = StreamCodec.composite(
+			Identifier.STREAM_CODEC.apply(ByteBufCodecs.list(8)), SetAbilityOrder::order, SetAbilityOrder::new);
+
+		@Override
+		public Type<SetAbilityOrder> type() {
+			return TYPE;
+		}
+	}
+
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(

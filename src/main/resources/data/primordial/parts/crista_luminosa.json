@@ -12,6 +12,9 @@
   "lantern"
  ],
  "visual": {
-  "tint": "#FFB74D"
+  "tint": "#FFB74D",
+  "features": [
+   "antenna"
+  ]
  }
 }

@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * O oceano acontecendo sozinho: correntes marinhas que levam quem nada nelas, nuvens de plâncton que dão DNA a
+ * O oceano acontecendo sozinho: nuvens de plâncton que dão DNA a
  * herbívoros e eventos aleatórios (Desova em Massa, Frenesi Alimentar, Maré Vermelha).
  */
 public final class OceanLife {
@@ -78,39 +78,6 @@ public final class OceanLife {
 		tickClouds(level, swimmers, now);
 		tickTide(level, now);
 		tickEvents(level, swimmers, now);
-	}
-
-	// ------------------------------------------------------------------ correntes
-
-	/** Cada área de ~48 blocos pode ter uma corrente: direção e força vêm só da posição e da hora do mundo. */
-	public static void tickPlayer(ServerLevel level, ServerPlayer player) {
-		if (!player.isInWater() || !Creatures.isCreature(player)) {
-			return;
-		}
-		Vec3 flow = currentAt(level, player.getX(), player.getZ());
-		if (flow == null) {
-			return;
-		}
-		player.setDeltaMovement(player.getDeltaMovement().add(flow.scale(0.035)));
-		player.hurtMarked = true;
-		if (player.tickCount % 3 == 0) {
-			level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, player.getX() - flow.x * 2, player.getY() + 0.3, player.getZ() - flow.z * 2, 3, 0.6, 0.4, 0.6, 0.02);
-		}
-	}
-
-	private static Vec3 currentAt(ServerLevel level, double x, double z) {
-		long cellX = Math.floorDiv((long) x, 48L);
-		long cellZ = Math.floorDiv((long) z, 48L);
-		long epoch = level.getGameTime() / 12000L;
-		long h = cellX * 341873128712L + cellZ * 132897987541L + epoch * 7919L + level.getSeed();
-		h ^= h >>> 29;
-		h *= 0xBF58476D1CE4E5B9L;
-		h ^= h >>> 32;
-		if (Math.floorMod(h, 4L) != 0) {
-			return null;
-		}
-		double angle = Math.floorMod(h >>> 8, 360L) * Math.PI / 180.0;
-		return new Vec3(Math.cos(angle), 0.0, Math.sin(angle));
 	}
 
 	// ------------------------------------------------------------------ plâncton
@@ -172,10 +139,11 @@ public final class OceanLife {
 		int span = Math.max(1, config.eventMaxMinutes - config.eventMinMinutes);
 		nextEvent = now + 20L * 60 * (config.eventMinMinutes + level.getRandom().nextInt(span + 1));
 		ServerPlayer target = swimmers.get(level.getRandom().nextInt(swimmers.size()));
-		switch (level.getRandom().nextInt(3)) {
+		switch (level.getRandom().nextInt(4)) {
 			case 0 -> spawning(level, target);
 			case 1 -> frenzy(level, target, now);
-			default -> redTide(level, target, now);
+			case 2 -> redTide(level, target, now);
+			default -> leviathan(level, target);
 		}
 	}
 
@@ -202,6 +170,16 @@ public final class OceanLife {
 			spawnNear(level, target, "atum_flecha", 12);
 		}
 		level.sendParticles(new DustParticleOptions(0xAA0000, 3.0F), target.getX(), target.getY(), target.getZ(), 80, 4, 2, 4, 0.0);
+	}
+
+	/** Aparição do Leviatã: um chefe-mundo emerge por 10 minutos. Quem der o último golpe leva a Coroa lendária. */
+	private static void leviathan(ServerLevel level, ServerPlayer target) {
+		EntityType<?> type = CreatureRegistry.types().get(Primordial.id("leviata_ancestral"));
+		if (type == null || !level.getEntities(type, e -> true).isEmpty()) {
+			return;
+		}
+		announce(level, "event.primordial.leviathan", ChatFormatting.DARK_PURPLE);
+		spawnNear(level, target, "leviata_ancestral", 28);
 	}
 
 	/** Maré Vermelha: uma mancha de alga tóxica que envenena quem nada nela por 90 s. */

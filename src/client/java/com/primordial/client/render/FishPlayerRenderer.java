@@ -6,17 +6,15 @@ import com.primordial.creature.Creatures;
 import com.primordial.creature.PartRef;
 import com.primordial.look.Look;
 import com.primordial.look.LookRegistry;
-import net.minecraft.client.model.animal.fish.CodModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.Identifier;
 
 /** Desenha o jogador-criatura como peixe, tingido com a cor primária escolhida. */
-public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlayer, FishPlayerState, CodModel> {
+public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlayer, FishPlayerState, ModularFishModel> {
 	public FishPlayerRenderer(EntityRendererProvider.Context context) {
-		super(context, new CodModel(context.bakeLayer(ModelLayers.COD)), 0.3F);
+		super(context, new ModularFishModel(context.bakeLayer(ModularFishModel.LAYER)), 0.3F);
 	}
 
 	public static boolean applies(AbstractClientPlayer player) {
@@ -40,11 +38,13 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 		CreatureBody body = Creatures.body(entity);
 		Look look = LookRegistry.get(body.look());
 		PartVisuals.Result visual = PartVisuals.combine(look, body.primaryColor(),
-			body.parts().values().stream().map(PartRef::id).toList(), 0.25F);
+			body.parts().values().stream().map(PartRef::id).toList(), java.util.List.of(), 0.25F);
 		state.tint = visual.tint();
 		state.sx = visual.sx();
 		state.sy = visual.sy();
 		state.sz = visual.sz();
+		state.features = visual.features();
+		state.shape = FishLook.shapeOf(look.model());
 	}
 
 	@Override

@@ -1,0 +1,25 @@
+{
+ "behavior": "predator",
+ "size": [
+  1.2,
+  1.0
+ ],
+ "health": 22,
+ "damage": 4,
+ "speed": 0.35,
+ "power": 0.6,
+ "traits": [],
+ "look": "primordial:grude",
+ "features": [
+  "tentacles"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "creature",
+  "weight": 5,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

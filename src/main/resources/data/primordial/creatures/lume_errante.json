@@ -1,0 +1,28 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.9,
+  0.9
+ ],
+ "health": 12,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "glow"
+ ],
+ "look": "primordial:lume",
+ "features": [
+  "orbs",
+  "tentacles"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 8,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

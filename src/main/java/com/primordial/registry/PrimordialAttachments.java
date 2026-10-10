@@ -33,6 +33,22 @@ public final class PrimordialAttachments {
 		.syncWith(ByteBufCodecs.fromCodec(com.primordial.mutation.MutationState.CODEC), AttachmentSyncPredicate.targetOnly())
 		.buildAndRegister(Primordial.id("mutations"));
 
+	/** Diário: bestiário, contadores e desafios cumpridos. */
+	public static final AttachmentType<com.primordial.journal.JournalState> JOURNAL = AttachmentRegistry.<com.primordial.journal.JournalState>builder()
+		.persistent(com.primordial.journal.JournalState.CODEC)
+		.copyOnDeath()
+		.initializer(() -> com.primordial.journal.JournalState.DEFAULT)
+		.syncWith(ByteBufCodecs.fromCodec(com.primordial.journal.JournalState.CODEC), AttachmentSyncPredicate.targetOnly())
+		.buildAndRegister(Primordial.id("journal"));
+
+	/** Ordem das habilidades escolhida pelo jogador (Z, X, ...). */
+	public static final AttachmentType<com.primordial.ability.AbilityOrder> ABILITY_ORDER = AttachmentRegistry.<com.primordial.ability.AbilityOrder>builder()
+		.persistent(com.primordial.ability.AbilityOrder.CODEC)
+		.copyOnDeath()
+		.initializer(() -> com.primordial.ability.AbilityOrder.DEFAULT)
+		.syncWith(ByteBufCodecs.fromCodec(com.primordial.ability.AbilityOrder.CODEC), AttachmentSyncPredicate.targetOnly())
+		.buildAndRegister(Primordial.id("ability_order"));
+
 	private PrimordialAttachments() {
 	}
 

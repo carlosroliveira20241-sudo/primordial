@@ -1,0 +1,14 @@
+{
+ "family": "predador",
+ "count": 3,
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 3.0
+  },
+  {
+   "attribute": "primordial:lifesteal",
+   "base": 0.12
+  }
+ ]
+}

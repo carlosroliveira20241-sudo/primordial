@@ -113,7 +113,7 @@ public class LookScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (this.origin == null) {
-			this.minecraft.setScreenAndShow(new EditorScreen());
+			this.minecraft.setScreenAndShow(new com.primordial.client.codex.CodexScreen());
 		} else {
 			super.onClose();
 		}

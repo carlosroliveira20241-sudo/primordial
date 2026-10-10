@@ -1,0 +1,14 @@
+{
+ "family": "abissal",
+ "count": 3,
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 8.0
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 1.5
+  }
+ ]
+}

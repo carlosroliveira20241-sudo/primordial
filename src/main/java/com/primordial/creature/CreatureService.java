@@ -121,6 +121,7 @@ public final class CreatureService {
 		setProgress(player, progress.withXpAndLevel(xp, level));
 		if (leveled) {
 			com.primordial.mutation.MutationService.onLevels(player, progress.level(), level);
+			com.primordial.journal.JournalService.raise(player, "level", level);
 			player.sendSystemMessage(Component.translatable("msg.primordial.level_up", level).withStyle(ChatFormatting.GREEN), true);
 			playSound(player, SoundEvents.PLAYER_LEVELUP, 0.6F, 1.4F);
 			if (canEvolve(player)) {
@@ -137,6 +138,7 @@ public final class CreatureService {
 		if (def == null || !Creatures.isCreature(player)) {
 			return;
 		}
+		com.primordial.journal.JournalService.bump(player, "morsel", 1);
 		CreatureProgress progress = Creatures.progress(player);
 		int before = progress.partLevel(partId);
 		progress = progress.withEaten(partId, progress.eatenCount(partId) + 1);
@@ -319,6 +321,7 @@ public final class CreatureService {
 			return;
 		}
 		Stage next = body.stage().next();
+		com.primordial.journal.JournalService.raise(player, "stage", next.number());
 		body = body.withStage(next);
 		// Slots novos já vêm com a peça simples, para o bicho não ficar "pelado".
 		if (next.slots.contains(BodySlot.EYES) && body.part(BodySlot.EYES) == null) {

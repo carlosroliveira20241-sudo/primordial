@@ -32,13 +32,19 @@ public final class MorselDrops {
 			CreatureService.setProgress(killer, before.withBigKills(before.bigKills() + 1));
 		}
 		CreatureDef def = CreatureRegistry.get(species);
+		if (def != null) {
+			com.primordial.journal.JournalService.recordKill(killer, species);
+			if (victim.entityTags().contains(ALPHA_TAG)) {
+				com.primordial.journal.JournalService.bump(killer, "alpha", 1);
+			}
+		}
 		if (def != null && def.has("undead")) {
 			// Zumbis dão um pouco de experiência, mas nunca uma Melhoria.
 			CreatureService.addDna(killer, 1);
 			CreatureService.addXp(killer, 5);
 			return;
 		}
-		boolean alpha = victim.entityTags().contains(ALPHA_TAG);
+		boolean alpha = victim.entityTags().contains(ALPHA_TAG) || (def != null && def.has("boss"));
 		boolean treasure = def != null && def.has("treasure");
 		List<Identifier> candidates = PartRegistry.droppedBy(species);
 		if (treasure) {

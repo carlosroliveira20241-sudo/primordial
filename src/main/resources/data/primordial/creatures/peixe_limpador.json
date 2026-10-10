@@ -1,0 +1,25 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.4,
+  0.3
+ ],
+ "health": 4,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "symbiont"
+ ],
+ "look": "primordial:limpador",
+ "features": [],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 6,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

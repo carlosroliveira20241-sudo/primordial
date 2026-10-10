@@ -10,6 +10,9 @@
   "ink_immunity"
  ],
  "visual": {
-  "tint": "#4B2A6B"
+  "tint": "#4B2A6B",
+  "features": [
+   "tentacles"
+  ]
  }
 }

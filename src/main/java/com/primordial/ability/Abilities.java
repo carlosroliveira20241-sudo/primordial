@@ -197,6 +197,126 @@ public final class Abilities {
 			sound(player, SoundEvents.TRIDENT_RIPTIDE_2.value(), 0.7F, 1.4F);
 		});
 
+		// Agarrar: os tentáculos prendem o alvo à frente (quase imóvel e sangrando); desperta, prende também quem está perto dele.
+		register("agarrar", 160, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			for (LivingEntity target : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(1.2).move(look.scale(2.2)), e -> e != player)) {
+				grab(target, 80);
+				if (Ability.awakened(level)) {
+					for (LivingEntity near : world.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(3.0), e -> e != player && e != target)) {
+						grab(near, 80);
+					}
+				}
+				burst(world, ParticleTypes.SQUID_INK, target, 20, 0.05);
+				break;
+			}
+			sound(player, SoundEvents.SLIME_BLOCK_PLACE, 1.0F, 0.6F);
+		});
+
+		// Onda Cristalina: onda sonora que empurra e faz todos brilharem; desperta, também machuca.
+		register("onda_cristalina", 140, (player, level) -> {
+			ServerLevel world = player.level();
+			for (LivingEntity target : around(world, player, 7.0)) {
+				Vec3 away = target.position().subtract(player.position()).normalize().scale(1.0);
+				target.setDeltaMovement(away.x, 0.25, away.z);
+				target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0));
+				if (Ability.awakened(level)) {
+					target.hurtServer(world, player.damageSources().playerAttack(player), 3.0F);
+				}
+			}
+			burst(world, ParticleTypes.END_ROD, player, 60, 0.4);
+			sound(player, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.8F);
+		});
+
+		// Baforada de Brasa: vapor escaldante num cone; desperta, o cone é maior.
+		register("baforada_de_brasa", 120, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			double reach = Ability.awakened(level) ? 7.0 : 5.0;
+			for (LivingEntity target : around(world, player, reach)) {
+				Vec3 to = target.position().add(0, target.getBbHeight() * 0.5, 0).subtract(player.getEyePosition()).normalize();
+				if (to.dot(look) > 0.6) {
+					target.hurtServer(world, player.damageSources().playerAttack(player), 3.0F + level);
+					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1));
+				}
+			}
+			for (int i = 1; i <= 6; i++) {
+				Vec3 at = player.getEyePosition().add(look.scale(i * reach / 6.0));
+				world.sendParticles(ParticleTypes.CLOUD, at.x, at.y, at.z, 6, 0.3 + i * 0.1, 0.3 + i * 0.1, 0.3 + i * 0.1, 0.02);
+			}
+			sound(player, SoundEvents.BLAZE_SHOOT, 0.8F, 0.7F);
+		});
+
+		// Névoa: invisível e rápido por alguns segundos.
+		register("nevoa", 260, (player, level) -> {
+			int ticks = Ability.awakened(level) ? 160 : 100;
+			player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks, 0, false, false, true));
+			player.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 1, false, false, true));
+			burst(player.level(), ParticleTypes.CLOUD, player, 50, 0.1);
+			sound(player, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
+		});
+
+		// Pisão: atordoa e empurra todos em volta; desperta, raio e dano maiores.
+		register("pisao", 200, (player, level) -> {
+			ServerLevel world = player.level();
+			double radius = Ability.awakened(level) ? 6.0 : 4.0;
+			for (LivingEntity target : around(world, player, radius)) {
+				Vec3 away = target.position().subtract(player.position()).normalize().scale(0.9);
+				target.setDeltaMovement(away.x, 0.35, away.z);
+				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 4));
+				target.hurtServer(world, player.damageSources().playerAttack(player), Ability.awakened(level) ? 4.0F : 2.0F + level);
+			}
+			burst(world, ParticleTypes.EXPLOSION, player, 3, 0.0);
+			sound(player, SoundEvents.GENERIC_EXPLODE.value(), 0.7F, 1.3F);
+		});
+
+		// Orbe Curativo: cura você e os amigos perto; desperta, cura mais.
+		register("orbe_curativo", 240, (player, level) -> {
+			ServerLevel world = player.level();
+			float amount = Ability.awakened(level) ? 10.0F : 6.0F;
+			player.heal(amount);
+			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 80, 1));
+			for (LivingEntity near : around(world, player, 6.0)) {
+				if (near instanceof ServerPlayer friend) {
+					friend.heal(amount * 0.6F);
+					burst(world, ParticleTypes.HEART, friend, 6, 0.1);
+				}
+			}
+			burst(world, ParticleTypes.GLOW, player, 40, 0.3);
+			sound(player, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.4F);
+		});
+
+		// Aríete: investida pesada que atordoa o primeiro alvo.
+		register("ariete", 160, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			player.setDeltaMovement(look.scale(1.8));
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+			for (LivingEntity target : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(1.5).move(look.scale(1.8)), e -> e != player)) {
+				target.hurtServer(world, player.damageSources().playerAttack(player), 5.0F + level * (Ability.awakened(level) ? 2 : 1));
+				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Ability.awakened(level) ? 70 : 40, 9));
+				break;
+			}
+			burst(world, ParticleTypes.CRIT, player, 30, 0.3);
+			sound(player, SoundEvents.ANVIL_LAND, 0.5F, 0.6F);
+		});
+
+		// Rugido do Abismo: atordoa, cega e atrasa todos num raio enorme; desperta, também machuca.
+		register("rugido_do_abismo", 400, (player, level) -> {
+			ServerLevel world = player.level();
+			for (LivingEntity target : around(world, player, 10.0)) {
+				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 4));
+				target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0));
+				target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1));
+				if (Ability.awakened(level)) {
+					target.hurtServer(world, player.damageSources().playerAttack(player), 6.0F);
+				}
+			}
+			burst(world, ParticleTypes.SONIC_BOOM, player, 1, 0.0);
+			sound(player, SoundEvents.WARDEN_ROAR, 1.0F, 0.8F);
+		});
+
 		// Mordida Dilacerante: mordida forte no alvo na frente; sangra (veneno do tipo "sangramento"); desperta, sangra mais.
 		register("mordida_dilacerante", 80, (player, level) -> {
 			ServerLevel world = player.level();
@@ -209,6 +329,11 @@ public final class Abilities {
 			}
 			sound(player, SoundEvents.PLAYER_ATTACK_STRONG, 1.0F, 0.7F);
 		});
+	}
+
+	private static void grab(LivingEntity target, int ticks) {
+		target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 9));
+		target.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks, 0));
 	}
 
 	private static Iterable<LivingEntity> around(ServerLevel world, ServerPlayer player, double radius) {

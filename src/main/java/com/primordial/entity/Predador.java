@@ -33,10 +33,40 @@ import net.minecraft.world.level.Level;
  */
 public class Predador extends AbstractFish {
 	private final CreatureDef def;
+	private net.minecraft.server.level.ServerBossEvent bossBar;
 
 	public Predador(EntityType<? extends AbstractFish> type, Level level) {
 		super(type, level);
 		this.def = CreatureRegistry.of(type);
+		if (this.def != null && this.def.has("boss")) {
+			this.bossBar = new net.minecraft.server.level.ServerBossEvent(java.util.UUID.randomUUID(), this.getDisplayName(),
+				net.minecraft.world.BossEvent.BossBarColor.RED, net.minecraft.world.BossEvent.BossBarOverlay.PROGRESS);
+			this.setPersistenceRequired();
+		}
+	}
+
+	@Override
+	public void startSeenByPlayer(net.minecraft.server.level.ServerPlayer player) {
+		super.startSeenByPlayer(player);
+		if (this.bossBar != null) {
+			this.bossBar.addPlayer(player);
+		}
+	}
+
+	@Override
+	public void stopSeenByPlayer(net.minecraft.server.level.ServerPlayer player) {
+		super.stopSeenByPlayer(player);
+		if (this.bossBar != null) {
+			this.bossBar.removePlayer(player);
+		}
+	}
+
+	@Override
+	public void remove(Entity.RemovalReason reason) {
+		if (this.bossBar != null) {
+			this.bossBar.removeAllPlayers();
+		}
+		super.remove(reason);
 	}
 
 	public static AttributeSupplier.Builder attributes(CreatureDef def) {
@@ -70,6 +100,13 @@ public class Predador extends AbstractFish {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (this.bossBar != null) {
+			this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
+		}
+		// O Leviatã que ninguém derrota some depois de 10 minutos.
+		if (this.def != null && this.def.has("event_only") && this.tickCount > 12000) {
+			this.discard();
+		}
 		// Zumbis são criaturas da noite: quando o dia nasce, eles se desfazem.
 		if (this.def != null && this.def.has("undead") && this.level() instanceof ServerLevel level
 			&& this.tickCount % 40 == 0 && !level.isDarkOutside()) {

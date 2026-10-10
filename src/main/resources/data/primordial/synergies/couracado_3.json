@@ -1,0 +1,18 @@
+{
+ "family": "couracado",
+ "count": 3,
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 6.0
+  },
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.5
+  },
+  {
+   "attribute": "primordial:thorns",
+   "base": 1.0
+  }
+ ]
+}

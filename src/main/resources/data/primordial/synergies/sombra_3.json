@@ -1,0 +1,14 @@
+{
+ "family": "sombra",
+ "count": 3,
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 2.0
+  },
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.15
+  }
+ ]
+}

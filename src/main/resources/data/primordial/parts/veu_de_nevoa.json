@@ -1,0 +1,23 @@
+{
+ "slot": "skin",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:serpente_nevoa",
+ "families": [
+  "sombra"
+ ],
+ "ability": "primordial:nevoa",
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.04,
+   "per_level": 0.02
+  }
+ ],
+ "visual": {
+  "features": [
+   "whiskers"
+  ],
+  "tint": "#9AA5C8"
+ }
+}

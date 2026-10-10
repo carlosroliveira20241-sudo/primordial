@@ -1,0 +1,35 @@
+{
+ "slot": "head",
+ "min_stage": 3,
+ "cost": 40,
+ "source": "primordial:dunkleosteus",
+ "families": [
+  "couracado"
+ ],
+ "rarity": "epic",
+ "ability": "primordial:ariete",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 4.0,
+   "per_level": 1.0
+  },
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.5,
+   "per_level": 0.1
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell",
+   "horn"
+  ],
+  "scale": [
+   1.0,
+   1.0,
+   1.1
+  ],
+  "tint": "#8A8F9A"
+ }
+}

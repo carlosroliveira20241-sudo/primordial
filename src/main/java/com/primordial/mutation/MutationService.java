@@ -52,6 +52,7 @@ public final class MutationService {
 		}
 		player.setAttached(PrimordialAttachments.MUTATIONS, next);
 		CreatureStats.apply(player);
+		com.primordial.journal.JournalService.bump(player, "mutation", 1);
 		player.sendSystemMessage(Component.translatable("msg.primordial.mutation_chosen", Mutation.name(id)).withStyle(ChatFormatting.LIGHT_PURPLE), true);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.8F, 1.0F);
 	}

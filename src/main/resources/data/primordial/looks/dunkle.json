@@ -1,0 +1,11 @@
+{
+ "model": "fish",
+ "tint": "#2A2F45",
+ "scale": [
+  5.0,
+  4.0,
+  6.0
+ ],
+ "shadow": 1.5,
+ "selectable": false
+}

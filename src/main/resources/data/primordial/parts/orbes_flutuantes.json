@@ -1,0 +1,27 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:lume_errante",
+ "families": [
+  "abissal"
+ ],
+ "ability": "primordial:orbe_curativo",
+ "passives": [
+  "glow"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 2.0,
+   "per_level": 1.0
+  }
+ ],
+ "visual": {
+  "features": [
+   "orbs",
+   "tentacles"
+  ],
+  "tint": "#8FE3FF"
+ }
+}

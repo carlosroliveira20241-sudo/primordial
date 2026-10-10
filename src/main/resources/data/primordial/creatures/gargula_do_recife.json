@@ -1,0 +1,26 @@
+{
+ "behavior": "predator",
+ "size": [
+  1.4,
+  1.1
+ ],
+ "health": 32,
+ "damage": 5,
+ "speed": 0.45,
+ "power": 0.65,
+ "traits": [],
+ "look": "primordial:gargula",
+ "features": [
+  "legs",
+  "horn"
+ ],
+ "big": true,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "creature",
+  "weight": 4,
+  "min": 1,
+  "max": 1,
+  "night_only": false
+ }
+}

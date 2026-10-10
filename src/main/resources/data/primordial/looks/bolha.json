@@ -1,0 +1,11 @@
+{
+ "model": "blob",
+ "tint": "#8FE3FF",
+ "scale": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "shadow": 0.4,
+ "selectable": true
+}

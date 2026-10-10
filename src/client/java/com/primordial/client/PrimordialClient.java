@@ -3,6 +3,8 @@ package com.primordial.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.primordial.Primordial;
 import com.primordial.client.render.FishBodyRenderer;
+import com.primordial.client.render.ModularFishModel;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import com.primordial.creature.Creatures;
 import com.primordial.entity.CreatureRegistry;
 import com.primordial.look.Look;
@@ -39,10 +41,12 @@ public class PrimordialClient implements ClientModInitializer {
 	public void onInitializeClient() {
 
 
+		ModelLayerRegistry.registerModelLayer(ModularFishModel.LAYER, ModularFishModel::createLayer);
+
 		// Uma criatura por arquivo de creatures/*.json; o corpo vem da aparência (looks/*.json) que ela escolhe.
 		CreatureRegistry.types().forEach((id, type) -> {
 			Look look = LookRegistry.get(CreatureRegistry.get(id).look());
-			registerFish(type, look, PartRegistry.droppedBy(id));
+			registerFish(type, look, PartRegistry.droppedBy(id), CreatureRegistry.get(id).features());
 		});
 
 		ability1 = key("ability1", InputConstants.KEY_Z);
@@ -80,7 +84,7 @@ public class PrimordialClient implements ClientModInitializer {
 			}
 			while (looks.consumeClick()) {
 				if (Creatures.isCreature(mc.player)) {
-					mc.setScreenAndShow(new EditorScreen());
+					mc.setScreenAndShow(new com.primordial.client.codex.CodexScreen());
 				}
 			}
 			while (nest.consumeClick()) {
@@ -113,8 +117,8 @@ public class PrimordialClient implements ClientModInitializer {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static void registerFish(EntityType type, Look look, List<Identifier> parts) {
-		EntityRendererRegistry.register(type, ctx -> new FishBodyRenderer(ctx, look, parts));
+	private static void registerFish(EntityType type, Look look, List<Identifier> parts, List<String> extra) {
+		EntityRendererRegistry.register(type, ctx -> new FishBodyRenderer(ctx, look, parts, extra));
 	}
 
 	private static KeyMapping key(String name, int code) {

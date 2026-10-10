@@ -11,6 +11,9 @@
   "camouflage_still"
  ],
  "visual": {
-  "tint": "#5A7D5A"
+  "tint": "#5A7D5A",
+  "features": [
+   "big_eyes"
+  ]
  }
 }

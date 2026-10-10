@@ -134,8 +134,13 @@ public final class PrimordialEvents {
 			}
 			eatNearbyMorsels(level, player);
 			com.primordial.world.SeabedSeeder.tick(level, player);
-			com.primordial.world.OceanLife.tickPlayer(level, player);
-			tickPassives(player);
+			com.primordial.ability.Passives.tick(player);
+			if (player.tickCount % 40 == 0) {
+				com.primordial.journal.JournalService.scanNearby(player);
+			}
+			tickWave(level, player);
+			com.primordial.world.SeabedSeeder.tick(level, player);
+			com.primordial.ability.Passives.tick(player);
 			tickWave(level, player);
 			if (Creatures.hasPassive(player, "abyssal_sight")) {
 				MobEffectInstance sight = player.getEffect(MobEffects.NIGHT_VISION);
@@ -179,35 +184,6 @@ public final class PrimordialEvents {
 			target.setDeltaMovement(away.x, 0.3, away.z);
 		}
 		level.sendParticles(ParticleTypes.SPLASH, player.getX(), player.getY() + 0.3, player.getZ(), 60, 1.5, 0.3, 1.5, 0.2);
-	}
-
-	private static final java.util.Map<java.util.UUID, Integer> STILL_TICKS = new java.util.HashMap<>();
-
-	/** Efeitos passivos das partes. No nível III a parte está desperta e o efeito melhora. */
-	private static void tickPassives(ServerPlayer player) {
-		// Pele camaleônica: parado, você some. Desperta, some bem mais rápido.
-		int camo = Creatures.passiveLevel(player, "camouflage_still");
-		if (camo > 0) {
-			boolean still = player.getDeltaMovement().horizontalDistanceSqr() < 0.0004;
-			int ticks = still ? STILL_TICKS.merge(player.getUUID(), 1, Integer::sum) : 0;
-			if (!still) {
-				STILL_TICKS.remove(player.getUUID());
-			}
-			if (ticks >= (camo >= 3 ? 10 : 40)) {
-				player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 25, 0, false, false, false));
-			}
-		}
-		// Brânquias despertas (Brânquias Profundas): na água, você se regenera devagar.
-		if (Creatures.passiveLevel(player, "gills") >= 3 && player.isInWater() && player.tickCount % 60 == 0) {
-			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 80, 0, false, false, false));
-		}
-		// Muco escorregadio desperto (Inagarrável): na água, nada com a graça do golfinho.
-		if (Creatures.passiveLevel(player, "slippery") >= 3 && player.isInWater()) {
-			MobEffectInstance grace = player.getEffect(MobEffects.DOLPHINS_GRACE);
-			if (grace == null || grace.getDuration() < 20) {
-				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 60, 0, false, false, false));
-			}
-		}
 	}
 
 	private static final double EAT_REACH = 3.0;
@@ -255,6 +231,7 @@ public final class PrimordialEvents {
 			}
 		}
 		if (closest == null) {
+			com.primordial.entity.Symbionts.tryFeed(player);
 			return;
 		}
 		CreatureService.eatMorsel(player, closest.getItem().get(PrimordialItems.PART));

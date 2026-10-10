@@ -8,5 +8,10 @@
  ],
  "passives": [
   "abyssal_sight"
- ]
+ ],
+ "visual": {
+  "features": [
+   "big_eyes"
+  ]
+ }
 }

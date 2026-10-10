@@ -4,6 +4,8 @@ import com.primordial.look.Look;
 import com.primordial.part.PartDefinition;
 import com.primordial.part.PartRegistry;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
@@ -16,11 +18,12 @@ public final class PartVisuals {
 	private PartVisuals() {
 	}
 
-	public record Result(float sx, float sy, float sz, int tint) {
+	public record Result(float sx, float sy, float sz, int tint, Set<String> features) {
 	}
 
 	/** @param mix o quanto a cor das partes puxa a cor do corpo (0 a 1) */
-	public static Result combine(Look look, int baseTint, Collection<Identifier> parts, float mix) {
+	public static Result combine(Look look, int baseTint, Collection<Identifier> parts, Collection<String> extraFeatures, float mix) {
+		Set<String> features = new HashSet<>(extraFeatures);
 		float sx = look.sx();
 		float sy = look.sy();
 		float sz = look.sz();
@@ -34,6 +37,7 @@ public final class PartVisuals {
 				continue;
 			}
 			PartDefinition.Visual visual = def.visual().get();
+			features.addAll(visual.features());
 			if (visual.scale().size() >= 3) {
 				sx *= visual.scale().get(0);
 				sy *= visual.scale().get(1);
@@ -57,6 +61,6 @@ public final class PartVisuals {
 				Math.round(pg + (g / tinted - pg) * mix),
 				Math.round(pb + (b / tinted - pb) * mix)) & 0xFFFFFF;
 		}
-		return new Result(sx, sy, sz, 0xFF000000 | tint);
+		return new Result(sx, sy, sz, 0xFF000000 | tint, features);
 	}
 }

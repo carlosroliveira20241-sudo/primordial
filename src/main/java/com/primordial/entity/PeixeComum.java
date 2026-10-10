@@ -55,6 +55,9 @@ public class PeixeComum extends AbstractFish {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (has("symbiont")) {
+			Symbionts.tick(this);
+		}
 		if (has("shock_touch") && this.level() instanceof ServerLevel level && this.tickCount % 20 == 0) {
 			for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.6), e -> e != this && !(e instanceof AbstractFish))) {
 				near.hurtServer(level, this.damageSources().mobAttack(this), 1.0F);

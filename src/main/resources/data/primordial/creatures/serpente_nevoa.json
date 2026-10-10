@@ -1,0 +1,27 @@
+{
+ "behavior": "fish",
+ "size": [
+  1.2,
+  0.5
+ ],
+ "health": 14,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "ink"
+ ],
+ "look": "primordial:nevoa",
+ "features": [
+  "whiskers"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 6,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

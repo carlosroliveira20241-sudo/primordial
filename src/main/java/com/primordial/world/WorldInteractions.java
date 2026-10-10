@@ -73,6 +73,7 @@ public final class WorldInteractions {
 		}
 		HITS.remove(key);
 		level.setBlock(pos, fossil ? Blocks.CLAY.defaultBlockState() : Blocks.GRAVEL.defaultBlockState(), 3);
+		com.primordial.journal.JournalService.bump(player, "dig", 1);
 		reward(player, level, pos, fossil);
 	}
 
@@ -122,6 +123,7 @@ public final class WorldInteractions {
 		level.setBlock(pos, Blocks.WATER.defaultBlockState(), 3);
 		level.sendParticles(ParticleTypes.BUBBLE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
 		CreatureService.playSound(player, SoundEvents.CORAL_BLOCK_BREAK, 0.8F, 1.2F);
+		com.primordial.journal.JournalService.bump(player, "coral", 1);
 		CreatureService.addDna(player, 2 + power);
 		CreatureService.addXp(player, 2);
 	}
@@ -156,6 +158,7 @@ public final class WorldInteractions {
 		boolean deep = level.getBlockState(target.above()).is(Blocks.WATER) && level.getBlockState(target.above(2)).is(Blocks.WATER);
 		level.setBlock(target, (deep ? Blocks.KELP : Blocks.SEAGRASS).defaultBlockState(), 3);
 		CreatureService.setProgress(player, Creatures.progress(player).withDna(Creatures.progress(player).dna() - 1));
+		com.primordial.journal.JournalService.bump(player, "plant", 1);
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.0);
 		CreatureService.playSound(player, SoundEvents.WET_GRASS_PLACE, 0.8F, 1.0F);
 	}

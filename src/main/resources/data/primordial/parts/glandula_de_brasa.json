@@ -1,0 +1,27 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:serpente_brasa",
+ "families": [
+  "ardente"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:baforada_de_brasa",
+ "passives": [
+  "heat_adapt"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.5,
+   "per_level": 0.25
+  }
+ ],
+ "visual": {
+  "features": [
+   "sail"
+  ],
+  "tint": "#E5683A"
+ }
+}

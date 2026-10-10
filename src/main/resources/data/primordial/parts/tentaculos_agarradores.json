@@ -1,0 +1,29 @@
+{
+ "slot": "limbs",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:grude_rastejante",
+ "families": [
+  "sombra"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:agarrar",
+ "modifiers": [
+  {
+   "attribute": "minecraft:entity_interaction_range",
+   "base": 0.6,
+   "per_level": 0.2
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.5,
+   "per_level": 0.25
+  }
+ ],
+ "visual": {
+  "features": [
+   "tentacles"
+  ],
+  "tint": "#7ACB6B"
+ }
+}

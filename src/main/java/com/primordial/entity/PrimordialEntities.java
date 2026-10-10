@@ -60,6 +60,9 @@ public final class PrimordialEntities {
 			(t, level, reason, pos, random) -> (!nightOnly || level.getLevel().isDarkOutside())
 				&& WaterAnimal.checkSurfaceWaterAnimalSpawnRules(t, level, reason, pos, random));
 		var biomes = def.spawn().biomes().equals("deep_ocean") ? BiomeTags.IS_DEEP_OCEAN : BiomeTags.IS_OCEAN;
+		if (def.spawn().weight() <= 0 || def.has("event_only")) {
+			return;
+		}
 		BiomeModifications.addSpawn(BiomeSelectors.tag(biomes), category, type, def.spawn().weight(), def.spawn().min(), def.spawn().max());
 	}
 }

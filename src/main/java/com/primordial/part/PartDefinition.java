@@ -48,10 +48,11 @@ public record PartDefinition(
 	 * Como a parte muda o corpo desenhado: {@code scale} multiplica as proporções (x, y, z) e {@code tint} puxa um
 	 * pouco a cor do corpo em direção a essa cor. Tudo opcional; sem isso a parte não muda o visual.
 	 */
-	public record Visual(List<Float> scale, Optional<Integer> tint) {
+	public record Visual(List<Float> scale, Optional<Integer> tint, List<String> features) {
 		public static final Codec<Visual> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.FLOAT.listOf().optionalFieldOf("scale", List.of(1.0F, 1.0F, 1.0F)).forGetter(Visual::scale),
-			com.primordial.look.Look.HEX.optionalFieldOf("tint").forGetter(Visual::tint)
+			com.primordial.look.Look.HEX.optionalFieldOf("tint").forGetter(Visual::tint),
+			Codec.STRING.listOf().optionalFieldOf("features", List.of()).forGetter(Visual::features)
 		).apply(i, Visual::new));
 	}
 

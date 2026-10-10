@@ -21,6 +21,10 @@
   }
  ],
  "visual": {
-  "tint": "#3C3C4A"
+  "tint": "#3C3C4A",
+  "features": [
+   "teeth",
+   "whiskers"
+  ]
  }
 }

@@ -24,6 +24,7 @@ public record CreatureDef(
 	float power,
 	List<String> traits,
 	Identifier look,
+	List<String> features,
 	boolean big,
 	Spawn spawn
 ) {
@@ -36,6 +37,7 @@ public record CreatureDef(
 		Codec.FLOAT.optionalFieldOf("power", 0.5F).forGetter(CreatureDef::power),
 		Codec.STRING.listOf().optionalFieldOf("traits", List.of()).forGetter(CreatureDef::traits),
 		Identifier.CODEC.fieldOf("look").forGetter(CreatureDef::look),
+		Codec.STRING.listOf().optionalFieldOf("features", List.of()).forGetter(CreatureDef::features),
 		Codec.BOOL.optionalFieldOf("big", false).forGetter(CreatureDef::big),
 		Spawn.CODEC.fieldOf("spawn").forGetter(CreatureDef::spawn)
 	).apply(i, CreatureDef::new));

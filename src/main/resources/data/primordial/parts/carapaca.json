@@ -20,6 +20,9 @@
    1.2,
    1.0
   ],
-  "tint": "#5D8A4A"
+  "tint": "#5D8A4A",
+  "features": [
+   "shell"
+  ]
  }
 }

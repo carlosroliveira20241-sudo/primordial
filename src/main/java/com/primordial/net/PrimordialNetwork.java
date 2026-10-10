@@ -16,6 +16,7 @@ public final class PrimordialNetwork {
 		c2s.register(Payloads.EquipPart.TYPE, Payloads.EquipPart.CODEC);
 		c2s.register(Payloads.Evolve.TYPE, Payloads.Evolve.CODEC);
 		c2s.register(Payloads.ChooseMutation.TYPE, Payloads.ChooseMutation.CODEC);
+		c2s.register(Payloads.SetAbilityOrder.TYPE, Payloads.SetAbilityOrder.CODEC);
 		c2s.register(Payloads.Plant.TYPE, Payloads.Plant.CODEC);
 		c2s.register(Payloads.EatMorsel.TYPE, Payloads.EatMorsel.CODEC);
 		c2s.register(Payloads.SetLook.TYPE, Payloads.SetLook.CODEC);
@@ -35,6 +36,8 @@ public final class PrimordialNetwork {
 			CreatureService.equip(ctx.player(), p.slot(), p.part()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.ChooseMutation.TYPE, (p, ctx) ->
 			com.primordial.mutation.MutationService.choose(ctx.player(), p.mutation()));
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetAbilityOrder.TYPE, (p, ctx) ->
+			AbilityManager.setOrder(ctx.player(), p.order()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.Plant.TYPE, (p, ctx) ->
 			com.primordial.world.WorldInteractions.plant(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EatMorsel.TYPE, (p, ctx) ->

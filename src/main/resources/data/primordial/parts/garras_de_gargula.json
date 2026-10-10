@@ -1,0 +1,34 @@
+{
+ "slot": "limbs",
+ "min_stage": 3,
+ "cost": 30,
+ "source": "primordial:gargula_do_recife",
+ "families": [
+  "couracado"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:pisao",
+ "modifiers": [
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.4,
+   "per_level": 0.1
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "features": [
+   "legs"
+  ],
+  "scale": [
+   1.1,
+   1.0,
+   1.0
+  ],
+  "tint": "#6A6F7A"
+ }
+}

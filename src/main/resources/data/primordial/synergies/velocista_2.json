@@ -1,0 +1,10 @@
+{
+ "family": "velocista",
+ "count": 2,
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.1
+  }
+ ]
+}

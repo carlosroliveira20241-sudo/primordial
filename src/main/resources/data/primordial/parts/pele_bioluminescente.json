@@ -11,6 +11,9 @@
   "glow"
  ],
  "visual": {
-  "tint": "#7DF9FF"
+  "tint": "#7DF9FF",
+  "features": [
+   "orbs"
+  ]
  }
 }

@@ -40,7 +40,21 @@ public final class AbilityManager {
 				result.add(def.ability().get());
 			}
 		}
+		List<Identifier> order = player.getAttachedOrElse(com.primordial.registry.PrimordialAttachments.ABILITY_ORDER, AbilityOrder.DEFAULT).order();
+		result.sort(java.util.Comparator.comparingInt(id -> order.contains(id) ? order.indexOf(id) : Integer.MAX_VALUE));
 		return result;
+	}
+
+	/** Guarda a ordem que o jogador escolheu (só aceita habilidades que ele realmente tem). */
+	public static void setOrder(ServerPlayer player, List<Identifier> wanted) {
+		List<Identifier> owned = abilitiesOf(player);
+		List<Identifier> clean = new ArrayList<>();
+		for (Identifier id : wanted) {
+			if (owned.contains(id) && !clean.contains(id)) {
+				clean.add(id);
+			}
+		}
+		player.setAttached(com.primordial.registry.PrimordialAttachments.ABILITY_ORDER, new AbilityOrder(clean));
 	}
 
 	/** Nível da parte equipada que dá essa habilidade. */

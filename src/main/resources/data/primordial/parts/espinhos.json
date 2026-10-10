@@ -20,6 +20,9 @@
    1.25,
    1.0
   ],
-  "tint": "#E8C547"
+  "tint": "#E8C547",
+  "features": [
+   "spikes"
+  ]
  }
 }

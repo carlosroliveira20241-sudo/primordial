@@ -27,6 +27,7 @@ public final class CreatureStats {
 	private static final String ORIGIN = "origin/";
 	private static final String PART = "part/";
 	private static final String MUTATION = "mutation/";
+	private static final String SYNERGY = "synergy/";
 
 	/** Atributos que o estágio mexe (além dos que as partes declaram). */
 	private static final List<Holder<Attribute>> STAGE_ATTRIBUTES = List.of(
@@ -82,6 +83,13 @@ public final class CreatureStats {
 			}
 		}
 
+		for (Identifier active : com.primordial.synergy.SynergyRegistry.active(body)) {
+			int index = 0;
+			for (PartModifier modifier : com.primordial.synergy.SynergyRegistry.all().get(active).modifiers()) {
+				add(player, modifier.attribute(), SYNERGY + active.getPath() + "/" + index++, modifier.amountAt(1), modifier.operation());
+			}
+		}
+
 		if (stage.aquatic) {
 			add(player, Attributes.WATER_MOVEMENT_EFFICIENCY, STAGE + "water", 1.0, AttributeModifier.Operation.ADD_VALUE);
 		}
@@ -116,6 +124,11 @@ public final class CreatureStats {
 				touched.add(modifier.attribute());
 			}
 		}
+		for (com.primordial.synergy.Synergy synergy : com.primordial.synergy.SynergyRegistry.all().values()) {
+			for (PartModifier modifier : synergy.modifiers()) {
+				touched.add(modifier.attribute());
+			}
+		}
 		for (Holder<Attribute> attribute : touched) {
 			AttributeInstance instance = player.getAttribute(attribute);
 			if (instance == null) {
@@ -125,7 +138,7 @@ public final class CreatureStats {
 			for (AttributeModifier modifier : instance.getModifiers()) {
 				Identifier id = modifier.id();
 				if (id.getNamespace().equals(Primordial.MOD_ID)
-					&& (id.getPath().startsWith(STAGE) || id.getPath().startsWith(ORIGIN) || id.getPath().startsWith(PART) || id.getPath().startsWith(MUTATION))) {
+					&& (id.getPath().startsWith(STAGE) || id.getPath().startsWith(ORIGIN) || id.getPath().startsWith(PART) || id.getPath().startsWith(MUTATION) || id.getPath().startsWith(SYNERGY))) {
 					ours.add(id);
 				}
 			}

@@ -1,0 +1,24 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:cristalino",
+ "families": [
+  "abissal"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:onda_cristalina",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "features": [
+   "crystals"
+  ],
+  "tint": "#A7E8E0"
+ }
+}

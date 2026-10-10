@@ -27,6 +27,8 @@ public class Primordial implements ModInitializer {
 		PartRegistry.load();
 		LookRegistry.load();
 		com.primordial.mutation.MutationRegistry.load();
+		com.primordial.synergy.SynergyRegistry.load();
+		com.primordial.journal.ChallengeRegistry.load();
 		CreatureRegistry.load();
 		PrimordialAttachments.init();
 		PrimordialItems.init();

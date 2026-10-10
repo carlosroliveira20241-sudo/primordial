@@ -14,6 +14,9 @@
   }
  ],
  "visual": {
-  "tint": "#FFF176"
+  "tint": "#FFF176",
+  "features": [
+   "crystals"
+  ]
  }
 }

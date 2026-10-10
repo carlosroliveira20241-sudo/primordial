@@ -21,6 +21,9 @@
    1.0,
    1.15
   ],
-  "tint": "#E0E0E0"
+  "tint": "#E0E0E0",
+  "features": [
+   "horn"
+  ]
  }
 }

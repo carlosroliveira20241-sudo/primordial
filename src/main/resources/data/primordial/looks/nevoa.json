@@ -1,0 +1,11 @@
+{
+ "model": "serpent",
+ "tint": "#9AA5C8",
+ "scale": [
+  1.0,
+  1.0,
+  1.1
+ ],
+ "shadow": 0.4,
+ "selectable": false
+}
