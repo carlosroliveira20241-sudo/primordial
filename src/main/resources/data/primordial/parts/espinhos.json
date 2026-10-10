@@ -1,0 +1,3 @@
+{ "slot": "back", "min_stage": 2, "cost": 20, "source": "primordial:baiacu", "ability": "primordial:rajada_de_espinhos",
+  "families": ["couracado"],
+  "modifiers": [ { "attribute": "primordial:thorns", "base": 1.0, "per_level": 0.5 } ] }

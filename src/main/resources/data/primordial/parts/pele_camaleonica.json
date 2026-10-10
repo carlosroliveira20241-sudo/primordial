@@ -1,0 +1,3 @@
+{ "slot": "skin", "min_stage": 2, "cost": 25, "rarity": "rare", "source": "primordial:polvo_sombra",
+  "families": ["sombra"],
+  "passives": ["camouflage_still"] }

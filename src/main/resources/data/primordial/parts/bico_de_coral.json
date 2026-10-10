@@ -1,0 +1,3 @@
+{ "slot": "mouth", "cost": 15, "source": "primordial:peixe_papagaio", "diet": "omnivore",
+  "passives": ["coral_breaker"],
+  "modifiers": [ { "attribute": "minecraft:attack_damage", "base": 0.5, "per_level": 0.25 } ] }

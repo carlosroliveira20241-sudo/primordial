@@ -1,0 +1,3 @@
+{ "slot": "organ", "cost": 20, "source": "primordial:polvo_sombra", "ability": "primordial:nuvem_de_tinta",
+  "families": ["sombra"],
+  "passives": ["ink_immunity"] }
