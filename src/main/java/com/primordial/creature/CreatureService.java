@@ -48,7 +48,7 @@ public final class CreatureService {
 
 	// ------------------------------------------------------------------ origem
 
-	public static void chooseOrigin(ServerPlayer player, Origin origin, String rawName, int primary, int secondary, Pattern pattern, Identifier look) {
+	public static void chooseOrigin(ServerPlayer player, Origin origin, String rawName, int primary, int secondary, int detail, Pattern pattern, Identifier look) {
 		CreatureProgress progress = Creatures.progress(player);
 		if (progress.originChosen()) {
 			return;
@@ -70,7 +70,7 @@ public final class CreatureService {
 		}
 
 		CreatureBody body = CreatureBody.DEFAULT.withActive(true).withStage(Stage.LARVA)
-			.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, CreatureBody.DEFAULT_DETAIL, pattern)
+			.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, detail & 0xFFFFFF, pattern)
 			.withBodyLook(validLook(look))
 			.withSpeciesName(name)
 			.withPart(BodySlot.MOUTH, new PartRef(origin.startingMouth(), 1))
@@ -171,7 +171,7 @@ public final class CreatureService {
 		CreatureBody body = Creatures.body(player);
 		for (var entry : body.parts().entrySet()) {
 			if (entry.getValue().id().equals(partId)) {
-				body = body.withPart(entry.getKey(), new PartRef(partId, level));
+				body = body.withPart(entry.getKey(), new PartRef(partId, level, entry.getValue().style()));
 			}
 		}
 		setBody(player, body);
@@ -276,7 +276,7 @@ public final class CreatureService {
 		return look != null && LookRegistry.selectable().contains(look) ? look : com.primordial.look.Look.DEFAULT_ID;
 	}
 
-	public static void setLook(ServerPlayer player, int primary, int secondary, int detail, Pattern pattern, Identifier look) {
+	public static void setLook(ServerPlayer player, int primary, int secondary, int detail, Pattern pattern, Identifier look, int length, int head) {
 		CreatureBody body = Creatures.body(player);
 		CreatureProgress progress = Creatures.progress(player);
 		if (!body.active()) {
@@ -287,7 +287,19 @@ public final class CreatureService {
 			return;
 		}
 		setProgress(player, progress.withDna(progress.dna() - LOOK_CHANGE_COST));
-		setBody(player, body.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, detail & 0xFFFFFF, pattern).withBodyLook(validLook(look)));
+		setBody(player, body.withLook(primary & 0xFFFFFF, secondary & 0xFFFFFF, detail & 0xFFFFFF, pattern).withBodyLook(validLook(look)).withProportions(length, head));
+	}
+
+	/** Troca o estilo visual (0 = padrão) da parte equipada no encaixe. Grátis: só muda a aparência. */
+	public static void setPartStyle(ServerPlayer player, BodySlot slot, int style) {
+		CreatureBody body = Creatures.body(player);
+		PartRef ref = body.part(slot);
+		if (!body.active() || ref == null) {
+			return;
+		}
+		PartDefinition def = PartRegistry.get(ref.id());
+		int max = def == null || def.visual().isEmpty() ? 0 : def.visual().get().styles().size();
+		setBody(player, body.withPart(slot, new PartRef(ref.id(), ref.level(), Math.max(0, Math.min(max, style)))));
 	}
 
 	// ------------------------------------------------------------------ evolução

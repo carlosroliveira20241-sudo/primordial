@@ -23,6 +23,17 @@
   "features": [
    "shell"
   ],
-  "tint": "#8C7A5B"
+  "tint": "#8C7A5B",
+  "styles": [
+   {
+    "tint": "#9AB262"
+   },
+   {
+    "tint": "#B2628D",
+    "features": [
+     "bulb"
+    ]
+   }
+  ]
  }
 }

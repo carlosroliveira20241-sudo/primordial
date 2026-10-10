@@ -30,6 +30,17 @@
    1.1,
    1.0
   ],
-  "tint": "#5D8A4A"
+  "tint": "#5D8A4A",
+  "styles": [
+   {
+    "tint": "#60B27E"
+   },
+   {
+    "tint": "#B28C60",
+    "features": [
+     "bulb"
+    ]
+   }
+  ]
  }
 }

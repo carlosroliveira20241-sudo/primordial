@@ -22,6 +22,18 @@
    "orbs",
    "tentacles"
   ],
-  "tint": "#8FE3FF"
+  "tint": "#8FE3FF",
+  "styles": [
+   {
+    "tint": "#8C96FF"
+   },
+   {
+    "tint": "#8CFF96",
+    "features": [
+     "crystals",
+     "legs"
+    ]
+   }
+  ]
  }
 }

@@ -17,6 +17,8 @@ public class FishBodyRenderer<E extends LivingEntity> extends LivingEntityRender
 	private final float sz;
 	private final String shape;
 	private final Set<String> features;
+	private final int secondary;
+	private final int detail;
 
 	/**
 	 * @param parts as partes que essa criatura dropa: o corpo dela se parece com quem as equipa
@@ -31,6 +33,9 @@ public class FishBodyRenderer<E extends LivingEntity> extends LivingEntityRender
 		this.sz = visual.sz();
 		this.features = visual.features();
 		this.shape = FishLook.shapeOf(look.model());
+		this.secondary = PartVisuals.shade(visual.tint() & 0xFFFFFF, 0.72F);
+		this.detail = PartVisuals.lighten(visual.tint() & 0xFFFFFF, 0.45F);
+		this.addLayer(new ColorPassLayer<>(this));
 	}
 
 	@Override
@@ -48,6 +53,8 @@ public class FishBodyRenderer<E extends LivingEntity> extends LivingEntityRender
 		super.extractRenderState(entity, state, partialTicks);
 		state.shape = this.shape;
 		state.features = this.features;
+		state.secondary = this.secondary;
+		state.detail = this.detail;
 	}
 
 	@Override

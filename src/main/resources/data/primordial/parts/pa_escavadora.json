@@ -22,6 +22,17 @@
   "features": [
    "legs"
   ],
-  "tint": "#C46A3A"
+  "tint": "#C46A3A",
+  "styles": [
+   {
+    "tint": "#C2C43A"
+   },
+   {
+    "tint": "#C43AAB",
+    "features": [
+     "tentacles"
+    ]
+   }
+  ]
  }
 }

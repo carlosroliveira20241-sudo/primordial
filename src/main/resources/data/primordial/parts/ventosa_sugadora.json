@@ -25,6 +25,18 @@
   "features": [
    "teeth",
    "whiskers"
+  ],
+  "styles": [
+   {
+    "tint": "#9862B2"
+   },
+   {
+    "tint": "#62B2A5",
+    "features": [
+     "spikes",
+     "antenna"
+    ]
+   }
   ]
  }
 }

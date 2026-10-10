@@ -20,6 +20,18 @@
    "shell",
    "spikes"
   ],
-  "tint": "#D8C6A0"
+  "tint": "#D8C6A0",
+  "styles": [
+   {
+    "tint": "#B6D877"
+   },
+   {
+    "tint": "#D877A6",
+    "features": [
+     "bulb",
+     "crystals"
+    ]
+   }
+  ]
  }
 }

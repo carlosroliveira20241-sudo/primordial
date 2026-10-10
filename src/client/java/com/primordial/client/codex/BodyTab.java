@@ -217,6 +217,10 @@ final class BodyTab implements CodexTab {
 			PartRef equipped = body.part(slot);
 			if (equipped != null && equipped.id().equals(id)) {
 				UiKit.line(lines, Component.translatable("screen.primordial.body.equipped"), UiKit.GOOD);
+				int styleCount = def.visual().isEmpty() ? 0 : def.visual().get().styles().size();
+				if (styleCount > 0) {
+					UiKit.line(lines, Component.translatable("screen.primordial.body.style", equipped.style() + 1, styleCount + 1), 0xFFB39DDB);
+				}
 			} else {
 				Component problem = CreatureService.equipProblem(body, progress, slot, id);
 				if (problem == null) {
@@ -251,7 +255,11 @@ final class BodyTab implements CodexTab {
 			}
 			PartRef equipped = body.part(hit.slot());
 			boolean isEquippedNode = hit.part() == null || (equipped != null && equipped.id().equals(hit.part()));
-			if (button == 1 && isEquippedNode) {
+			PartDefinition styled = hit.part() == null ? null : PartRegistry.get(hit.part());
+			int styles = styled == null || styled.visual().isEmpty() ? 0 : styled.visual().get().styles().size();
+			if (button == 0 && isEquippedNode && hit.part() != null && styles > 0) {
+				ClientPlayNetworking.send(new Payloads.SetPartStyle(hit.slot(), (equipped.style() + 1) % (styles + 1)));
+			} else if (button == 1 && isEquippedNode) {
 				ClientPlayNetworking.send(new Payloads.EquipPart(hit.slot(), Optional.empty()));
 			} else if (button == 0 && hit.part() != null && progress.unlocked(hit.part()) && !isEquippedNode) {
 				ClientPlayNetworking.send(new Payloads.EquipPart(hit.slot(), Optional.of(hit.part())));

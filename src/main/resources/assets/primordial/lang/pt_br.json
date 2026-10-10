@@ -713,5 +713,11 @@
  "event.primordial.storm": "Tempestade! Raios caem na superfície e as criaturas elétricas ficam mais fortes. Fiquem fundos!",
  "trait.primordial.anemone": "Cura quem é amigo e envenena quem a incomoda.",
  "trait.primordial.eggs": "Matar dá muito DNA, mas os pais chegam furiosos.",
- "trait.primordial.whale": "Atravessa o mar em linha reta; a esteira dela dá velocidade e vida."
+ "trait.primordial.whale": "Atravessa o mar em linha reta; a esteira dela dá velocidade e vida.",
+ "screen.primordial.body.style": "Estilo %s de %s (clique de novo na parte para trocar; não custa nada e não muda status)",
+ "screen.primordial.look.primary": "Cor principal (corpo)",
+ "screen.primordial.look.secondary": "Cor secundária (nadadeiras e cauda)",
+ "screen.primordial.look.detail": "Cor de detalhe (chifres, espinhos, dentes)",
+ "screen.primordial.look.length": "Comprimento do corpo: %s%%",
+ "screen.primordial.look.head": "Tamanho da cabeça: %s%%"
 }

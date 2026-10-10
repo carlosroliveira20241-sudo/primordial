@@ -15,6 +15,17 @@
   "features": [
    "brain_l"
   ],
-  "tint": "#B06AD0"
+  "tint": "#B06AD0",
+  "styles": [
+   {
+    "tint": "#D06AAC"
+   },
+   {
+    "tint": "#6A9BD0",
+    "features": [
+     "brain_l"
+    ]
+   }
+  ]
  }
 }

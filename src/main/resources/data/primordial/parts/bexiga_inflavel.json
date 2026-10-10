@@ -21,6 +21,17 @@
   ],
   "features": [
    "bulb"
+  ],
+  "styles": [
+   {
+    "tint": "#6A65B8"
+   },
+   {
+    "tint": "#65B878",
+    "features": [
+     "shell"
+    ]
+   }
   ]
  }
 }

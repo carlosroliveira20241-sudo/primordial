@@ -12,6 +12,17 @@
   "features": [
    "orbs"
   ],
-  "tint": "#FFF59D"
+  "tint": "#FFF59D",
+  "styles": [
+   {
+    "tint": "#BEFF8C"
+   },
+   {
+    "tint": "#FF8CAB",
+    "features": [
+     "crystals"
+    ]
+   }
+  ]
  }
 }

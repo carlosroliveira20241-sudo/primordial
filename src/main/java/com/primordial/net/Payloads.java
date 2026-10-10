@@ -29,13 +29,14 @@ public final class Payloads {
 
 	// ---------------------------------------------------------------- C2S
 
-	public record ChooseOrigin(Origin origin, String speciesName, int primary, int secondary, Pattern pattern, Identifier look) implements CustomPacketPayload {
+	public record ChooseOrigin(Origin origin, String speciesName, int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<ChooseOrigin> TYPE = typeOf("choose_origin");
 		public static final StreamCodec<ByteBuf, ChooseOrigin> CODEC = StreamCodec.composite(
 			enumCodec(Origin.values()), ChooseOrigin::origin,
 			ByteBufCodecs.stringUtf8(32), ChooseOrigin::speciesName,
 			ByteBufCodecs.INT, ChooseOrigin::primary,
 			ByteBufCodecs.INT, ChooseOrigin::secondary,
+			ByteBufCodecs.INT, ChooseOrigin::detail,
 			enumCodec(Pattern.values()), ChooseOrigin::pattern,
 			Identifier.STREAM_CODEC, ChooseOrigin::look,
 			ChooseOrigin::new
@@ -175,7 +176,21 @@ public final class Payloads {
 		}
 	}
 
-	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
+	/** Trocar o estilo visual de uma parte equipada (não muda status). */
+	public record SetPartStyle(BodySlot slot, int style) implements CustomPacketPayload {
+		public static final Type<SetPartStyle> TYPE = typeOf("set_part_style");
+		public static final StreamCodec<ByteBuf, SetPartStyle> CODEC = StreamCodec.composite(
+			enumCodec(BodySlot.values()), SetPartStyle::slot,
+			ByteBufCodecs.VAR_INT, SetPartStyle::style,
+			SetPartStyle::new);
+
+		@Override
+		public Type<SetPartStyle> type() {
+			return TYPE;
+		}
+	}
+
+	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look, int length, int head) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT, SetLook::primary,
@@ -183,6 +198,8 @@ public final class Payloads {
 			ByteBufCodecs.INT, SetLook::detail,
 			enumCodec(Pattern.values()), SetLook::pattern,
 			Identifier.STREAM_CODEC, SetLook::look,
+			ByteBufCodecs.VAR_INT, SetLook::length,
+			ByteBufCodecs.VAR_INT, SetLook::head,
 			SetLook::new
 		);
 

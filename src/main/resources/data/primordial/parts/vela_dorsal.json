@@ -12,6 +12,17 @@
   "features": [
    "sail"
   ],
-  "tint": "#E5683A"
+  "tint": "#E5683A",
+  "styles": [
+   {
+    "tint": "#E5DA3A"
+   },
+   {
+    "tint": "#E53AD4",
+    "features": [
+     "wings"
+    ]
+   }
+  ]
  }
 }

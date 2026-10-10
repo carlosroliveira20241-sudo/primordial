@@ -7,9 +7,9 @@ Reusing configuration cache.
 > Task :classes UP-TO-DATE
 
 > Task :runServer
-[17:39:16] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 26.2 with Fabric Loader 0.19.5
-[17:39:16] [main/INFO] (FabricLoader/Mappings) Mappings not present!
-[17:39:17] [main/INFO] (FabricLoader) Loading 44 mods:
+[17:49:51] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 26.2 with Fabric Loader 0.19.5
+[17:49:51] [main/INFO] (FabricLoader/Mappings) Mappings not present!
+[17:49:51] [main/INFO] (FabricLoader) Loading 44 mods:
 	- fabric-advancement-api-v1 1.0.0+58719a3b9e
 	- fabric-api 0.161.0+26.2
 	- fabric-api-base 2.0.4+ece063239e
@@ -54,39 +54,39 @@ Reusing configuration cache.
 	- minecraft 26.2
 	- mixinextras 0.5.5
 	- primordial 0.1.0
-[17:39:17] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/C:/Users/Carlos%20R/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar Service=Knot/Fabric Env=SERVER
-[17:39:17] [main/INFO] (FabricLoader/MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.5).
-[17:39:18] [main/WARN] (PerfmonDisabled) Invalid registry value type detected for PerfOS counters. Should be REG_DWORD. Ignoring: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PerfOS\Performance\Disable Performance Counters.
-[17:39:24] [main/INFO] (primordial) Carreguei 52 partes do corpo
-[17:39:24] [main/INFO] (primordial) Carreguei 45 aparências
-[17:39:24] [main/INFO] (primordial) Carreguei 24 mutações
-[17:39:24] [main/INFO] (primordial) Carreguei 12 sinergias
-[17:39:24] [main/INFO] (primordial) Carreguei 7 habilidades de inteligência
-[17:39:24] [main/INFO] (primordial) Carreguei 27 desafios
-[17:39:24] [main/INFO] (primordial) Carreguei 44 criaturas
-[17:39:24] [main/INFO] (primordial) Primordial carregado: o oceano primordial te espera.
-[17:39:24] [main/INFO] (Minecraft) Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
-[17:39:26] [main/INFO] (Minecraft) Loaded 1586 recipes
-[17:39:26] [main/INFO] (Minecraft) Loaded 1688 advancements
-[17:39:26] [main/INFO] (BiomeModificationImpl) Applied 504 biome modifications to 55 of 66 new biomes in 7.480 ms
-[17:39:26] [Server thread/INFO] (Minecraft) Starting minecraft server version 26.2
-[17:39:26] [Server thread/INFO] (Minecraft) Loading properties
-[17:39:26] [Server thread/INFO] (Minecraft) Default game type: SURVIVAL
-[17:39:26] [Server thread/INFO] (Minecraft) Generating keypair
-[17:39:26] [Server thread/INFO] (Minecraft) Starting Minecraft server on *:25565
-[17:39:26] [Server thread/INFO] (Minecraft) Preparing level "world"
-[17:39:27] [Server thread/INFO] (Minecraft) Loading 0 persistent chunks...
-[17:39:27] [Server thread/INFO] (Minecraft) Preparing spawn area: 100%
-[17:39:27] [Server thread/INFO] (Minecraft) Time elapsed: 52 ms
-[17:39:27] [Server thread/INFO] (Minecraft) Done (0.346s)! For help, type "help"
-[17:39:27] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
-[17:39:27] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
-[17:39:27] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
-[17:39:27] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (world): All chunks are saved
-[17:39:27] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM1): All chunks are saved
-[17:39:27] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
-[17:39:27] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage: All dimensions are saved
-[17:39:27] [Server thread/WARN] (TranslationConventionLogWarnings) 
+[17:49:51] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/C:/Users/Carlos%20R/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar Service=Knot/Fabric Env=SERVER
+[17:49:52] [main/INFO] (FabricLoader/MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.5).
+[17:49:53] [main/WARN] (PerfmonDisabled) Invalid registry value type detected for PerfOS counters. Should be REG_DWORD. Ignoring: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PerfOS\Performance\Disable Performance Counters.
+[17:49:59] [main/INFO] (primordial) Carreguei 52 partes do corpo
+[17:49:59] [main/INFO] (primordial) Carreguei 45 aparências
+[17:49:59] [main/INFO] (primordial) Carreguei 24 mutações
+[17:49:59] [main/INFO] (primordial) Carreguei 12 sinergias
+[17:49:59] [main/INFO] (primordial) Carreguei 7 habilidades de inteligência
+[17:49:59] [main/INFO] (primordial) Carreguei 27 desafios
+[17:49:59] [main/INFO] (primordial) Carreguei 44 criaturas
+[17:49:59] [main/INFO] (primordial) Primordial carregado: o oceano primordial te espera.
+[17:50:00] [main/INFO] (Minecraft) Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+[17:50:01] [main/INFO] (Minecraft) Loaded 1586 recipes
+[17:50:01] [main/INFO] (Minecraft) Loaded 1688 advancements
+[17:50:01] [main/INFO] (BiomeModificationImpl) Applied 504 biome modifications to 55 of 66 new biomes in 11.83 ms
+[17:50:01] [Server thread/INFO] (Minecraft) Starting minecraft server version 26.2
+[17:50:01] [Server thread/INFO] (Minecraft) Loading properties
+[17:50:01] [Server thread/INFO] (Minecraft) Default game type: SURVIVAL
+[17:50:01] [Server thread/INFO] (Minecraft) Generating keypair
+[17:50:01] [Server thread/INFO] (Minecraft) Starting Minecraft server on *:25565
+[17:50:02] [Server thread/INFO] (Minecraft) Preparing level "world"
+[17:50:02] [Server thread/INFO] (Minecraft) Loading 0 persistent chunks...
+[17:50:02] [Server thread/INFO] (Minecraft) Preparing spawn area: 100%
+[17:50:02] [Server thread/INFO] (Minecraft) Time elapsed: 58 ms
+[17:50:02] [Server thread/INFO] (Minecraft) Done (0.406s)! For help, type "help"
+[17:50:02] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[17:50:02] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[17:50:02] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[17:50:02] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (world): All chunks are saved
+[17:50:02] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[17:50:02] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[17:50:02] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage: All dimensions are saved
+[17:50:02] [Server thread/WARN] (TranslationConventionLogWarnings) 
 	Dev warning - Untranslated Item Tags detected. Please translate your item tags so other mods such as recipe viewers can properly display your tag's name.
 	The format desired is tag.item.<namespace>.<path> for the translation key with slashes in path turned into periods.
 	To disable this message, set this system property in your runs: `-Dfabric-tag-conventions-v2.missingTagTranslationWarning=SILENCED`.

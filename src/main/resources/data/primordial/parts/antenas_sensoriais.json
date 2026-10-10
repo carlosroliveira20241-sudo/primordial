@@ -13,6 +13,17 @@
   "features": [
    "antenna"
   ],
-  "tint": "#FF8A65"
+  "tint": "#FF8A65",
+  "styles": [
+   {
+    "tint": "#FFF165"
+   },
+   {
+    "tint": "#FF65F4",
+    "features": [
+     "horn"
+    ]
+   }
+  ]
  }
 }

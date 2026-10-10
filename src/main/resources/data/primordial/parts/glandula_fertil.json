@@ -12,6 +12,17 @@
   "features": [
    "tentacles"
   ],
-  "tint": "#7DCEA0"
+  "tint": "#7DCEA0",
+  "styles": [
+   {
+    "tint": "#71C5CE"
+   },
+   {
+    "tint": "#B5CE71",
+    "features": [
+     "legs"
+    ]
+   }
+  ]
  }
 }

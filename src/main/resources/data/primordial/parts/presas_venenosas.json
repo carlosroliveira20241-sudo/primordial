@@ -22,6 +22,18 @@
    "jaw",
    "teeth"
   ],
-  "tint": "#6BCB6B"
+  "tint": "#6BCB6B",
+  "styles": [
+   {
+    "tint": "#6BCBAB"
+   },
+   {
+    "tint": "#CBBB6B",
+    "features": [
+     "whiskers",
+     "spikes"
+    ]
+   }
+  ]
  }
 }

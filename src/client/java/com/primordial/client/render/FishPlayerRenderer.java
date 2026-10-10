@@ -15,6 +15,7 @@ import net.minecraft.resources.Identifier;
 public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlayer, FishPlayerState, ModularFishModel> {
 	public FishPlayerRenderer(EntityRendererProvider.Context context) {
 		super(context, new ModularFishModel(context.bakeLayer(ModularFishModel.LAYER)), 0.3F);
+		this.addLayer(new ColorPassLayer<>(this));
 	}
 
 	public static boolean applies(AbstractClientPlayer player) {
@@ -37,12 +38,15 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 		state.id = entity.getId();
 		CreatureBody body = Creatures.body(entity);
 		Look look = LookRegistry.get(body.look());
-		PartVisuals.Result visual = PartVisuals.combine(look, body.primaryColor(),
-			body.parts().values().stream().map(PartRef::id).toList(), java.util.List.of(), 0.25F);
+		PartVisuals.Result visual = PartVisuals.combineRefs(look, body.primaryColor(),
+			java.util.List.copyOf(body.parts().values()), java.util.List.of(), 0.25F);
 		state.tint = visual.tint();
 		state.sx = visual.sx();
 		state.sy = visual.sy();
-		state.sz = visual.sz();
+		state.sz = visual.sz() * body.length() / 100.0F;
+		state.head = body.head() / 100.0F;
+		state.secondary = body.secondaryColor();
+		state.detail = body.detailColor();
 		state.features = visual.features();
 		int brain = com.primordial.intellect.IntellectService.state(entity).brain();
 		if (brain >= 2) {

@@ -34,6 +34,16 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 		String shape();
 
 		Set<String> features();
+
+		/** 0 = corpo (cor principal), 1 = nadadeiras e caudas (secundária), 2 = detalhes (cor de detalhe). */
+		default int pass() {
+			return 0;
+		}
+
+		/** Tamanho visual da cabeça (1.0 = normal). */
+		default float headScale() {
+			return 1.0F;
+		}
 	}
 
 	private final Map<String, List<ModelPart>> features = new HashMap<>();
@@ -50,6 +60,10 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 	private final ModelPart wingR;
 	private final ModelPart eyeL;
 	private final ModelPart eyeR;
+	private final java.util.Set<ModelPart> secondaryParts = new java.util.HashSet<>();
+	private final java.util.Set<ModelPart> detailParts = new java.util.HashSet<>();
+	private final List<ModelPart> headParts = new ArrayList<>();
+	private List<ModelPart> allParts = new ArrayList<>();
 
 	public ModularFishModel(ModelPart root) {
 		super(root);
@@ -102,6 +116,21 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 		this.featTentacles.addAll(this.features.getOrDefault("tentacles", List.of()));
 		for (ModelPart part : this.eachPart(root)) {
 			this.basePose.put(part, new float[] {part.x, part.y, part.z});
+		}
+		this.allParts = this.eachPart(root);
+		// quais partes são pintadas em cada cor
+		for (String name : new String[] {"fish_tail", "fish_top", "fish_fin_l", "fish_fin_r"}) {
+			this.secondaryParts.add(root.getChild(name));
+		}
+		this.secondaryParts.addAll(this.blobTentacles);
+		for (String feature : new String[] {"bigtail", "wings", "sail", "tentacles", "legs", "shell"}) {
+			this.secondaryParts.addAll(this.features.getOrDefault(feature, List.of()));
+		}
+		for (String feature : new String[] {"spikes", "horn", "jaw", "teeth", "antenna", "whiskers", "big_eyes", "orbs", "crystals", "brain_s", "brain_m", "brain_l"}) {
+			this.detailParts.addAll(this.features.getOrDefault(feature, List.of()));
+		}
+		for (String name : new String[] {"fish_head", "fish_nose", "serp_head"}) {
+			this.headParts.add(root.getChild(name));
 		}
 	}
 
@@ -245,6 +274,23 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 		boolean bigEyes = wanted.contains("big_eyes");
 		this.eyeL.visible = !bigEyes;
 		this.eyeR.visible = !bigEyes;
+
+		// passadas de cor: cada passada desenha só as partes da sua cor
+		int pass = state instanceof Appearance a ? a.pass() : 0;
+		for (ModelPart part : this.allParts) {
+			boolean secondary = this.secondaryParts.contains(part);
+			boolean detail = this.detailParts.contains(part);
+			boolean inPass = pass == 0 ? !secondary && !detail : pass == 1 ? secondary : detail;
+			if (!inPass) {
+				part.visible = false;
+			}
+		}
+		float headScale = state instanceof Appearance a ? a.headScale() : 1.0F;
+		for (ModelPart part : this.headParts) {
+			part.xScale = headScale;
+			part.yScale = headScale;
+			part.zScale = headScale;
+		}
 
 		float t = state.ageInTicks;
 		float amplitude = state.isInWater ? 1.0F : 1.5F;

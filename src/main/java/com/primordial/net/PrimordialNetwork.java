@@ -21,6 +21,7 @@ public final class PrimordialNetwork {
 		c2s.register(Payloads.UpgradeBrain.TYPE, Payloads.UpgradeBrain.CODEC);
 		c2s.register(Payloads.BuyIntellect.TYPE, Payloads.BuyIntellect.CODEC);
 		c2s.register(Payloads.SetIntellectSlot.TYPE, Payloads.SetIntellectSlot.CODEC);
+		c2s.register(Payloads.SetPartStyle.TYPE, Payloads.SetPartStyle.CODEC);
 		c2s.register(Payloads.Plant.TYPE, Payloads.Plant.CODEC);
 		c2s.register(Payloads.EatMorsel.TYPE, Payloads.EatMorsel.CODEC);
 		c2s.register(Payloads.SetLook.TYPE, Payloads.SetLook.CODEC);
@@ -36,7 +37,7 @@ public final class PrimordialNetwork {
 		s2c.register(Payloads.Danger.TYPE, Payloads.Danger.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.ChooseOrigin.TYPE, (p, ctx) ->
-			CreatureService.chooseOrigin(ctx.player(), p.origin(), p.speciesName(), p.primary(), p.secondary(), p.pattern(), p.look()));
+			CreatureService.chooseOrigin(ctx.player(), p.origin(), p.speciesName(), p.primary(), p.secondary(), p.detail(), p.pattern(), p.look()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EquipPart.TYPE, (p, ctx) ->
 			CreatureService.equip(ctx.player(), p.slot(), p.part()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.ChooseMutation.TYPE, (p, ctx) ->
@@ -47,6 +48,7 @@ public final class PrimordialNetwork {
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.UpgradeBrain.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.upgradeBrain(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.BuyIntellect.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.buy(ctx.player(), p.ability()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetIntellectSlot.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.setSlot(ctx.player(), p.slot(), p.ability()));
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetPartStyle.TYPE, (p, ctx) -> CreatureService.setPartStyle(ctx.player(), p.slot(), p.style()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.Plant.TYPE, (p, ctx) ->
 			com.primordial.world.WorldInteractions.plant(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EatMorsel.TYPE, (p, ctx) ->
@@ -54,7 +56,7 @@ public final class PrimordialNetwork {
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.Evolve.TYPE, (p, ctx) ->
 			CreatureService.evolve(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetLook.TYPE, (p, ctx) ->
-			CreatureService.setLook(ctx.player(), p.primary(), p.secondary(), p.detail(), p.pattern(), p.look()));
+			CreatureService.setLook(ctx.player(), p.primary(), p.secondary(), p.detail(), p.pattern(), p.look(), p.length(), p.head()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.UseAbility.TYPE, (p, ctx) ->
 			AbilityManager.use(ctx.player(), p.slot()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.EatPlant.TYPE, (p, ctx) ->

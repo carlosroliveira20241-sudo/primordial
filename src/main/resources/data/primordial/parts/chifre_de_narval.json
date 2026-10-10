@@ -24,6 +24,17 @@
   "tint": "#E0E0E0",
   "features": [
    "horn"
+  ],
+  "styles": [
+   {
+    "tint": "#E0BE7B"
+   },
+   {
+    "tint": "#CF7BE0",
+    "features": [
+     "antenna"
+    ]
+   }
   ]
  }
 }

@@ -24,6 +24,17 @@
    0.7,
    1.1
   ],
-  "tint": "#C9B18A"
+  "tint": "#C9B18A",
+  "styles": [
+   {
+    "tint": "#AFC96F"
+   },
+   {
+    "tint": "#C96FA0",
+    "features": [
+     "bulb"
+    ]
+   }
+  ]
  }
 }

@@ -24,6 +24,18 @@
    "shell",
    "spikes"
   ],
-  "tint": "#6A6F7A"
+  "tint": "#6A6F7A",
+  "styles": [
+   {
+    "tint": "#7F62B2"
+   },
+   {
+    "tint": "#62B28C",
+    "features": [
+     "bulb",
+     "crystals"
+    ]
+   }
+  ]
  }
 }

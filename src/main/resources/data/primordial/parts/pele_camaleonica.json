@@ -14,6 +14,17 @@
   "tint": "#5A7D5A",
   "features": [
    "big_eyes"
+  ],
+  "styles": [
+   {
+    "tint": "#62B298"
+   },
+   {
+    "tint": "#B2A562",
+    "features": [
+     "orbs"
+    ]
+   }
   ]
  }
 }

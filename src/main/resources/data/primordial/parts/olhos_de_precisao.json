@@ -13,6 +13,17 @@
   "features": [
    "big_eyes"
   ],
-  "tint": "#A7E8E0"
+  "tint": "#A7E8E0",
+  "styles": [
+   {
+    "tint": "#80AFE8"
+   },
+   {
+    "tint": "#9EE880",
+    "features": [
+     "orbs"
+    ]
+   }
+  ]
  }
 }

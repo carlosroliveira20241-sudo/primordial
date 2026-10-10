@@ -32,6 +32,19 @@
    1.15,
    1.15
   ],
-  "tint": "#1E3A5F"
+  "tint": "#1E3A5F",
+  "styles": [
+   {
+    "tint": "#5538B2"
+   },
+   {
+    "tint": "#38B26A",
+    "features": [
+     "wings",
+     "crystals",
+     "horn"
+    ]
+   }
+  ]
  }
 }

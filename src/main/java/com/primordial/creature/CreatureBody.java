@@ -24,14 +24,16 @@ public record CreatureBody(
 	Pattern pattern,
 	String speciesName,
 	boolean inflated,
-	Identifier look
+	Identifier look,
+	int length,
+	int head
 ) {
 	public static final int DEFAULT_PRIMARY = 0x4A90C2;
 	public static final int DEFAULT_SECONDARY = 0xF2C14E;
 	public static final int DEFAULT_DETAIL = 0xF5F5F5;
 
 	public static final CreatureBody DEFAULT = new CreatureBody(
-		false, Stage.LARVA, Map.of(), DEFAULT_PRIMARY, DEFAULT_SECONDARY, DEFAULT_DETAIL, Pattern.LISO, "", false, Look.DEFAULT_ID
+		false, Stage.LARVA, Map.of(), DEFAULT_PRIMARY, DEFAULT_SECONDARY, DEFAULT_DETAIL, Pattern.LISO, "", false, Look.DEFAULT_ID, 100, 100
 	);
 
 	public static final Codec<CreatureBody> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -44,7 +46,9 @@ public record CreatureBody(
 		Pattern.CODEC.optionalFieldOf("pattern", Pattern.LISO).forGetter(CreatureBody::pattern),
 		Codec.STRING.optionalFieldOf("species_name", "").forGetter(CreatureBody::speciesName),
 		Codec.BOOL.optionalFieldOf("inflated", false).forGetter(CreatureBody::inflated),
-		Identifier.CODEC.optionalFieldOf("look", Look.DEFAULT_ID).forGetter(CreatureBody::look)
+		Identifier.CODEC.optionalFieldOf("look", Look.DEFAULT_ID).forGetter(CreatureBody::look),
+		Codec.INT.optionalFieldOf("length", 100).forGetter(CreatureBody::length),
+		Codec.INT.optionalFieldOf("head", 100).forGetter(CreatureBody::head)
 	).apply(i, CreatureBody::new));
 
 	public CreatureBody {
@@ -74,11 +78,11 @@ public record CreatureBody(
 	}
 
 	public CreatureBody withActive(boolean active) {
-		return new CreatureBody(active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look);
+		return new CreatureBody(active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look, this.length, this.head);
 	}
 
 	public CreatureBody withStage(Stage stage) {
-		return new CreatureBody(this.active, stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look);
+		return new CreatureBody(this.active, stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look, this.length, this.head);
 	}
 
 	public CreatureBody withPart(BodySlot slot, @Nullable PartRef ref) {
@@ -89,22 +93,28 @@ public record CreatureBody(
 		} else {
 			copy.put(slot, ref);
 		}
-		return new CreatureBody(this.active, this.stage, copy, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look);
+		return new CreatureBody(this.active, this.stage, copy, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look, this.length, this.head);
 	}
 
 	public CreatureBody withLook(int primary, int secondary, int detail, Pattern pattern) {
-		return new CreatureBody(this.active, this.stage, this.parts, primary, secondary, detail, pattern, this.speciesName, this.inflated, this.look);
+		return new CreatureBody(this.active, this.stage, this.parts, primary, secondary, detail, pattern, this.speciesName, this.inflated, this.look, this.length, this.head);
 	}
 
 	public CreatureBody withBodyLook(Identifier look) {
-		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, look);
+		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, look, this.length, this.head);
+	}
+
+	/** Proporções só visuais (percentual): comprimento do corpo e tamanho da cabeça. */
+	public CreatureBody withProportions(int length, int head) {
+		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, this.inflated, this.look,
+			Math.max(70, Math.min(140, length)), Math.max(70, Math.min(140, head)));
 	}
 
 	public CreatureBody withSpeciesName(String name) {
-		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, name, this.inflated, this.look);
+		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, name, this.inflated, this.look, this.length, this.head);
 	}
 
 	public CreatureBody withInflated(boolean inflated) {
-		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, inflated, this.look);
+		return new CreatureBody(this.active, this.stage, this.parts, this.primaryColor, this.secondaryColor, this.detailColor, this.pattern, this.speciesName, inflated, this.look, this.length, this.head);
 	}
 }

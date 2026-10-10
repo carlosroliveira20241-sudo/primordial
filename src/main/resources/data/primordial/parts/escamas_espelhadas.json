@@ -20,6 +20,17 @@
   "features": [
    "crystals"
   ],
-  "tint": "#E0E0F0"
+  "tint": "#E0E0F0",
+  "styles": [
+   {
+    "tint": "#CC84F0"
+   },
+   {
+    "tint": "#84F0DE",
+    "features": [
+     "spikes"
+    ]
+   }
+  ]
  }
 }

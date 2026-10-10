@@ -18,6 +18,17 @@
   "features": [
    "whiskers"
   ],
-  "tint": "#9AA5C8"
+  "tint": "#9AA5C8",
+  "styles": [
+   {
+    "tint": "#946EC8"
+   },
+   {
+    "tint": "#6EC8A3",
+    "features": [
+     "antenna"
+    ]
+   }
+  ]
  }
 }
