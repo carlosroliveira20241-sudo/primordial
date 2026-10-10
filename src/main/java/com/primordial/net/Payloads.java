@@ -127,6 +127,17 @@ public final class Payloads {
 		}
 	}
 
+	/** Melhorar a força (mais espaços de inventário, gasta DNA). */
+	public record UpgradeStrength() implements CustomPacketPayload {
+		public static final Type<UpgradeStrength> TYPE = typeOf("upgrade_strength");
+		public static final StreamCodec<ByteBuf, UpgradeStrength> CODEC = StreamCodec.unit(new UpgradeStrength());
+
+		@Override
+		public Type<UpgradeStrength> type() {
+			return TYPE;
+		}
+	}
+
 	/** Comprar uma habilidade de inteligência (gasta DNA). */
 	public record BuyIntellect(Identifier ability) implements CustomPacketPayload {
 		public static final Type<BuyIntellect> TYPE = typeOf("buy_intellect");

@@ -111,9 +111,8 @@ public final class OceanLife {
 					Diet diet = Creatures.diet(player);
 					if (diet.eatsPlants()) {
 						cloud.bites--;
-						CreatureService.addDna(player, 2);
-						CreatureService.addXp(player, 1);
-						com.primordial.creature.FeedingService.banquet(player);
+						com.primordial.creature.FeedingService.drop(level, cloud.pos.x, cloud.pos.y, cloud.pos.z,
+							new net.minecraft.world.item.ItemStack(com.primordial.item.PrimordialItems.PLANCTON));
 						CreatureService.playSound(player, net.minecraft.sounds.SoundEvents.DOLPHIN_EAT, 0.3F, 1.8F);
 						level.sendParticles(ParticleTypes.COMPOSTER, cloud.pos.x, cloud.pos.y, cloud.pos.z, 4, 0.4, 0.3, 0.4, 0.0);
 						break;

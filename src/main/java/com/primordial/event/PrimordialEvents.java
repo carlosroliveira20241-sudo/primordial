@@ -98,18 +98,49 @@ public final class PrimordialEvents {
 			if (!Creatures.isRestricted(player)) {
 				return InteractionResult.PASS;
 			}
+			net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+			// algas, escavações e corais continuam sendo mordidas; o resto depende do que a criatura aprendeu a quebrar
+			boolean bite = com.primordial.creature.FeedingService.isPlant(state) || com.primordial.world.SeabedSeeder.isDigSite(state)
+				|| state.is(net.minecraft.tags.BlockTags.CORAL_BLOCKS) || state.is(net.minecraft.tags.BlockTags.CORALS)
+				|| state.is(net.minecraft.tags.BlockTags.WALL_CORALS);
+			if (!bite && com.primordial.capability.Capabilities.canBreak(player, level, pos, state)) {
+				return InteractionResult.PASS;
+			}
 			if (level.isClientSide() && clientAttackHook != null) {
 				clientAttackHook.accept(pos);
 			}
 			return InteractionResult.FAIL;
 		});
-		UseBlockCallback.EVENT.register((player, level, hand, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
+		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+			if (!Creatures.isRestricted(player)) {
+				return InteractionResult.PASS;
+			}
+			net.minecraft.world.item.ItemStack held = player.getItemInHand(hand);
+			if (held.getItem() instanceof net.minecraft.world.item.BlockItem && com.primordial.capability.Capabilities.has(player, "place")
+				&& !interactive(level.getBlockState(hit.getBlockPos()))) {
+				return InteractionResult.PASS;
+			}
+			return InteractionResult.FAIL;
+		});
 		UseItemCallback.EVENT.register((player, level, hand) -> {
 			net.minecraft.world.item.ItemStack stack = player.getItemInHand(hand);
 			if (stack.is(PrimordialItems.MORSEL)) {
 				return eatHeld(player, level, stack);
 			}
-			return Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS;
+			if (com.primordial.creature.FeedingService.isFood(stack)) {
+				if (!Creatures.isCreature(player)) {
+					return InteractionResult.PASS;
+				}
+				if (!level.isClientSide() && player instanceof ServerPlayer server && com.primordial.creature.FeedingService.eat(server, stack) && !player.isCreative()) {
+					stack.shrink(1);
+				}
+				return InteractionResult.SUCCESS;
+			}
+			if (!Creatures.isRestricted(player)) {
+				return InteractionResult.PASS;
+			}
+			return com.primordial.capability.Capabilities.toolType(stack) != null && com.primordial.capability.Capabilities.canUseTool(player, stack)
+				? InteractionResult.PASS : InteractionResult.FAIL;
 		});
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
 
@@ -137,7 +168,6 @@ public final class PrimordialEvents {
 
 	private static void tickLevel(ServerLevel level) {
 		com.primordial.world.OceanLife.tickLevel(level);
-		com.primordial.builder.TempBlocks.tick(level);
 		for (ServerPlayer player : level.players()) {
 			if (!Creatures.isCreature(player) || player.isSpectator()) {
 				continue;
@@ -145,6 +175,7 @@ public final class PrimordialEvents {
 			eatNearbyMorsels(level, player);
 			com.primordial.world.SeabedSeeder.tick(level, player);
 			com.primordial.ability.Passives.tick(player);
+			com.primordial.capability.InventoryRules.enforce(player);
 			if (player.tickCount % 40 == 0) {
 				com.primordial.journal.JournalService.scanNearby(player);
 			}
@@ -211,6 +242,16 @@ public final class PrimordialEvents {
 		}
 	}
 
+	/** Blocos que têm uso próprio (portas, baús, mesas...): colocar um bloco em cima deles abriria o bloco. */
+	private static boolean interactive(net.minecraft.world.level.block.state.BlockState state) {
+		net.minecraft.world.level.block.Block block = state.getBlock();
+		return state.hasBlockEntity() || block instanceof net.minecraft.world.level.block.DoorBlock
+			|| block instanceof net.minecraft.world.level.block.TrapDoorBlock || block instanceof net.minecraft.world.level.block.FenceGateBlock
+			|| block instanceof net.minecraft.world.level.block.ButtonBlock || block instanceof net.minecraft.world.level.block.LeverBlock
+			|| block instanceof net.minecraft.world.level.block.CraftingTableBlock || block instanceof net.minecraft.world.level.block.AnvilBlock
+			|| block instanceof net.minecraft.world.level.block.BedBlock || block instanceof net.minecraft.world.level.block.NoteBlock;
+	}
+
 	private static final double EAT_REACH = 3.0;
 
 	/** Botão direito com a Melhoria na mão: come e adquire a parte (o item some). */
@@ -228,6 +269,20 @@ public final class PrimordialEvents {
 		return InteractionResult.SUCCESS;
 	}
 
+	/** Tecla C perto de comida no chão: come uma unidade direto do chão. */
+	private static boolean eatFloorFood(ServerPlayer player) {
+		for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(EAT_REACH), e -> com.primordial.creature.FeedingService.isFood(e.getItem()))) {
+			if (com.primordial.creature.FeedingService.eat(player, item.getItem())) {
+				item.getItem().shrink(1);
+				if (item.getItem().isEmpty()) {
+					item.discard();
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 	/** Come a primeira Melhoria do inventário (a da mão, se houver). */
 	private static void eatFromInventory(ServerPlayer player) {
 		net.minecraft.world.item.ItemStack held = player.getMainHandItem();
@@ -242,6 +297,15 @@ public final class PrimordialEvents {
 			}
 		}
 		if (chosen == null) {
+			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+				net.minecraft.world.item.ItemStack stack = player.getInventory().getItem(i);
+				if (com.primordial.creature.FeedingService.isFood(stack)) {
+					if (com.primordial.creature.FeedingService.eat(player, stack) && !player.isCreative()) {
+						stack.shrink(1);
+					}
+					return;
+				}
+			}
 			return;
 		}
 		Identifier part = chosen.get(PrimordialItems.PART);
@@ -296,6 +360,9 @@ public final class PrimordialEvents {
 			}
 		}
 		if (closest == null) {
+			if (eatFloorFood(player)) {
+				return;
+			}
 			if (!com.primordial.entity.Symbionts.tryFeed(player)) {
 				eatFromInventory(player);
 			}

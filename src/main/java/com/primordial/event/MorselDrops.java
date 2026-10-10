@@ -45,6 +45,7 @@ public final class MorselDrops {
 			return;
 		}
 		boolean alpha = victim.entityTags().contains(ALPHA_TAG) || (def != null && def.has("boss"));
+		dropMeat(killer, victim, alpha);
 		boolean treasure = def != null && def.has("treasure");
 		List<Identifier> candidates = PartRegistry.droppedBy(species);
 		if (def != null && def.has("deep_reward")) {
@@ -77,7 +78,6 @@ public final class MorselDrops {
 			return;
 		}
 		if (!treasure) {
-			CreatureService.addDna(killer, (alpha ? 8 : 3) * (com.primordial.world.OceanLife.frenzyActive(killer.level()) ? 2 : 1));
 			CreatureService.addXp(killer, alpha ? 25 : 8);
 		}
 
@@ -101,6 +101,19 @@ public final class MorselDrops {
 		Identifier part = pool.get(killer.getRandom().nextInt(pool.size()));
 
 		spawnMorsel(killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), part);
+	}
+
+	/** Todo bicho morto solta Carne: mais vida = mais carne. Alfas e o frenesi dobram. */
+	private static void dropMeat(ServerPlayer killer, LivingEntity victim, boolean alpha) {
+		int count = Math.max(1, Math.min(8, Math.round(victim.getMaxHealth() / 6.0F)));
+		if (alpha) {
+			count *= 2;
+		}
+		if (com.primordial.world.OceanLife.frenzyActive(killer.level())) {
+			count *= 2;
+		}
+		com.primordial.creature.FeedingService.drop(killer.level(), victim.getX(), victim.getY() + 0.3, victim.getZ(),
+			new net.minecraft.world.item.ItemStack(PrimordialItems.CARNE, count));
 	}
 
 	/** Solta uma Melhoria parada, brilhando e com o nome da parte em cima. */

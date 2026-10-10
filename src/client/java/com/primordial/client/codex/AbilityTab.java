@@ -19,7 +19,7 @@ import net.minecraft.resources.Identifier;
 
 /** Aba Habilidades: as habilidades das partes equipadas, na ordem das teclas. As setas trocam a ordem. */
 final class AbilityTab implements CodexTab {
-	private static final String[] KEYS = {"Z", "X", "R", "F"};
+	private static final String[] KEYS = {"Z", "X", "B", "H"};
 	private static final int ROW_H = 64;
 
 	private record Arrow(int x, int y, int index, int direction) {

@@ -17,6 +17,7 @@ public final class PrimordialNetwork {
 		c2s.register(Payloads.Evolve.TYPE, Payloads.Evolve.CODEC);
 		c2s.register(Payloads.ChooseMutation.TYPE, Payloads.ChooseMutation.CODEC);
 		c2s.register(Payloads.SetAbilityOrder.TYPE, Payloads.SetAbilityOrder.CODEC);
+		c2s.register(Payloads.UpgradeStrength.TYPE, Payloads.UpgradeStrength.CODEC);
 		c2s.register(Payloads.UpgradeBrain.TYPE, Payloads.UpgradeBrain.CODEC);
 		c2s.register(Payloads.BuyIntellect.TYPE, Payloads.BuyIntellect.CODEC);
 		c2s.register(Payloads.SetIntellectSlot.TYPE, Payloads.SetIntellectSlot.CODEC);
@@ -42,6 +43,7 @@ public final class PrimordialNetwork {
 			com.primordial.mutation.MutationService.choose(ctx.player(), p.mutation()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetAbilityOrder.TYPE, (p, ctx) ->
 			AbilityManager.setOrder(ctx.player(), p.order()));
+		ServerPlayNetworking.registerGlobalReceiver(Payloads.UpgradeStrength.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.upgradeStrength(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.UpgradeBrain.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.upgradeBrain(ctx.player()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.BuyIntellect.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.buy(ctx.player(), p.ability()));
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.SetIntellectSlot.TYPE, (p, ctx) -> com.primordial.intellect.IntellectService.setSlot(ctx.player(), p.slot(), p.ability()));

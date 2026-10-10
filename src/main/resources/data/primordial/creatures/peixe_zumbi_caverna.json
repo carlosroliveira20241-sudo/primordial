@@ -1,0 +1,25 @@
+{
+ "behavior": "predator",
+ "size": [
+  0.6,
+  0.4
+ ],
+ "health": 12,
+ "damage": 4,
+ "speed": 0.7,
+ "power": 99,
+ "traits": [
+  "undead"
+ ],
+ "look": "primordial:zumbi",
+ "features": [],
+ "big": false,
+ "spawn": {
+  "biomes": "cave",
+  "category": "creature",
+  "weight": 16,
+  "min": 2,
+  "max": 4,
+  "night_only": false
+ }
+}

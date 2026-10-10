@@ -48,7 +48,7 @@ public final class WorldInteractions {
 		ServerLevel level = player.level();
 		BlockState state = level.getBlockState(pos);
 		if (FeedingService.isPlant(state)) {
-			FeedingService.eatPlant(player, pos);
+			FeedingService.harvestPlant(player, pos);
 		} else if (SeabedSeeder.isDigSite(state)) {
 			dig(player, level, pos, state);
 		} else if (state.is(BlockTags.CORAL_BLOCKS) || state.is(BlockTags.CORALS) || state.is(BlockTags.WALL_CORALS)) {

@@ -1,6 +1,6 @@
 package com.primordial.client.codex;
 
-import com.primordial.ability.Abilities;
+import com.primordial.capability.InventoryRules;
 import com.primordial.creature.Creatures;
 import com.primordial.intellect.IntellectDef;
 import com.primordial.intellect.IntellectRegistry;
@@ -9,7 +9,6 @@ import com.primordial.intellect.IntellectState;
 import com.primordial.net.Payloads;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -20,15 +19,15 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 /**
- * Aba Inteligência: melhore o cérebro com DNA (o cérebro cresce no seu corpo e libera mais slots) e compre
- * habilidades de inteligência, que não vêm de partes. Clique num slot para escolher onde equipar.
+ * Aba Inteligência. O cérebro (DNA) libera slots; a força (DNA) libera espaços de inventário. As habilidades de
+ * inteligência são compradas com DNA e, equipadas num slot, libertam ações do Minecraft: quebrar, colocar blocos,
+ * usar e criar ferramentas (mouse esquerdo/direito) e atirar (tecla R).
  */
 final class IntellectTab implements CodexTab {
-	private static final String[] KEYS = {"Y", "U", "I", "O"};
 	private static final int CARD_H = 52;
 
 	private enum Kind {
-		UPGRADE, SLOT, BUY, EQUIP, REMOVE
+		BRAIN, STRENGTH, SLOT, BUY, EQUIP, REMOVE
 	}
 
 	private record Hit(int x, int y, int w, int h, Kind kind, int slot, Identifier ability) {
@@ -49,37 +48,50 @@ final class IntellectTab implements CodexTab {
 		Player player = s.player();
 		IntellectState state = IntellectService.state(player);
 		int dna = Creatures.progress(player).dna();
-		int cap = IntellectService.brainCap(player);
 		int x0 = s.cx0();
 		int y0 = s.cy0();
 		int x1 = s.cx1();
 		int y1 = s.cy1();
+		int mid = (x0 + x1) / 2;
 
-		// ---- cartão do cérebro
-		UiKit.box(g, x0 + 6, y0 + 6, x1 - 6, y0 + 62, UiKit.PANEL, 0xFFE1A8FF);
-		int brainSize = 14 + state.brain() * 3;
-		UiKit.box(g, x0 + 14, y0 + 34 - brainSize / 2, x0 + 14 + brainSize, y0 + 34 + brainSize / 2, 0xFF5B2A66, 0xFFE1A8FF);
-		g.text(s.font(), Component.translatable("screen.primordial.intellect.brain", state.brain(), IntellectState.MAX_BRAIN).copy().withStyle(ChatFormatting.BOLD),
-			x0 + 80, y0 + 12, 0xFFE1A8FF);
-		UiKit.bar(g, x0 + 80, y0 + 26, 180, 8, (double) state.brain() / IntellectState.MAX_BRAIN, 0xFFB06AD0);
-		g.text(s.font(), Component.translatable("screen.primordial.intellect.cap", cap), x0 + 80, y0 + 40, UiKit.DIM);
-		if (state.brain() < cap) {
+		// ---- cartão do cérebro (esquerda)
+		int brainCap = IntellectService.brainCap(player);
+		UiKit.box(g, x0 + 6, y0 + 6, mid - 3, y0 + 76, UiKit.PANEL, 0xFFE1A8FF);
+		int bs = 12 + state.brain() * 2;
+		UiKit.box(g, x0 + 14, y0 + 30 - bs / 2, x0 + 14 + bs, y0 + 30 + bs / 2, 0xFF5B2A66, 0xFFE1A8FF);
+		g.text(s.font(), Component.translatable("screen.primordial.intellect.brain", state.brain(), IntellectState.MAX_BRAIN).copy().withStyle(ChatFormatting.BOLD), x0 + 50, y0 + 11, 0xFFE1A8FF);
+		UiKit.bar(g, x0 + 50, y0 + 24, mid - x0 - 66, 7, (double) state.brain() / IntellectState.MAX_BRAIN, 0xFFB06AD0);
+		g.text(s.font(), Component.translatable("screen.primordial.intellect.cap", brainCap), x0 + 50, y0 + 35, UiKit.DIM);
+		if (state.brain() < brainCap) {
 			int cost = IntellectService.upgradeCost(state.brain());
-			button(g, s, mx, my, x1 - 200, y0 + 14, 186, 22, Component.translatable("screen.primordial.intellect.upgrade", cost), dna >= cost, Kind.UPGRADE, 0, null);
+			button(g, s, mx, my, x0 + 12, y0 + 50, mid - x0 - 24, 20, Component.translatable("screen.primordial.intellect.upgrade", cost), dna >= cost, Kind.BRAIN, 0, null);
 		} else {
-			g.text(s.font(), Component.translatable("screen.primordial.intellect.maxed"), x1 - 160, y0 + 20, UiKit.DIM);
+			g.text(s.font(), Component.translatable("screen.primordial.intellect.maxed"), x0 + 12, y0 + 56, UiKit.DIM);
+		}
+
+		// ---- cartão da força (direita)
+		int strengthCap = IntellectService.strengthCap(player);
+		UiKit.box(g, mid + 3, y0 + 6, x1 - 6, y0 + 76, UiKit.PANEL, 0xFFFFB74D);
+		g.text(s.font(), Component.translatable("screen.primordial.strength.title", state.strength(), IntellectState.MAX_STRENGTH).copy().withStyle(ChatFormatting.BOLD), mid + 12, y0 + 11, 0xFFFFB74D);
+		UiKit.bar(g, mid + 12, y0 + 24, x1 - mid - 28, 7, (double) state.strength() / IntellectState.MAX_STRENGTH, 0xFFFF9800);
+		g.text(s.font(), Component.translatable("screen.primordial.strength.inventory", InventoryRules.slots(player)), mid + 12, y0 + 35, UiKit.TEXT);
+		if (state.strength() < strengthCap) {
+			int cost = IntellectService.strengthCost(state.strength());
+			button(g, s, mx, my, mid + 12, y0 + 50, x1 - mid - 24, 20, Component.translatable("screen.primordial.strength.upgrade", cost), dna >= cost, Kind.STRENGTH, 0, null);
+		} else {
+			g.text(s.font(), Component.translatable("screen.primordial.strength.cap", strengthCap), mid + 12, y0 + 56, UiKit.DIM);
 		}
 
 		// ---- slots
-		g.text(s.font(), Component.translatable("screen.primordial.intellect.slots"), x0 + 8, y0 + 68, UiKit.DIM);
+		g.text(s.font(), Component.translatable("screen.primordial.intellect.slots"), x0 + 8, y0 + 82, UiKit.DIM);
 		int slotW = (x1 - x0 - 30) / 4;
 		for (int i = 0; i < IntellectState.MAX_SLOTS; i++) {
 			int sx = x0 + 8 + i * (slotW + 4);
-			int sy = y0 + 80;
+			int sy = y0 + 94;
 			boolean unlocked = i < state.slotCount();
 			boolean selected = unlocked && i == this.selectedSlot;
 			UiKit.box(g, sx, sy, sx + slotW, sy + 34, unlocked ? UiKit.PANEL_LIGHT : 0xFF10151C, selected ? UiKit.GOLD : unlocked ? UiKit.BORDER : UiKit.LOCKED);
-			g.text(s.font(), "[" + KEYS[i] + "]", sx + 5, sy + 4, unlocked ? UiKit.ACCENT : UiKit.LOCKED);
+			g.text(s.font(), Component.translatable("screen.primordial.intellect.slot", i + 1), sx + 5, sy + 4, unlocked ? UiKit.ACCENT : UiKit.LOCKED);
 			if (!unlocked) {
 				int needed = i == 1 ? 3 : i == 2 ? 5 : 7;
 				g.text(s.font(), Component.translatable("screen.primordial.intellect.slot_locked", needed), sx + 5, sy + 18, UiKit.LOCKED);
@@ -95,19 +107,18 @@ final class IntellectTab implements CodexTab {
 		}
 
 		// ---- habilidades
-		g.enableScissor(x0, y0 + 122, x1, y1);
-		int y = y0 + 126 - this.scroll;
+		g.enableScissor(x0, y0 + 134, x1, y1);
+		int y = y0 + 138 - this.scroll;
 		for (Map.Entry<Identifier, IntellectDef> entry : IntellectRegistry.all().entrySet()) {
 			Identifier id = entry.getKey();
 			IntellectDef def = entry.getValue();
 			boolean owned = state.owned().contains(id);
 			boolean brainOk = state.brain() >= def.brain();
-			int frame = owned ? UiKit.GOOD : brainOk ? UiKit.BORDER : UiKit.LOCKED;
-			UiKit.box(g, x0 + 6, y, x1 - 6, y + CARD_H - 4, owned ? 0xFF14261A : brainOk ? UiKit.PANEL : 0xFF10151C, frame);
+			UiKit.box(g, x0 + 6, y, x1 - 6, y + CARD_H - 4, owned ? 0xFF14261A : brainOk ? UiKit.PANEL : 0xFF10151C, owned ? UiKit.GOOD : brainOk ? UiKit.BORDER : UiKit.LOCKED);
 			Component name = Component.translatable("ability." + id.getNamespace() + "." + id.getPath());
 			g.text(s.font(), name.copy().withStyle(ChatFormatting.BOLD), x0 + 12, y + 5, owned ? UiKit.GOOD : brainOk ? UiKit.TEXT : UiKit.DIM);
-			String seconds = Abilities.exists(id.getPath()) ? String.format(Locale.ROOT, "%.0f", Abilities.get(id.getPath()).cooldownTicks() / 20.0) : "?";
-			g.text(s.font(), Component.translatable("screen.primordial.abilities.cooldown", seconds), x0 + 12 + s.font().width(name) + 10, y + 5, UiKit.ACCENT);
+			Component how = Component.translatable(def.usesR() ? "screen.primordial.intellect.how_r" : "screen.primordial.intellect.how_mouse");
+			g.text(s.font(), how, x0 + 16 + s.font().width(name), y + 5, UiKit.ACCENT);
 			int ty = y + 17;
 			for (var seq : s.font().split(Component.translatable("ability." + id.getNamespace() + "." + id.getPath() + ".desc"), x1 - x0 - 230)) {
 				g.text(s.font(), seq, x0 + 12, ty, 0xFFC8D4E0);
@@ -147,7 +158,8 @@ final class IntellectTab implements CodexTab {
 				continue;
 			}
 			switch (hit.kind()) {
-				case UPGRADE -> ClientPlayNetworking.send(new Payloads.UpgradeBrain());
+				case BRAIN -> ClientPlayNetworking.send(new Payloads.UpgradeBrain());
+				case STRENGTH -> ClientPlayNetworking.send(new Payloads.UpgradeStrength());
 				case BUY -> ClientPlayNetworking.send(new Payloads.BuyIntellect(hit.ability()));
 				case EQUIP -> ClientPlayNetworking.send(new Payloads.SetIntellectSlot(hit.slot(), Optional.of(hit.ability())));
 				case REMOVE -> {

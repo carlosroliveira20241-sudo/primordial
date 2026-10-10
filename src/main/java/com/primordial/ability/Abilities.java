@@ -47,7 +47,6 @@ public final class Abilities {
 	}
 
 	public static void init() {
-		BuilderAbilities.init();
 		register("investida", 50, (player, level) -> {
 			ServerLevel world = player.level();
 			Vec3 look = player.getLookAngle();
@@ -316,6 +315,33 @@ public final class Abilities {
 			}
 			burst(world, ParticleTypes.SONIC_BOOM, player, 1, 0.0);
 			sound(player, SoundEvents.WARDEN_ROAR, 1.0F, 0.8F);
+		});
+
+		// Tiro (tecla R): um jato certeiro que atravessa a água e acerta o primeiro alvo na mira, até 24 blocos.
+		register("tiro", 20, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 start = player.getEyePosition();
+			Vec3 look = player.getLookAngle();
+			boolean pierce = Ability.awakened(level);
+			for (int step = 1; step <= 24; step++) {
+				Vec3 at = start.add(look.scale(step));
+				net.minecraft.core.BlockPos pos = net.minecraft.core.BlockPos.containing(at);
+				if (!world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
+					break;
+				}
+				world.sendParticles(ParticleTypes.BUBBLE, at.x, at.y, at.z, 2, 0.03, 0.03, 0.03, 0.0);
+				boolean hit = false;
+				for (LivingEntity target : world.getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(at, at).inflate(0.5), e -> e != player && !e.isSpectator())) {
+					target.hurtServer(world, player.damageSources().playerAttack(player), 3.0F + 1.5F * level);
+					burst(world, ParticleTypes.CRIT, target, 8, 0.1);
+					hit = true;
+					break;
+				}
+				if (hit && !pierce) {
+					break;
+				}
+			}
+			sound(player, SoundEvents.PUFFER_FISH_STING, 0.9F, 1.6F);
 		});
 
 		// Mordida Dilacerante: mordida forte no alvo na frente; sangra (veneno do tipo "sangramento"); desperta, sangra mais.

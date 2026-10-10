@@ -108,7 +108,7 @@ public class Predador extends AbstractFish {
 			this.discard();
 		}
 		// Zumbis são criaturas da noite: quando o dia nasce, eles se desfazem.
-		if (this.def != null && this.def.has("undead") && this.level() instanceof ServerLevel level
+		if (this.def != null && this.def.has("undead") && !this.def.spawn().biomes().equals("cave") && this.level() instanceof ServerLevel level
 			&& this.tickCount % 40 == 0 && !level.isDarkOutside()) {
 			level.sendParticles(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.3, this.getZ(), 20, 0.4, 0.3, 0.4, 0.02);
 			this.discard();

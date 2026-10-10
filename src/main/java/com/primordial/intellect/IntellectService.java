@@ -25,6 +25,36 @@ public final class IntellectService {
 		return Math.min(IntellectState.MAX_BRAIN, Creatures.body(player).stage().intelligenceCap);
 	}
 
+	/** O teto da força por estágio. */
+	public static int strengthCap(Player player) {
+		int[] byStage = {3, 5, 8, 9, 10, 10};
+		return byStage[Math.min(byStage.length - 1, Creatures.body(player).stage().ordinal())];
+	}
+
+	public static int strengthCost(int strength) {
+		return 40 * strength;
+	}
+
+	public static void upgradeStrength(ServerPlayer player) {
+		IntellectState state = state(player);
+		if (!Creatures.isCreature(player)) {
+			return;
+		}
+		if (state.strength() >= strengthCap(player)) {
+			player.sendSystemMessage(Component.translatable("msg.primordial.strength_cap").withStyle(ChatFormatting.RED), true);
+			return;
+		}
+		int cost = strengthCost(state.strength());
+		if (Creatures.progress(player).dna() < cost) {
+			player.sendSystemMessage(Component.translatable("msg.primordial.not_enough_dna", cost).withStyle(ChatFormatting.RED), true);
+			return;
+		}
+		CreatureService.addDna(player, -cost);
+		player.setAttached(PrimordialAttachments.INTELLECT, state.withStrength(state.strength() + 1));
+		player.sendSystemMessage(Component.translatable("msg.primordial.strength_up", com.primordial.capability.InventoryRules.slotsForStrength(state.strength() + 1)).withStyle(ChatFormatting.GOLD), true);
+		CreatureService.playSound(player, SoundEvents.PLAYER_LEVELUP, 0.7F, 0.9F);
+	}
+
 	public static int upgradeCost(int brain) {
 		return 50 * brain;
 	}

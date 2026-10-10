@@ -32,7 +32,7 @@ public class PrimordialClient implements ClientModInitializer {
 	private static KeyMapping ability2;
 	private static KeyMapping ability3;
 	private static KeyMapping ability4;
-	private static final KeyMapping[] INTEL = new KeyMapping[4];
+	private static KeyMapping special;
 	private static KeyMapping evolve;
 	private static KeyMapping nest;
 	private static KeyMapping looks;
@@ -54,12 +54,9 @@ public class PrimordialClient implements ClientModInitializer {
 
 		ability1 = key("ability1", InputConstants.KEY_Z);
 		ability2 = key("ability2", InputConstants.KEY_X);
-		ability3 = key("ability3", InputConstants.KEY_R);
-		ability4 = key("ability4", InputConstants.KEY_F);
-		int[] intelKeys = {InputConstants.KEY_Y, InputConstants.KEY_U, InputConstants.KEY_I, InputConstants.KEY_O};
-		for (int i = 0; i < 4; i++) {
-			INTEL[i] = key("intellect" + (i + 1), intelKeys[i]);
-		}
+		ability3 = key("ability3", InputConstants.KEY_B);
+		ability4 = key("ability4", InputConstants.KEY_H);
+		special = key("special", InputConstants.KEY_R);
 		evolve = key("evolve", InputConstants.KEY_V);
 		nest = key("nest", InputConstants.KEY_N);
 		looks = key("looks", InputConstants.KEY_K);
@@ -77,10 +74,8 @@ public class PrimordialClient implements ClientModInitializer {
 			while (ability2.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.UseAbility(1));
 			}
-			for (int i = 0; i < 4; i++) {
-				while (INTEL[i].consumeClick()) {
-					ClientPlayNetworking.send(new Payloads.UseIntellect(i));
-				}
+			while (special.consumeClick()) {
+				ClientPlayNetworking.send(new Payloads.UseIntellect(-1));
 			}
 			while (ability3.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.UseAbility(2));

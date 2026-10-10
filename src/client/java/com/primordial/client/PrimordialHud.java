@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 
 /** Painel simples no canto da tela: nível, DNA, estágio e habilidades. */
 public final class PrimordialHud {
-	private static final String[] KEYS = {"Z", "X", "R", "F"};
+	private static final String[] KEYS = {"Z", "X", "B", "H"};
 
 	private PrimordialHud() {
 	}
@@ -39,17 +39,14 @@ public final class PrimordialHud {
 			y = line(graphics, mc, Component.literal("[" + KEYS[i] + "] ").append(Component.translatable("ability.primordial." + abilities.get(i).getPath())), y, 0xFFB2FF59);
 		}
 		com.primordial.intellect.IntellectState brain = com.primordial.intellect.IntellectService.state(player);
-		String[] intelKeys = {"Y", "U", "I", "O"};
 		for (int i = 0; i < brain.slotCount(); i++) {
 			Identifier slotAbility = brain.slot(i);
 			if (slotAbility != null) {
-				y = line(graphics, mc, Component.literal("[" + intelKeys[i] + "] ").append(Component.translatable("ability." + slotAbility.getNamespace() + "." + slotAbility.getPath())), y, 0xFFE1A8FF);
+				boolean r = slotAbility.getPath().equals("tiro");
+				y = line(graphics, mc, Component.literal(r ? "[R] " : "- ").append(Component.translatable("ability." + slotAbility.getNamespace() + "." + slotAbility.getPath())), y, 0xFFE1A8FF);
 			}
 		}
-		com.primordial.builder.BlockPouch pouch = com.primordial.builder.Builder.pouch(player);
-		if (pouch.total() > 0 || com.primordial.creature.Creatures.hasPassive(player, "sand_pouch")) {
-			y = line(graphics, mc, Component.translatable("hud.primordial.pouch", pouch.total(), com.primordial.builder.Builder.capacity(player)), y, 0xFFE3D5A1);
-		}
+		y = line(graphics, mc, Component.translatable("hud.primordial.inventory", com.primordial.capability.InventoryRules.slots(player)), y, 0xFFE3D5A1);
 		if (com.primordial.mutation.MutationService.state(player).pending() > 0) {
 			y = line(graphics, mc, Component.translatable("hud.primordial.mutation_ready"), y, 0xFFE1A8FF);
 		}

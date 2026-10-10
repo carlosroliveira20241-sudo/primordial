@@ -24,6 +24,10 @@ public final class PrimordialItems {
 		DataComponentType.<Identifier>builder().persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC).build());
 
 	public static final Item MORSEL = register("melhoria");
+	/** Comidas: a criatura só ganha DNA comendo o que dropa de plantas e de bichos. */
+	public static final Item ALGA = register("alga_marinha");
+	public static final Item CARNE = register("carne_marinha");
+	public static final Item PLANCTON = register("plancton");
 
 	private PrimordialItems() {
 	}

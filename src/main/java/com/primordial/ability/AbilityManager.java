@@ -88,12 +88,21 @@ public final class AbilityManager {
 		ability.use(player, levelOf(player, id));
 	}
 
-	/** Usa a habilidade de inteligência do slot (teclas Y, U, I, O). */
+	/** Tecla R (índice -1): usa a habilidade de inteligência que está no modo "r" (hoje, o Tiro). */
 	public static void useIntellect(ServerPlayer player, int index) {
 		if (!Creatures.isCreature(player)) {
 			return;
 		}
-		Identifier id = com.primordial.intellect.IntellectService.state(player).slot(index);
+		com.primordial.intellect.IntellectState state = com.primordial.intellect.IntellectService.state(player);
+		Identifier id = null;
+		for (int i = 0; i < state.slotCount(); i++) {
+			Identifier candidate = state.slot(i);
+			com.primordial.intellect.IntellectDef def = candidate == null ? null : com.primordial.intellect.IntellectRegistry.get(candidate);
+			if (def != null && def.usesR()) {
+				id = candidate;
+				break;
+			}
+		}
 		if (id == null || !Abilities.exists(id.getPath())) {
 			return;
 		}
@@ -103,7 +112,6 @@ public final class AbilityManager {
 		Map<String, Long> used = LAST_USED.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
 		long readyAt = used.getOrDefault(name, 0L) + ability.cooldownTicks();
 		if (now < readyAt) {
-			player.sendSystemMessage(Component.translatable("msg.primordial.cooldown", (readyAt - now + 19) / 20).withStyle(ChatFormatting.GRAY), true);
 			return;
 		}
 		used.put(name, now);
