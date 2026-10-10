@@ -1,0 +1,24 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.9,
+  0.6
+ ],
+ "health": 20,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "still",
+  "treasure"
+ ],
+ "look": "primordial:concha",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 5,
+  "min": 1,
+  "max": 1
+ }
+}

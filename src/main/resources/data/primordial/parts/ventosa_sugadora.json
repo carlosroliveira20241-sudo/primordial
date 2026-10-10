@@ -1,0 +1,26 @@
+{
+ "slot": "mouth",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:lampreia",
+ "families": [
+  "predador"
+ ],
+ "diet": "carnivore",
+ "ability": "primordial:grudar_e_sugar",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.5,
+   "per_level": 0.25
+  },
+  {
+   "attribute": "primordial:lifesteal",
+   "base": 0.1,
+   "per_level": 0.05
+  }
+ ],
+ "visual": {
+  "tint": "#3C3C4A"
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "slot": "head",
+ "min_stage": 3,
+ "cost": 30,
+ "source": "primordial:narval",
+ "families": [
+  "velocista"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:investida_perfurante",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "scale": [
+   1.0,
+   1.0,
+   1.15
+  ],
+  "tint": "#E0E0E0"
+ }
+}

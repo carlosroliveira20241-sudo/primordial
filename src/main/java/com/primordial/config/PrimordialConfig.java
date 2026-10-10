@@ -40,6 +40,10 @@ public final class PrimordialConfig {
 	public boolean blockVanillaMobsInOtherDimensions = false;
 	/** Come a Melhoria sozinho ao encostar. Falso = você decide: aperte C perto dela para comer, ou deixe lá. */
 	public boolean autoEatMorsels = false;
+	/** Eventos aleatórios do oceano (desova, frenesi, maré vermelha). */
+	public boolean oceanEvents = true;
+	public int eventMinMinutes = 10;
+	public int eventMaxMinutes = 20;
 	/** Modo leve para PC fraco: menos criaturas e menos partículas. */
 	public boolean lightMode = false;
 

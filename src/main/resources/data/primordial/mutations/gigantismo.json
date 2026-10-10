@@ -1,0 +1,17 @@
+{
+ "rarity": "rare",
+ "modifiers": [
+  {
+   "attribute": "minecraft:scale",
+   "base": 0.15
+  },
+  {
+   "attribute": "minecraft:max_health",
+   "base": 6
+  },
+  {
+   "attribute": "primordial:swim_speed",
+   "base": -0.05
+  }
+ ]
+}

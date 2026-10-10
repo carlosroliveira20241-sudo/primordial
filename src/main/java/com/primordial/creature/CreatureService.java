@@ -120,6 +120,7 @@ public final class CreatureService {
 		}
 		setProgress(player, progress.withXpAndLevel(xp, level));
 		if (leveled) {
+			com.primordial.mutation.MutationService.onLevels(player, progress.level(), level);
 			player.sendSystemMessage(Component.translatable("msg.primordial.level_up", level).withStyle(ChatFormatting.GREEN), true);
 			playSound(player, SoundEvents.PLAYER_LEVELUP, 0.6F, 1.4F);
 			if (canEvolve(player)) {

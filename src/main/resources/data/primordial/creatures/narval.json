@@ -1,0 +1,21 @@
+{
+ "behavior": "fish",
+ "size": [
+  1.4,
+  0.7
+ ],
+ "health": 24,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:narval",
+ "big": false,
+ "spawn": {
+  "biomes": "deep_ocean",
+  "category": "ambient",
+  "weight": 4,
+  "min": 1,
+  "max": 1
+ }
+}

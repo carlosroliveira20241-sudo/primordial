@@ -2,7 +2,6 @@ package com.primordial.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.primordial.Primordial;
-import com.primordial.creature.FeedingService;
 import com.primordial.client.render.FishBodyRenderer;
 import com.primordial.creature.Creatures;
 import com.primordial.entity.CreatureRegistry;
@@ -33,6 +32,8 @@ public class PrimordialClient implements ClientModInitializer {
 	private static KeyMapping nest;
 	private static KeyMapping looks;
 	private static KeyMapping eat;
+	private static KeyMapping plant;
+	private static KeyMapping mutation;
 
 	@Override
 	public void onInitializeClient() {
@@ -50,6 +51,8 @@ public class PrimordialClient implements ClientModInitializer {
 		nest = key("nest", InputConstants.KEY_N);
 		looks = key("looks", InputConstants.KEY_K);
 		eat = key("eat", InputConstants.KEY_C);
+		plant = key("plant", InputConstants.KEY_G);
+		mutation = key("mutation", InputConstants.KEY_M);
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
 			if (mc.player == null) {
@@ -63,6 +66,14 @@ public class PrimordialClient implements ClientModInitializer {
 			}
 			while (evolve.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.Evolve());
+			}
+			while (mutation.consumeClick()) {
+				if (Creatures.isCreature(mc.player) && com.primordial.mutation.MutationService.state(mc.player).pending() > 0) {
+					mc.setScreenAndShow(new MutationScreen());
+				}
+			}
+			while (plant.consumeClick()) {
+				ClientPlayNetworking.send(new Payloads.Plant());
 			}
 			while (eat.consumeClick()) {
 				ClientPlayNetworking.send(new Payloads.EatMorsel());
@@ -79,7 +90,7 @@ public class PrimordialClient implements ClientModInitializer {
 
 		PrimordialEvents.clientAttackHook = pos -> {
 			Minecraft mc = Minecraft.getInstance();
-			if (mc.level != null && FeedingService.isPlant(mc.level.getBlockState(pos))) {
+			if (mc.level != null && !mc.level.getBlockState(pos).isAir()) {
 				ClientPlayNetworking.send(new Payloads.EatPlant(pos));
 			}
 		};

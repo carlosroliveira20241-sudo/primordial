@@ -27,6 +27,9 @@ public class PeixeComum extends AbstractFish {
 	public PeixeComum(EntityType<? extends AbstractFish> type, Level level) {
 		super(type, level);
 		this.def = CreatureRegistry.of(type);
+		if (has("still")) {
+			this.setNoAi(true);
+		}
 		if (has("glow")) {
 			this.setGlowingTag(true);
 		}

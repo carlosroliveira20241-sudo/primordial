@@ -18,6 +18,8 @@ import net.minecraft.world.phys.Vec3;
 /** Todas as habilidades ativas do mod, cada uma com seu nome e sua recarga. */
 public final class Abilities {
 	private static final Map<String, Ability> ALL = new HashMap<>();
+	/** Jogadores que pularam com o Salto desperto: quando o tempo passa e caem na água, soltam a onda. */
+	public static final Map<java.util.UUID, Long> WAVE_PENDING = new HashMap<>();
 
 	private Abilities() {
 	}
@@ -140,6 +142,59 @@ public final class Abilities {
 			}
 			burst(world, ParticleTypes.SONIC_BOOM, player, 1, 0.0);
 			sound(player, SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 0.8F);
+		});
+
+		// Salto de Golfinho: sai da água num pulo alto; desperta, a queda levanta uma onda (empurra quem está perto).
+		register("salto_de_golfinho", 140, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			player.setDeltaMovement(look.x * 1.1, 1.0 + 0.1 * level, look.z * 1.1);
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 60, 0, false, false, false));
+			if (Ability.awakened(level)) {
+				WAVE_PENDING.put(player.getUUID(), world.getGameTime() + 20);
+			}
+			burst(world, ParticleTypes.SPLASH, player, 40, 0.3);
+			sound(player, SoundEvents.DOLPHIN_JUMP, 1.0F, 1.0F);
+		});
+
+		// Grudar e Sugar: morde o alvo à frente e cura você com a vida roubada; desperta, rouba o dobro.
+		register("grudar_e_sugar", 160, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			for (LivingEntity target : world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(1.0).move(look.scale(1.8)), e -> e != player)) {
+				float stolen = (4.0F + level) * (Ability.awakened(level) ? 2.0F : 1.0F);
+				target.hurtServer(world, player.damageSources().playerAttack(player), stolen);
+				player.heal(stolen * 0.8F);
+				burst(world, ParticleTypes.DAMAGE_INDICATOR, target, 10, 0.2);
+				break;
+			}
+			sound(player, SoundEvents.GENERIC_DRINK.value(), 1.0F, 0.6F);
+		});
+
+		// Recolher no Casco: quase imune, mas lento; desperta, dura mais.
+		register("recolher_no_casco", 300, (player, level) -> {
+			int ticks = Ability.awakened(level) ? 100 : 60;
+			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 4, false, true, true));
+			player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 5, false, false, true));
+			burst(player.level(), ParticleTypes.CRIT, player, 30, 0.2);
+			sound(player, SoundEvents.TURTLE_SHAMBLE, 1.0F, 0.6F);
+		});
+
+		// Investida Perfurante: dispara e machuca TODOS numa linha de 7 blocos.
+		register("investida_perfurante", 110, (player, level) -> {
+			ServerLevel world = player.level();
+			Vec3 look = player.getLookAngle();
+			player.setDeltaMovement(look.scale(2.0));
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+			for (int step = 1; step <= 7; step++) {
+				Vec3 at = player.position().add(look.scale(step)).add(0, player.getBbHeight() * 0.5, 0);
+				for (LivingEntity target : world.getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(at, at).inflate(1.0), e -> e != player)) {
+					target.hurtServer(world, player.damageSources().playerAttack(player), 4.0F + level);
+				}
+			}
+			burst(world, ParticleTypes.BUBBLE, player, 40, 0.2);
+			sound(player, SoundEvents.TRIDENT_RIPTIDE_2.value(), 0.7F, 1.4F);
 		});
 
 		// Mordida Dilacerante: mordida forte no alvo na frente; sangra (veneno do tipo "sangramento"); desperta, sangra mais.

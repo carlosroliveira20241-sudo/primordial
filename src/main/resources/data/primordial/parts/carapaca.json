@@ -1,0 +1,25 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:tartaruga_couraca",
+ "families": [
+  "couracado"
+ ],
+ "ability": "primordial:recolher_no_casco",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 2.0,
+   "per_level": 1.0
+  }
+ ],
+ "visual": {
+  "scale": [
+   1.2,
+   1.2,
+   1.0
+  ],
+  "tint": "#5D8A4A"
+ }
+}

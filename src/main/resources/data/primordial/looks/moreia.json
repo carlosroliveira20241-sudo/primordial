@@ -1,0 +1,11 @@
+{
+ "model": "cod",
+ "tint": "#6B5B3A",
+ "scale": [
+  0.8,
+  0.8,
+  2.4
+ ],
+ "shadow": 0.3,
+ "selectable": false
+}

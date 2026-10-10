@@ -1,0 +1,21 @@
+{
+ "behavior": "fish",
+ "size": [
+  1.0,
+  0.5
+ ],
+ "health": 30,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:tartaruga",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 6,
+  "min": 1,
+  "max": 2
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "rarity": "epic",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 4
+  },
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.3
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "rarity": "common",
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 4
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": -0.5
+  }
+ ]
+}

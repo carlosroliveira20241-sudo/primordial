@@ -26,6 +26,7 @@ public final class CreatureStats {
 	private static final String STAGE = "stage/";
 	private static final String ORIGIN = "origin/";
 	private static final String PART = "part/";
+	private static final String MUTATION = "mutation/";
 
 	/** Atributos que o estágio mexe (além dos que as partes declaram). */
 	private static final List<Holder<Attribute>> STAGE_ATTRIBUTES = List.of(
@@ -70,6 +71,17 @@ public final class CreatureStats {
 			}
 		}
 
+		for (Identifier chosen : com.primordial.mutation.MutationService.state(player).chosen()) {
+			com.primordial.mutation.Mutation mutation = com.primordial.mutation.MutationRegistry.get(chosen);
+			if (mutation == null) {
+				continue;
+			}
+			int index = 0;
+			for (PartModifier modifier : mutation.modifiers()) {
+				add(player, modifier.attribute(), MUTATION + chosen.getPath() + "/" + index++, modifier.amountAt(1), modifier.operation());
+			}
+		}
+
 		if (stage.aquatic) {
 			add(player, Attributes.WATER_MOVEMENT_EFFICIENCY, STAGE + "water", 1.0, AttributeModifier.Operation.ADD_VALUE);
 		}
@@ -99,6 +111,11 @@ public final class CreatureStats {
 				touched.add(modifier.attribute());
 			}
 		}
+		for (com.primordial.mutation.Mutation mutation : com.primordial.mutation.MutationRegistry.all().values()) {
+			for (PartModifier modifier : mutation.modifiers()) {
+				touched.add(modifier.attribute());
+			}
+		}
 		for (Holder<Attribute> attribute : touched) {
 			AttributeInstance instance = player.getAttribute(attribute);
 			if (instance == null) {
@@ -108,7 +125,7 @@ public final class CreatureStats {
 			for (AttributeModifier modifier : instance.getModifiers()) {
 				Identifier id = modifier.id();
 				if (id.getNamespace().equals(Primordial.MOD_ID)
-					&& (id.getPath().startsWith(STAGE) || id.getPath().startsWith(ORIGIN) || id.getPath().startsWith(PART))) {
+					&& (id.getPath().startsWith(STAGE) || id.getPath().startsWith(ORIGIN) || id.getPath().startsWith(PART) || id.getPath().startsWith(MUTATION))) {
 					ours.add(id);
 				}
 			}

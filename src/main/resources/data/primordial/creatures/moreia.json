@@ -1,0 +1,21 @@
+{
+ "behavior": "predator",
+ "size": [
+  1.0,
+  0.3
+ ],
+ "health": 14,
+ "damage": 3,
+ "speed": 0.5,
+ "power": 0.45,
+ "traits": [],
+ "look": "primordial:moreia",
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "creature",
+  "weight": 6,
+  "min": 1,
+  "max": 2
+ }
+}

@@ -76,6 +76,9 @@ public final class PrimordialEvents {
 			if (fromDisk || !(entity instanceof Mob) || reason == null) {
 				return true;
 			}
+			if (!fromDisk && entity instanceof Mob mob && com.primordial.entity.CreatureRegistry.of(entity.getType()) != null) {
+				makeAlphaMaybe(mob);
+			}
 			boolean overworld = level.dimension() == Level.OVERWORLD;
 			PrimordialConfig config = PrimordialConfig.get();
 			if (overworld ? !config.blockVanillaMobsInOverworld : !config.blockVanillaMobsInOtherDimensions) {
@@ -101,15 +104,39 @@ public final class PrimordialEvents {
 		UseItemCallback.EVENT.register((player, level, hand) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
 
+		CombatEffects.init();
 		ServerTickEvents.END_LEVEL_TICK.register(PrimordialEvents::tickLevel);
 	}
 
+	/** 2% das criaturas nascem Alfa: brilham, têm o triplo de vida e sempre dropam Melhoria. Zumbis não. */
+	private static void makeAlphaMaybe(Mob mob) {
+		var def = com.primordial.entity.CreatureRegistry.of(mob.getType());
+		if (def == null || def.has("undead") || def.has("still") || mob.getRandom().nextFloat() >= 0.02F) {
+			return;
+		}
+		mob.addTag(MorselDrops.ALPHA_TAG);
+		mob.setGlowingTag(true);
+		mob.setCustomName(Component.translatable("msg.primordial.alpha", mob.getType().getDescription()));
+		mob.setCustomNameVisible(true);
+		var health = mob.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+		if (health != null) {
+			health.addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+				com.primordial.Primordial.id("alpha"), 2.0, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+			mob.setHealth(mob.getMaxHealth());
+		}
+	}
+
 	private static void tickLevel(ServerLevel level) {
+		com.primordial.world.OceanLife.tickLevel(level);
 		for (ServerPlayer player : level.players()) {
 			if (!Creatures.isCreature(player) || player.isSpectator()) {
 				continue;
 			}
 			eatNearbyMorsels(level, player);
+			com.primordial.world.SeabedSeeder.tick(level, player);
+			com.primordial.world.OceanLife.tickPlayer(level, player);
+			tickPassives(player);
+			tickWave(level, player);
 			if (Creatures.hasPassive(player, "abyssal_sight")) {
 				MobEffectInstance sight = player.getEffect(MobEffects.NIGHT_VISION);
 				if (sight == null || sight.getDuration() < 240) {
@@ -136,6 +163,49 @@ public final class PrimordialEvents {
 					air = 0;
 				}
 				player.setAirSupply(air);
+			}
+		}
+	}
+
+	/** Salto de Golfinho desperto: ao voltar para a água, uma onda empurra quem está perto. */
+	private static void tickWave(ServerLevel level, ServerPlayer player) {
+		Long due = com.primordial.ability.Abilities.WAVE_PENDING.get(player.getUUID());
+		if (due == null || level.getGameTime() < due || !player.isInWater()) {
+			return;
+		}
+		com.primordial.ability.Abilities.WAVE_PENDING.remove(player.getUUID());
+		for (net.minecraft.world.entity.LivingEntity target : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, player.getBoundingBox().inflate(4.0), e -> e != player)) {
+			Vec3 away = target.position().subtract(player.position()).normalize().scale(1.0);
+			target.setDeltaMovement(away.x, 0.3, away.z);
+		}
+		level.sendParticles(ParticleTypes.SPLASH, player.getX(), player.getY() + 0.3, player.getZ(), 60, 1.5, 0.3, 1.5, 0.2);
+	}
+
+	private static final java.util.Map<java.util.UUID, Integer> STILL_TICKS = new java.util.HashMap<>();
+
+	/** Efeitos passivos das partes. No nível III a parte está desperta e o efeito melhora. */
+	private static void tickPassives(ServerPlayer player) {
+		// Pele camaleônica: parado, você some. Desperta, some bem mais rápido.
+		int camo = Creatures.passiveLevel(player, "camouflage_still");
+		if (camo > 0) {
+			boolean still = player.getDeltaMovement().horizontalDistanceSqr() < 0.0004;
+			int ticks = still ? STILL_TICKS.merge(player.getUUID(), 1, Integer::sum) : 0;
+			if (!still) {
+				STILL_TICKS.remove(player.getUUID());
+			}
+			if (ticks >= (camo >= 3 ? 10 : 40)) {
+				player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 25, 0, false, false, false));
+			}
+		}
+		// Brânquias despertas (Brânquias Profundas): na água, você se regenera devagar.
+		if (Creatures.passiveLevel(player, "gills") >= 3 && player.isInWater() && player.tickCount % 60 == 0) {
+			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 80, 0, false, false, false));
+		}
+		// Muco escorregadio desperto (Inagarrável): na água, nada com a graça do golfinho.
+		if (Creatures.passiveLevel(player, "slippery") >= 3 && player.isInWater()) {
+			MobEffectInstance grace = player.getEffect(MobEffects.DOLPHINS_GRACE);
+			if (grace == null || grace.getDuration() < 20) {
+				player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 60, 0, false, false, false));
 			}
 		}
 	}

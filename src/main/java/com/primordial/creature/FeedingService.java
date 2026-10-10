@@ -18,6 +18,13 @@ public final class FeedingService {
 		return state.is(Blocks.KELP) || state.is(Blocks.KELP_PLANT) || state.is(Blocks.SEAGRASS) || state.is(Blocks.TALL_SEAGRASS);
 	}
 
+	/** Boca de Filtro desperta (Banquete): comer planta ou plâncton regenera. */
+	public static void banquet(ServerPlayer player) {
+		if (Creatures.passiveLevel(player, "filter_feeder") >= 3) {
+			player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 100, 1));
+		}
+	}
+
 	public static void eatPlant(ServerPlayer player, BlockPos pos) {
 		if (!Creatures.isRestricted(player) || player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > 36.0) {
 			return;
@@ -34,6 +41,7 @@ public final class FeedingService {
 		level.sendParticles(ParticleTypes.COMPOSTER, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 8, 0.2, 0.2, 0.2, 0.0);
 		CreatureService.playSound(player, SoundEvents.DOLPHIN_EAT, 0.5F, 1.4F);
 		player.getFoodData().eat(1, 0.2F);
+		banquet(player);
 		CreatureService.addDna(player, Math.max(1, Mth.floor(2 * diet.plantEfficiency)));
 		CreatureService.addXp(player, 2);
 	}

@@ -82,6 +82,28 @@ public final class Payloads {
 		}
 	}
 
+	/** Plantar uma alga no chão que a criatura está olhando. */
+	public record Plant() implements CustomPacketPayload {
+		public static final Type<Plant> TYPE = typeOf("plant");
+		public static final StreamCodec<ByteBuf, Plant> CODEC = StreamCodec.unit(new Plant());
+
+		@Override
+		public Type<Plant> type() {
+			return TYPE;
+		}
+	}
+
+	/** Escolha de uma das cartas de mutação oferecidas. */
+	public record ChooseMutation(Identifier mutation) implements CustomPacketPayload {
+		public static final Type<ChooseMutation> TYPE = typeOf("choose_mutation");
+		public static final StreamCodec<ByteBuf, ChooseMutation> CODEC = StreamCodec.composite(Identifier.STREAM_CODEC, ChooseMutation::mutation, ChooseMutation::new);
+
+		@Override
+		public Type<ChooseMutation> type() {
+			return TYPE;
+		}
+	}
+
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(

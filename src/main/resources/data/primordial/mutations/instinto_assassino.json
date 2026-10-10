@@ -1,0 +1,13 @@
+{
+ "rarity": "epic",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 2
+  },
+  {
+   "attribute": "primordial:lifesteal",
+   "base": 0.1
+  }
+ ]
+}

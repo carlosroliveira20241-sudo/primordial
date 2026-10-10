@@ -25,6 +25,14 @@ public final class PrimordialAttachments {
 		.syncWith(ByteBufCodecs.fromCodec(CreatureProgress.CODEC), AttachmentSyncPredicate.targetOnly())
 		.buildAndRegister(Primordial.id("progress"));
 
+	/** Mutações escolhidas e a próxima oferta: só o próprio jogador precisa ver. */
+	public static final AttachmentType<com.primordial.mutation.MutationState> MUTATIONS = AttachmentRegistry.<com.primordial.mutation.MutationState>builder()
+		.persistent(com.primordial.mutation.MutationState.CODEC)
+		.copyOnDeath()
+		.initializer(() -> com.primordial.mutation.MutationState.DEFAULT)
+		.syncWith(ByteBufCodecs.fromCodec(com.primordial.mutation.MutationState.CODEC), AttachmentSyncPredicate.targetOnly())
+		.buildAndRegister(Primordial.id("mutations"));
+
 	private PrimordialAttachments() {
 	}
 

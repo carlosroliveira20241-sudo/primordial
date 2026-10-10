@@ -79,6 +79,17 @@ public final class PartRegistry {
 		return result;
 	}
 
+	/** Todas as partes que algum bicho pode dropar (usado por tesouros e escavações). */
+	public static List<Identifier> droppable() {
+		List<Identifier> result = new ArrayList<>();
+		PARTS.forEach((id, def) -> {
+			if (!def.base() && def.source().isPresent()) {
+				result.add(id);
+			}
+		});
+		return result;
+	}
+
 	/** Partes que uma espécie pode dropar como Melhoria. */
 	public static List<Identifier> droppedBy(Identifier species) {
 		List<Identifier> result = new ArrayList<>();

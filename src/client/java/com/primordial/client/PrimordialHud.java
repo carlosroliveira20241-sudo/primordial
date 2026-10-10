@@ -38,6 +38,9 @@ public final class PrimordialHud {
 		for (int i = 0; i < abilities.size() && i < KEYS.length; i++) {
 			y = line(graphics, mc, Component.literal("[" + KEYS[i] + "] ").append(Component.translatable("ability.primordial." + abilities.get(i).getPath())), y, 0xFFB2FF59);
 		}
+		if (com.primordial.mutation.MutationService.state(player).pending() > 0) {
+			y = line(graphics, mc, Component.translatable("hud.primordial.mutation_ready"), y, 0xFFE1A8FF);
+		}
 		if (CreatureService.evolveProblem(body, progress) == null) {
 			line(graphics, mc, Component.translatable("hud.primordial.evolve_ready"), y, 0xFFFFAB40);
 		}
