@@ -52,11 +52,12 @@ public final class MorselDrops {
 			// Criaturas das cavernas: DNA em dobro e, às vezes, uma Melhoria rara de qualquer criatura.
 			CreatureService.addDna(killer, 6);
 			CreatureService.addXp(killer, 15);
-			if (killer.getRandom().nextFloat() < 0.4F) {
+			boolean boss = def.has("boss");
+			if (boss || killer.getRandom().nextFloat() < 0.4F) {
 				List<Identifier> rare = new ArrayList<>();
 				for (Identifier id : PartRegistry.droppable()) {
 					com.primordial.part.PartRarity rarity = PartRegistry.get(id).rarity();
-					if (rarity == com.primordial.part.PartRarity.RARE || rarity == com.primordial.part.PartRarity.EPIC) {
+					if (boss ? rarity == com.primordial.part.PartRarity.EPIC : (rarity == com.primordial.part.PartRarity.RARE || rarity == com.primordial.part.PartRarity.EPIC)) {
 						rare.add(id);
 					}
 				}

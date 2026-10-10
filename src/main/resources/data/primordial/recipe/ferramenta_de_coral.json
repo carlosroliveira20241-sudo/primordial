@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "equipment",
+ "ingredients": [
+  "#primordial:coral_material",
+  "#primordial:coral_material",
+  "#primordial:coral_material"
+ ],
+ "result": {
+  "id": "primordial:ferramenta_de_coral",
+  "count": 1
+ }
+}

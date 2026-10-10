@@ -116,6 +116,23 @@ public final class PrimordialEvents {
 				return InteractionResult.PASS;
 			}
 			net.minecraft.world.item.ItemStack held = player.getItemInHand(hand);
+			net.minecraft.world.level.block.state.BlockState clicked = level.getBlockState(hit.getBlockPos());
+			if (clicked.getBlock() instanceof net.minecraft.world.level.block.ChestBlock) {
+				return InteractionResult.PASS;
+			}
+			// Baú de Areia: botão direito numa areia segurando outra areia.
+			if (held.is(net.minecraft.tags.ItemTags.SAND) && clicked.is(net.minecraft.tags.BlockTags.SAND)
+				&& com.primordial.capability.Capabilities.has(player, "craft_chest")) {
+				if (!level.isClientSide()) {
+					level.setBlock(hit.getBlockPos(), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState()
+						.setValue(net.minecraft.world.level.block.ChestBlock.FACING, player.getDirection().getOpposite()), 3);
+					if (!player.isCreative()) {
+						held.shrink(1);
+					}
+					level.playSound(null, hit.getBlockPos(), net.minecraft.sounds.SoundEvents.SAND_PLACE, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 0.8F);
+				}
+				return InteractionResult.SUCCESS;
+			}
 			if (held.getItem() instanceof net.minecraft.world.item.BlockItem && com.primordial.capability.Capabilities.has(player, "place")
 				&& !interactive(level.getBlockState(hit.getBlockPos()))) {
 				return InteractionResult.PASS;
@@ -139,7 +156,7 @@ public final class PrimordialEvents {
 			if (!Creatures.isRestricted(player)) {
 				return InteractionResult.PASS;
 			}
-			return com.primordial.capability.Capabilities.toolType(stack) != null && com.primordial.capability.Capabilities.canUseTool(player, stack)
+			return com.primordial.capability.Capabilities.kind(stack) != null && com.primordial.capability.Capabilities.canUseTool(player, stack)
 				? InteractionResult.PASS : InteractionResult.FAIL;
 		});
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);

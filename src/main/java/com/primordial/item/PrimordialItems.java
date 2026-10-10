@@ -15,6 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemLore;
 
@@ -28,6 +29,8 @@ public final class PrimordialItems {
 	public static final Item ALGA = register("alga_marinha");
 	public static final Item CARNE = register("carne_marinha");
 	public static final Item PLANCTON = register("plancton");
+	/** Ferramenta feita de coral (3 corais na grade de criação): quebra pedra como uma picareta de pedra. */
+	public static final Item CORAL_TOOL = registerTool("ferramenta_de_coral");
 
 	private PrimordialItems() {
 	}
@@ -35,6 +38,11 @@ public final class PrimordialItems {
 	private static Item register(String name) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Primordial.id(name));
 		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
+	}
+
+	private static Item registerTool(String name) {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Primordial.id(name));
+		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key).pickaxe(ToolMaterial.STONE, 1.0F, -2.8F)));
 	}
 
 	public static ItemStack morsel(Identifier part) {

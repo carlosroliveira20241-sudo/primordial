@@ -4,6 +4,7 @@ import com.primordial.intellect.IntellectDef;
 import com.primordial.intellect.IntellectRegistry;
 import com.primordial.intellect.IntellectService;
 import com.primordial.intellect.IntellectState;
+import com.primordial.item.PrimordialItems;
 import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
@@ -14,14 +15,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 /**
  * O que a criatura pode fazer do Minecraft normal. Cada habilidade de inteligência comprada e EQUIPADA liberta uma
- * dessas ações: quebrar blocos (4 níveis de dureza), colocar blocos, usar e criar cada tipo de ferramenta e atirar.
+ * dessas ações: quebrar blocos moles e madeira, colocar blocos, usar ferramentas e armas, criar ferramentas, criar
+ * armas (só a espada de pedra) e criar baú de areia. Blocos duros (pedra, minério) só quebram com uma ferramenta.
  */
 public final class Capabilities {
-	public static final String[] TOOLS = {"pickaxe", "shovel", "axe", "sword", "bow"};
+	public enum Kind {
+		TOOL, WEAPON
+	}
 
 	private Capabilities() {
 	}
@@ -44,7 +47,7 @@ public final class Capabilities {
 		return active(player).contains(capability);
 	}
 
-	/** Maior nível de quebra liberado (0 = não quebra nada). */
+	/** Maior nível de quebra liberado pelas habilidades (0 = não quebra nada). */
 	public static int breakTier(Player player) {
 		int best = 0;
 		for (String capability : active(player)) {
@@ -64,40 +67,51 @@ public final class Capabilities {
 		return hardness <= 0.8F ? 1 : hardness <= 2.5F ? 2 : hardness <= 4.5F ? 3 : 4;
 	}
 
+	/** Quebra liberada por habilidade, ou por uma ferramenta na mão que sirva para o bloco (e saiba usar). */
 	public static boolean canBreak(Player player, BlockGetter level, BlockPos pos, BlockState state) {
-		return breakTier(player) >= tierNeeded(state, level, pos);
+		int needed = tierNeeded(state, level, pos);
+		if (needed >= 99) {
+			return false;
+		}
+		if (breakTier(player) >= needed) {
+			return true;
+		}
+		ItemStack held = player.getMainHandItem();
+		return kind(held) == Kind.TOOL && has(player, "use_tools") && held.getDestroySpeed(state) > 1.0F;
 	}
 
-	/** O tipo de ferramenta do item (pickaxe, shovel, axe, sword, bow), ou nulo se não for ferramenta. */
-	public static @Nullable String toolType(ItemStack stack) {
+	/** Ferramenta (pá, picareta, machado, enxada, Ferramenta de Coral) ou arma (espada, arco); nulo se não for nenhum. */
+	public static Kind kind(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return null;
 		}
-		if (stack.is(ItemTags.PICKAXES)) {
-			return "pickaxe";
+		if (stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.AXES) || stack.is(ItemTags.HOES)
+			|| stack.is(PrimordialItems.CORAL_TOOL)) {
+			return Kind.TOOL;
 		}
-		if (stack.is(ItemTags.SHOVELS)) {
-			return "shovel";
-		}
-		if (stack.is(ItemTags.AXES)) {
-			return "axe";
-		}
-		if (stack.is(ItemTags.SWORDS)) {
-			return "sword";
-		}
-		if (stack.is(Items.BOW) || stack.is(Items.CROSSBOW)) {
-			return "bow";
+		if (stack.is(ItemTags.SWORDS) || stack.is(Items.BOW) || stack.is(Items.CROSSBOW)) {
+			return Kind.WEAPON;
 		}
 		return null;
 	}
 
+	/** "Usar Ferramenta" é a única habilidade que deixa segurar e usar ferramentas E armas. */
 	public static boolean canUseTool(Player player, ItemStack stack) {
-		String type = toolType(stack);
-		return type == null || has(player, "use_" + type);
+		return kind(stack) == null || has(player, "use_tools");
 	}
 
-	public static boolean canCraftTool(Player player, ItemStack stack) {
-		String type = toolType(stack);
-		return type == null || has(player, "craft_" + type);
+	/**
+	 * Criar ferramenta exige "Criar Ferramenta". Criar arma exige "Criar Arma" E uma pedra: só a espada de pedra
+	 * pode ser fabricada.
+	 */
+	public static boolean canCraftTool(Player player, ItemStack result) {
+		Kind kind = kind(result);
+		if (kind == null) {
+			return true;
+		}
+		if (kind == Kind.TOOL) {
+			return has(player, "craft_tool");
+		}
+		return has(player, "craft_weapon") && result.is(Items.STONE_SWORD);
 	}
 }

@@ -1,0 +1,6 @@
+{
+ "cost": 60,
+ "brain": 2,
+ "capability": "use_tools",
+ "input": "passive"
+}

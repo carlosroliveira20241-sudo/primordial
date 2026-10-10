@@ -57,6 +57,9 @@ public final class SeabedSeeder {
 		if (!isCaveFossil(level, pos)) {
 			return 0;
 		}
+		if (Lairs.isLairFossil(level, pos)) {
+			return 3;
+		}
 		int depth = level.getSeaLevel() - pos.getY();
 		return depth >= 60 ? 3 : depth >= 30 ? 2 : 1;
 	}
@@ -95,6 +98,7 @@ public final class SeabedSeeder {
 	}
 
 	private static void scanChunk(ServerLevel level, Identifier dim, int cx, int cz, long chunkKey) {
+		Lairs.maybeBuild(level, cx, cz);
 		List<BlockPos> glowing = new ArrayList<>();
 		int sea = level.getSeaLevel();
 		for (int dx = 0; dx < 16; dx++) {

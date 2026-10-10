@@ -1,0 +1,6 @@
+{
+ "cost": 100,
+ "brain": 3,
+ "capability": "craft_weapon",
+ "input": "passive"
+}

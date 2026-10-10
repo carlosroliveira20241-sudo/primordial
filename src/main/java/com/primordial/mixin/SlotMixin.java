@@ -26,6 +26,14 @@ public abstract class SlotMixin {
 		}
 	}
 
+	@Inject(method = "getMaxStackSize()I", at = @At("HEAD"), cancellable = true)
+	private void primordial$single(CallbackInfoReturnable<Integer> cir) {
+		Slot self = (Slot) (Object) this;
+		if (self.container instanceof Inventory inventory && InventoryRules.applies(inventory.player) && self.getContainerSlot() < InventoryRules.MAIN_SIZE) {
+			cir.setReturnValue(1);
+		}
+	}
+
 	@Inject(method = "mayPickup", at = @At("HEAD"), cancellable = true)
 	private void primordial$craft(Player player, CallbackInfoReturnable<Boolean> cir) {
 		Slot self = (Slot) (Object) this;

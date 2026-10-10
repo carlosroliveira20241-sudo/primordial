@@ -53,6 +53,14 @@ public final class InventoryRules {
 			if (stack.isEmpty()) {
 				continue;
 			}
+			if (stack.getCount() > 1 && i < slots(player)) {
+				ItemStack extra = stack.split(stack.getCount() - 1);
+				ItemEntity spill = player.drop(extra, false, false);
+				if (spill != null) {
+					spill.setPickUpDelay(200);
+				}
+				dropped = true;
+			}
 			boolean blockedSlot = i >= slots(player);
 			boolean unknownTool = !Capabilities.canUseTool(player, stack);
 			if (blockedSlot || unknownTool) {

@@ -81,6 +81,9 @@ public final class WorldInteractions {
 		com.primordial.journal.JournalService.bump(player, "dig", 1);
 		if (tier > 0) {
 			com.primordial.journal.JournalService.bump(player, "cave_fossil", 1);
+			if (Lairs.isLairFossil(level, pos)) {
+				com.primordial.journal.JournalService.bump(player, "lair_fossil", 1);
+			}
 		}
 		reward(player, level, pos, fossil, tier);
 	}
@@ -135,15 +138,18 @@ public final class WorldInteractions {
 
 	private static void gnawCoral(ServerPlayer player, ServerLevel level, BlockPos pos) {
 		int power = Creatures.passiveLevel(player, "coral_breaker");
-		if (power <= 0) {
-			player.sendSystemMessage(Component.translatable("msg.primordial.coral_needs_beak").withStyle(ChatFormatting.RED), true);
+		if (!com.primordial.capability.Capabilities.has(player, "collect_coral")) {
+			player.sendSystemMessage(Component.translatable("msg.primordial.coral_needs_skill").withStyle(ChatFormatting.RED), true);
 			return;
 		}
+		net.minecraft.world.item.ItemStack coral = new net.minecraft.world.item.ItemStack(level.getBlockState(pos).getBlock().asItem());
 		level.setBlock(pos, Blocks.WATER.defaultBlockState(), 3);
 		level.sendParticles(ParticleTypes.BUBBLE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 10, 0.3, 0.3, 0.3, 0.05);
 		CreatureService.playSound(player, SoundEvents.CORAL_BLOCK_BREAK, 0.8F, 1.2F);
 		com.primordial.journal.JournalService.bump(player, "coral", 1);
-		CreatureService.addDna(player, 2 + power);
+		if (!coral.isEmpty()) {
+			FeedingService.drop(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, coral);
+		}
 		if (power >= 3) {
 			player.heal(2.0F);
 		}
