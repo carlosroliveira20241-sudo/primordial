@@ -1,0 +1,27 @@
+{
+ "slot": "limbs",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:caranguejo_escavador",
+ "families": [
+  "construtor"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:entity_interaction_range",
+   "base": 0.5,
+   "per_level": 0.2
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.5,
+   "per_level": 0.25
+  }
+ ],
+ "visual": {
+  "features": [
+   "legs"
+  ],
+  "tint": "#C46A3A"
+ }
+}

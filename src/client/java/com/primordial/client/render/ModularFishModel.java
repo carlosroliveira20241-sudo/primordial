@@ -96,6 +96,9 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 		register(root, "crystals", "feat_crystals_", 3);
 		register(root, "legs", "feat_legs_", 4);
 		register(root, "tentacles", "feat_tentacles_", 4);
+		register(root, "brain_s", "feat_brain_s", 0);
+		register(root, "brain_m", "feat_brain_m", 0);
+		register(root, "brain_l", "feat_brain_l", 0);
 		this.featTentacles.addAll(this.features.getOrDefault("tentacles", List.of()));
 		for (ModelPart part : this.eachPart(root)) {
 			this.basePose.put(part, new float[] {part.x, part.y, part.z});
@@ -195,6 +198,9 @@ public class ModularFishModel extends EntityModel<LivingEntityRenderState> {
 		for (int i = 0; i < 4; i++) {
 			box(root, "feat_legs_" + i, dark, 0, -0.5F, 0, -0.5F, 1, 3, 1, i % 2 == 0 ? 2 : -2, Y + 2, i < 2 ? 1.5F : 6);
 		}
+		box(root, "feat_brain_s", dark, 0, -1, -1.6F, -3.5F, 2, 1.6F, 2.5F, 0, Y - 2.5F, 0);
+		box(root, "feat_brain_m", dark, 0, -1.5F, -2.6F, -4, 3, 2.6F, 4, 0, Y - 2.5F, 0);
+		box(root, "feat_brain_l", dark, 0, -2.2F, -3.8F, -4.6F, 4.4F, 3.8F, 5.2F, 0, Y - 2.5F, 0);
 		for (int i = 0; i < 4; i++) {
 			box(root, "feat_tentacles_" + i, dark, 0, -0.4F, 0, -0.4F, 0.8F, 7, 0.8F, i % 2 == 0 ? 0.8F : -0.8F, Y + 2, 1 + i * 1.6F);
 		}

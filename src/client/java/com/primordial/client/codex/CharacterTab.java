@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Player;
 
 /** Aba Personagem: seu bicho em 3D à esquerda e, à direita, cada modificação equipada com sua habilidade e passivas. */
 final class CharacterTab implements CodexTab {
-	private static final String[] KEYS = {"Z", "X"};
+	private static final String[] KEYS = {"Z", "X", "R", "F"};
 	private int scroll;
 
 	@Override
@@ -62,6 +62,10 @@ final class CharacterTab implements CodexTab {
 		sy += 12;
 		sy = stat(g, s, x0 + 10, sy, "attribute.name.max_health", String.format(Locale.ROOT, "%.0f", player.getMaxHealth()));
 		sy = stat(g, s, x0 + 10, sy, "attribute.name.armor", String.format(Locale.ROOT, "%.0f", player.getAttributeValue(Attributes.ARMOR)));
+		com.primordial.builder.BlockPouch pouch = com.primordial.builder.Builder.pouch(player);
+		if (pouch.total() > 0 || Creatures.hasPassive(player, "sand_pouch")) {
+			sy = stat(g, s, x0 + 10, sy, "screen.primordial.character.pouch", pouch.total() + "/" + com.primordial.builder.Builder.capacity(player));
+		}
 		sy = stat(g, s, x0 + 10, sy, "attribute.name.attack_damage", String.format(Locale.ROOT, "%.1f", player.getAttributeValue(Attributes.ATTACK_DAMAGE)));
 		stat(g, s, x0 + 10, sy, "screen.primordial.character.level", String.valueOf(progress.level()));
 

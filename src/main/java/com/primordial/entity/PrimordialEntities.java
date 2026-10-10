@@ -48,6 +48,9 @@ public final class PrimordialEntities {
 
 	private static <T extends WaterAnimal> void register(Identifier id, CreatureDef def, EntityType.EntityFactory<T> factory, AttributeSupplier.Builder attributes) {
 		MobCategory category = def.spawn().category().equals("creature") ? MobCategory.WATER_CREATURE : MobCategory.WATER_AMBIENT;
+		if (def.spawn().biomes().equals("cave")) {
+			category = MobCategory.UNDERGROUND_WATER_CREATURE;
+		}
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, id);
 		EntityType<T> type = Registry.register(BuiltInRegistries.ENTITY_TYPE, key,
 			EntityType.Builder.of(factory, category).sized(def.width(), def.height()).eyeHeight(def.height() * 0.65F)
@@ -56,9 +59,16 @@ public final class PrimordialEntities {
 
 		FabricDefaultAttributeRegistry.register(type, attributes);
 		boolean nightOnly = def.spawn().nightOnly();
+		boolean cave = def.spawn().biomes().equals("cave");
 		SpawnPlacements.register(type, SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(t, level, reason, pos, random) -> (!nightOnly || level.getLevel().isDarkOutside())
-				&& WaterAnimal.checkSurfaceWaterAnimalSpawnRules(t, level, reason, pos, random));
+				&& (cave ? level.getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER) && pos.getY() < level.getSeaLevel() - 10 && !level.canSeeSky(pos)
+					: WaterAnimal.checkSurfaceWaterAnimalSpawnRules(t, level, reason, pos, random)));
+		if (cave) {
+			BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(), MobCategory.UNDERGROUND_WATER_CREATURE, type,
+				def.spawn().weight(), def.spawn().min(), def.spawn().max());
+			return;
+		}
 		var biomes = def.spawn().biomes().equals("deep_ocean") ? BiomeTags.IS_DEEP_OCEAN : BiomeTags.IS_OCEAN;
 		if (def.spawn().weight() <= 0 || def.has("event_only")) {
 			return;

@@ -1,0 +1,25 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:caramujo_carregador",
+ "families": [
+  "construtor"
+ ],
+ "passives": [
+  "sand_pouch"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 2.0,
+   "per_level": 1.0
+  }
+ ],
+ "visual": {
+  "features": [
+   "bulb"
+  ],
+  "tint": "#E3D5A1"
+ }
+}

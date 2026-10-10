@@ -49,6 +49,22 @@ public final class PrimordialAttachments {
 		.syncWith(ByteBufCodecs.fromCodec(com.primordial.ability.AbilityOrder.CODEC), AttachmentSyncPredicate.targetOnly())
 		.buildAndRegister(Primordial.id("ability_order"));
 
+	/** O "baú de areia": blocos moles que a criatura carrega para construir. */
+	public static final AttachmentType<com.primordial.builder.BlockPouch> POUCH = AttachmentRegistry.<com.primordial.builder.BlockPouch>builder()
+		.persistent(com.primordial.builder.BlockPouch.CODEC)
+		.copyOnDeath()
+		.initializer(() -> com.primordial.builder.BlockPouch.DEFAULT)
+		.syncWith(ByteBufCodecs.fromCodec(com.primordial.builder.BlockPouch.CODEC), AttachmentSyncPredicate.targetOnly())
+		.buildAndRegister(Primordial.id("pouch"));
+
+	/** Inteligência: cérebro, habilidades compradas e slots. Todos veem (o cérebro cresce no corpo). */
+	public static final AttachmentType<com.primordial.intellect.IntellectState> INTELLECT = AttachmentRegistry.<com.primordial.intellect.IntellectState>builder()
+		.persistent(com.primordial.intellect.IntellectState.CODEC)
+		.copyOnDeath()
+		.initializer(() -> com.primordial.intellect.IntellectState.DEFAULT)
+		.syncWith(ByteBufCodecs.fromCodec(com.primordial.intellect.IntellectState.CODEC), AttachmentSyncPredicate.all())
+		.buildAndRegister(Primordial.id("intellect"));
+
 	private PrimordialAttachments() {
 	}
 

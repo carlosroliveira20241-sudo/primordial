@@ -137,6 +137,7 @@ public final class PrimordialEvents {
 
 	private static void tickLevel(ServerLevel level) {
 		com.primordial.world.OceanLife.tickLevel(level);
+		com.primordial.builder.TempBlocks.tick(level);
 		for (ServerPlayer player : level.players()) {
 			if (!Creatures.isCreature(player) || player.isSpectator()) {
 				continue;

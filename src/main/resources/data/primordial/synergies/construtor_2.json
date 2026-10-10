@@ -1,0 +1,14 @@
+{
+ "family": "construtor",
+ "count": 2,
+ "modifiers": [
+  {
+   "attribute": "minecraft:block_interaction_range",
+   "base": 1.5
+  },
+  {
+   "attribute": "minecraft:max_health",
+   "base": 2.0
+  }
+ ]
+}

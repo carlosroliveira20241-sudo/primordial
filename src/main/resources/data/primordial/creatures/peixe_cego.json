@@ -1,0 +1,27 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.6,
+  0.4
+ ],
+ "health": 8,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "deep_reward"
+ ],
+ "look": "primordial:cego",
+ "features": [
+  "whiskers"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "cave",
+  "category": "ambient",
+  "weight": 14,
+  "min": 2,
+  "max": 4,
+  "night_only": false
+ }
+}

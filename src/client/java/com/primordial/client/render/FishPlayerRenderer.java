@@ -44,6 +44,10 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 		state.sy = visual.sy();
 		state.sz = visual.sz();
 		state.features = visual.features();
+		int brain = com.primordial.intellect.IntellectService.state(entity).brain();
+		if (brain >= 2) {
+			state.features.add(brain >= 6 ? "brain_l" : brain >= 4 ? "brain_m" : "brain_s");
+		}
 		state.shape = FishLook.shapeOf(look.model());
 	}
 

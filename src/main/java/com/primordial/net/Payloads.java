@@ -116,6 +116,53 @@ public final class Payloads {
 		}
 	}
 
+	/** Melhorar o cérebro (gasta DNA). */
+	public record UpgradeBrain() implements CustomPacketPayload {
+		public static final Type<UpgradeBrain> TYPE = typeOf("upgrade_brain");
+		public static final StreamCodec<ByteBuf, UpgradeBrain> CODEC = StreamCodec.unit(new UpgradeBrain());
+
+		@Override
+		public Type<UpgradeBrain> type() {
+			return TYPE;
+		}
+	}
+
+	/** Comprar uma habilidade de inteligência (gasta DNA). */
+	public record BuyIntellect(Identifier ability) implements CustomPacketPayload {
+		public static final Type<BuyIntellect> TYPE = typeOf("buy_intellect");
+		public static final StreamCodec<ByteBuf, BuyIntellect> CODEC = StreamCodec.composite(Identifier.STREAM_CODEC, BuyIntellect::ability, BuyIntellect::new);
+
+		@Override
+		public Type<BuyIntellect> type() {
+			return TYPE;
+		}
+	}
+
+	/** Colocar (ou tirar) uma habilidade de inteligência num slot. */
+	public record SetIntellectSlot(int slot, Optional<Identifier> ability) implements CustomPacketPayload {
+		public static final Type<SetIntellectSlot> TYPE = typeOf("set_intellect_slot");
+		public static final StreamCodec<ByteBuf, SetIntellectSlot> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, SetIntellectSlot::slot,
+			ByteBufCodecs.optional(Identifier.STREAM_CODEC), SetIntellectSlot::ability,
+			SetIntellectSlot::new);
+
+		@Override
+		public Type<SetIntellectSlot> type() {
+			return TYPE;
+		}
+	}
+
+	/** Usar a habilidade de inteligência do slot. */
+	public record UseIntellect(int slot) implements CustomPacketPayload {
+		public static final Type<UseIntellect> TYPE = typeOf("use_intellect");
+		public static final StreamCodec<ByteBuf, UseIntellect> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, UseIntellect::slot, UseIntellect::new);
+
+		@Override
+		public Type<UseIntellect> type() {
+			return TYPE;
+		}
+	}
+
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(

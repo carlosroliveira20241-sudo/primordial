@@ -1,0 +1,25 @@
+{
+ "slot": "skin",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:caramujo_carregador",
+ "families": [
+  "construtor",
+  "couracado"
+ ],
+ "rarity": "rare",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 2.0,
+   "per_level": 1.0
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell",
+   "spikes"
+  ],
+  "tint": "#D8C6A0"
+ }
+}

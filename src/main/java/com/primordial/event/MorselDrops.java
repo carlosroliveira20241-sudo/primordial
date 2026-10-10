@@ -47,6 +47,26 @@ public final class MorselDrops {
 		boolean alpha = victim.entityTags().contains(ALPHA_TAG) || (def != null && def.has("boss"));
 		boolean treasure = def != null && def.has("treasure");
 		List<Identifier> candidates = PartRegistry.droppedBy(species);
+		if (def != null && def.has("deep_reward")) {
+			// Criaturas das cavernas: DNA em dobro e, às vezes, uma Melhoria rara de qualquer criatura.
+			CreatureService.addDna(killer, 6);
+			CreatureService.addXp(killer, 15);
+			if (killer.getRandom().nextFloat() < 0.4F) {
+				List<Identifier> rare = new ArrayList<>();
+				for (Identifier id : PartRegistry.droppable()) {
+					com.primordial.part.PartRarity rarity = PartRegistry.get(id).rarity();
+					if (rarity == com.primordial.part.PartRarity.RARE || rarity == com.primordial.part.PartRarity.EPIC) {
+						rare.add(id);
+					}
+				}
+				if (!rare.isEmpty()) {
+					spawnMorsel(killer.level(), victim.getX(), victim.getY() + 0.4, victim.getZ(), rare.get(killer.getRandom().nextInt(rare.size())));
+				}
+			}
+			if (candidates.isEmpty()) {
+				return;
+			}
+		}
 		if (treasure) {
 			// Concha Gigante: sempre solta uma Melhoria de qualquer criatura, mais DNA e XP.
 			CreatureService.addDna(killer, 15);

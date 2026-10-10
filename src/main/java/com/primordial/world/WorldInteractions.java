@@ -58,39 +58,56 @@ public final class WorldInteractions {
 
 	private static void dig(ServerPlayer player, ServerLevel level, BlockPos pos, BlockState state) {
 		boolean fossil = state.is(Blocks.SUSPICIOUS_GRAVEL);
+		int tier = SeabedSeeder.caveTier(level, pos);
 		if (fossil && Creatures.body(player).stage().number() < 2) {
 			player.sendSystemMessage(Component.translatable("msg.primordial.dig_too_small").withStyle(ChatFormatting.RED), true);
 			return;
 		}
-		int needed = fossil ? FOSSIL_HITS : SAND_HITS;
+		int needed = fossil ? FOSSIL_HITS + tier * 8 : SAND_HITS;
 		long key = pos.asLong();
 		int hits = HITS.merge(key, 1, Integer::sum);
 		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 12, 0.3, 0.2, 0.3, 0.05);
-		CreatureService.playSound(player, SoundEvents.SAND_BREAK, 0.8F, 0.8F + hits * 0.1F);
+		CreatureService.playSound(player, SoundEvents.SAND_BREAK, 0.8F, 0.8F + Math.min(hits, 16) * 0.05F);
 		if (hits < needed) {
 			player.sendSystemMessage(Component.translatable("msg.primordial.dig_progress", hits, needed).withStyle(ChatFormatting.GRAY), true);
 			return;
 		}
 		HITS.remove(key);
+		if (tier > 0) {
+			// o brilho do fóssil de caverna se apaga junto com ele
+			level.setBlock(pos.above(), Blocks.WATER.defaultBlockState(), 3);
+		}
 		level.setBlock(pos, fossil ? Blocks.CLAY.defaultBlockState() : Blocks.GRAVEL.defaultBlockState(), 3);
 		com.primordial.journal.JournalService.bump(player, "dig", 1);
-		reward(player, level, pos, fossil);
+		if (tier > 0) {
+			com.primordial.journal.JournalService.bump(player, "cave_fossil", 1);
+		}
+		reward(player, level, pos, fossil, tier);
 	}
 
-	private static void reward(ServerPlayer player, ServerLevel level, BlockPos pos, boolean fossil) {
+	/**
+	 * @param tier 0 = fundo do mar; 1 a 3 = fóssil de caverna (quanto mais fundo, mais raras as partes e mais DNA)
+	 */
+	private static void reward(ServerPlayer player, ServerLevel level, BlockPos pos, boolean fossil, int tier) {
 		double roll = player.getRandom().nextDouble();
 		CreatureProgress progress = Creatures.progress(player);
-		if (roll < (fossil ? 0.8 : 0.55)) {
+		double partChance = tier > 0 ? 0.9 : fossil ? 0.8 : 0.55;
+		if (roll < partChance) {
+			PartRarity minimum = tier >= 2 ? PartRarity.EPIC : (fossil || tier > 0) ? PartRarity.RARE : PartRarity.COMMON;
+			boolean legendary = tier >= 3 && player.getRandom().nextFloat() < 0.15F;
 			List<Identifier> pool = new ArrayList<>();
 			for (Identifier id : PartRegistry.droppable()) {
-				boolean rare = PartRegistry.get(id).rarity() != PartRarity.COMMON;
-				if ((!fossil || rare) && !progress.unlocked(id)) {
-					pool.add(id);
+				PartRarity rarity = PartRegistry.get(id).rarity();
+				if (rarity == PartRarity.LEGENDARY ? legendary : rarity.ordinal() >= minimum.ordinal()) {
+					if (!progress.unlocked(id)) {
+						pool.add(id);
+					}
 				}
 			}
 			if (pool.isEmpty()) {
 				for (Identifier id : PartRegistry.droppable()) {
-					if (!fossil || PartRegistry.get(id).rarity() != PartRarity.COMMON) {
+					PartRarity rarity = PartRegistry.get(id).rarity();
+					if (rarity != PartRarity.LEGENDARY && rarity.ordinal() >= minimum.ordinal()) {
 						pool.add(id);
 					}
 				}
@@ -98,17 +115,19 @@ public final class WorldInteractions {
 			if (!pool.isEmpty()) {
 				Identifier part = pool.get(player.getRandom().nextInt(pool.size()));
 				MorselDrops.spawnMorsel(level, pos.getX() + 0.5, pos.getY() + 1.4, pos.getZ() + 0.5, part);
-				player.sendSystemMessage(Component.translatable(fossil ? "msg.primordial.dig_found_fossil" : "msg.primordial.dig_found_morsel").withStyle(ChatFormatting.GOLD), true);
+				player.sendSystemMessage(Component.translatable(tier > 0 ? "msg.primordial.dig_found_cave" : fossil ? "msg.primordial.dig_found_fossil" : "msg.primordial.dig_found_morsel")
+					.withStyle(ChatFormatting.GOLD), true);
 				return;
 			}
 		}
-		if (roll < (fossil ? 0.95 : 0.85)) {
-			int dna = (fossil ? 30 : 10) + player.getRandom().nextInt(fossil ? 20 : 15);
+		int scale = 1 + tier;
+		if (roll < partChance + 0.1) {
+			int dna = ((fossil ? 30 : 10) + player.getRandom().nextInt(fossil ? 20 : 15)) * scale;
 			CreatureService.addDna(player, dna);
 			player.sendSystemMessage(Component.translatable("msg.primordial.dig_found_dna", dna).withStyle(ChatFormatting.AQUA), true);
 		} else {
-			CreatureService.addXp(player, fossil ? 60 : 25);
-			CreatureService.addDna(player, 5);
+			CreatureService.addXp(player, (fossil ? 60 : 25) * scale);
+			CreatureService.addDna(player, 5 * scale);
 			player.sendSystemMessage(Component.translatable("msg.primordial.dig_found_xp").withStyle(ChatFormatting.GREEN), true);
 		}
 		level.sendParticles(ParticleTypes.GLOW, pos.getX() + 0.5, pos.getY() + 1.3, pos.getZ() + 0.5, 20, 0.3, 0.3, 0.3, 0.05);

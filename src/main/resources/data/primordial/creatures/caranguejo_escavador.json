@@ -1,0 +1,28 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.8,
+  0.6
+ ],
+ "health": 12,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [
+  "deep_reward"
+ ],
+ "look": "primordial:carangueijo",
+ "features": [
+  "legs",
+  "shell"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 7,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

@@ -32,7 +32,7 @@ public final class Abilities {
 		return ALL.get(name);
 	}
 
-	private static void register(String name, int cooldownTicks, Ability.Effect effect) {
+	static void register(String name, int cooldownTicks, Ability.Effect effect) {
 		ALL.put(name, new Ability() {
 			@Override
 			public int cooldownTicks() {
@@ -47,6 +47,7 @@ public final class Abilities {
 	}
 
 	public static void init() {
+		BuilderAbilities.init();
 		register("investida", 50, (player, level) -> {
 			ServerLevel world = player.level();
 			Vec3 look = player.getLookAngle();

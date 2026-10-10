@@ -88,6 +88,28 @@ public final class AbilityManager {
 		ability.use(player, levelOf(player, id));
 	}
 
+	/** Usa a habilidade de inteligência do slot (teclas Y, U, I, O). */
+	public static void useIntellect(ServerPlayer player, int index) {
+		if (!Creatures.isCreature(player)) {
+			return;
+		}
+		Identifier id = com.primordial.intellect.IntellectService.state(player).slot(index);
+		if (id == null || !Abilities.exists(id.getPath())) {
+			return;
+		}
+		Ability ability = Abilities.get(id.getPath());
+		String name = id.getPath();
+		long now = player.level().getGameTime();
+		Map<String, Long> used = LAST_USED.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
+		long readyAt = used.getOrDefault(name, 0L) + ability.cooldownTicks();
+		if (now < readyAt) {
+			player.sendSystemMessage(Component.translatable("msg.primordial.cooldown", (readyAt - now + 19) / 20).withStyle(ChatFormatting.GRAY), true);
+			return;
+		}
+		used.put(name, now);
+		ability.use(player, com.primordial.intellect.IntellectService.power(player));
+	}
+
 	public static void makeNest(ServerPlayer player) {
 		CreatureService.setNest(player);
 	}

@@ -1,0 +1,28 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:lesma_pedreira",
+ "families": [
+  "construtor",
+  "couracado"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 1.0,
+   "per_level": 0.5
+  },
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.2,
+   "per_level": 0.1
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell"
+  ],
+  "tint": "#8C7A5B"
+ }
+}
