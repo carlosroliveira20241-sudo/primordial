@@ -1,0 +1,35 @@
+{
+ "slot": "skin",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:tartaruga_couraca",
+ "families": [
+  "couracado"
+ ],
+ "passives": [
+  "hibernation"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 4.0,
+   "per_level": 2.0
+  },
+  {
+   "attribute": "minecraft:armor",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell"
+  ],
+  "scale": [
+   1.1,
+   1.1,
+   1.0
+  ],
+  "tint": "#5D8A4A"
+ }
+}

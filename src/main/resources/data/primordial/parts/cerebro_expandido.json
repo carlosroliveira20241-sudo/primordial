@@ -1,0 +1,20 @@
+{
+ "slot": "head",
+ "min_stage": 3,
+ "cost": 35,
+ "source": "primordial:polvo_sombra",
+ "families": [
+  "abissal"
+ ],
+ "rarity": "rare",
+ "passives": [
+  "quick_mind"
+ ],
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "brain_l"
+  ],
+  "tint": "#B06AD0"
+ }
+}

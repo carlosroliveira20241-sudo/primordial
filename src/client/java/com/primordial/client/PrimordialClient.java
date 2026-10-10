@@ -123,6 +123,7 @@ public class PrimordialClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(Payloads.Evolved.TYPE, (payload, ctx) ->
 			ctx.player().sendSystemMessage(Component.translatable("msg.primordial.you_evolved", payload.stage()).withStyle(ChatFormatting.GOLD)));
 
+		ClientPlayNetworking.registerGlobalReceiver(Payloads.Danger.TYPE, (payload, ctx) -> PrimordialHud.setDanger(payload.hunters()));
 		HudElementRegistry.addLast(Primordial.id("hud"), PrimordialHud::render);
 	}
 

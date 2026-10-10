@@ -79,7 +79,7 @@ public final class AbilityManager {
 		Ability ability = Abilities.get(name);
 		long now = player.level().getGameTime();
 		Map<String, Long> used = LAST_USED.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
-		long readyAt = used.getOrDefault(name, 0L) + ability.cooldownTicks();
+		long readyAt = used.getOrDefault(name, 0L) + (long) (ability.cooldownTicks() * com.primordial.mutation.MutationEffects.cooldownFactor(player));
 		if (now < readyAt) {
 			player.sendSystemMessage(Component.translatable("msg.primordial.cooldown", (readyAt - now + 19) / 20).withStyle(ChatFormatting.GRAY), true);
 			return;

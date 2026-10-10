@@ -17,7 +17,36 @@ import net.minecraft.world.entity.player.Player;
 public final class PrimordialHud {
 	private static final String[] KEYS = {"Z", "X", "B", "H"};
 
+	private static java.util.List<net.minecraft.core.BlockPos> danger = java.util.List.of();
+	private static long dangerTime;
+
 	private PrimordialHud() {
+	}
+
+	public static void setDanger(java.util.List<net.minecraft.core.BlockPos> hunters) {
+		danger = hunters;
+		dangerTime = System.currentTimeMillis();
+	}
+
+	/** Marcadores vermelhos na borda da tela mostrando de onde vêm os predadores que estão te caçando. */
+	private static void drawDanger(GuiGraphicsExtractor graphics, Minecraft mc, Player player) {
+		if (danger.isEmpty() || System.currentTimeMillis() - dangerTime > 1500) {
+			return;
+		}
+		int w = mc.getWindow().getGuiScaledWidth();
+		int h = mc.getWindow().getGuiScaledHeight();
+		float radius = Math.min(w, h) * 0.36F;
+		for (net.minecraft.core.BlockPos pos : danger) {
+			double dx = pos.getX() + 0.5 - player.getX();
+			double dz = pos.getZ() + 0.5 - player.getZ();
+			double bearing = Math.toDegrees(Math.atan2(-dx, dz)) - player.getYRot();
+			double rad = Math.toRadians(bearing);
+			int px = (int) (w / 2.0 + Math.sin(-rad) * radius);
+			int py = (int) (h / 2.0 - Math.cos(rad) * radius);
+			graphics.fill(px - 8, py - 8, px + 8, py + 8, 0xC0600000);
+			graphics.outline(px - 8, py - 8, 16, 16, 0xFFFF4040);
+			graphics.centeredText(mc.font, "!", px, py - 4, 0xFFFFFFFF);
+		}
 	}
 
 	public static void render(GuiGraphicsExtractor graphics, DeltaTracker tracker) {
@@ -26,6 +55,7 @@ public final class PrimordialHud {
 		if (player == null || mc.gui.hud.isHidden() || !Creatures.isCreature(player)) {
 			return;
 		}
+		drawDanger(graphics, mc, player);
 		CreatureBody body = Creatures.body(player);
 		CreatureProgress progress = Creatures.progress(player);
 

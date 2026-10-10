@@ -1,0 +1,17 @@
+{
+ "rarity": "legendary",
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 20
+  },
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 3
+  },
+  {
+   "attribute": "primordial:lifesteal",
+   "base": 0.1
+  }
+ ]
+}

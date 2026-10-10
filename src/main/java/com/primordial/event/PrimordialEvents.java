@@ -68,6 +68,7 @@ public final class PrimordialEvents {
 				}
 			} else {
 				feedScavengers(entity);
+				com.primordial.world.OceanLife.addCarcass(entity);
 				if (source.getEntity() instanceof ServerPlayer killer && Creatures.isCreature(killer)) {
 					MorselDrops.onKill(killer, entity);
 				}
@@ -144,6 +145,22 @@ public final class PrimordialEvents {
 			if (stack.is(PrimordialItems.MORSEL)) {
 				return eatHeld(player, level, stack);
 			}
+			if (stack.is(PrimordialItems.CAPSULA)) {
+				if (!level.isClientSide() && player instanceof ServerPlayer server && Creatures.isCreature(server)) {
+					CreatureService.addDna(server, 40);
+					CreatureService.addXp(server, 20);
+					if (server.getRandom().nextFloat() < 0.35F) {
+						java.util.List<Identifier> parts = com.primordial.part.PartRegistry.droppable();
+						if (!parts.isEmpty()) {
+							MorselDrops.award(server, server.level(), server.getX(), server.getY(), server.getZ(), parts.get(server.getRandom().nextInt(parts.size())));
+						}
+					}
+					if (!player.isCreative()) {
+						stack.shrink(1);
+					}
+				}
+				return InteractionResult.SUCCESS;
+			}
 			if (com.primordial.creature.FeedingService.isFood(stack)) {
 				if (!Creatures.isCreature(player)) {
 					return InteractionResult.PASS;
@@ -162,6 +179,7 @@ public final class PrimordialEvents {
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> Creatures.isRestricted(player) ? InteractionResult.FAIL : InteractionResult.PASS);
 
 		CombatEffects.init();
+		LootInjection.init();
 		ServerTickEvents.END_LEVEL_TICK.register(PrimordialEvents::tickLevel);
 	}
 
@@ -185,6 +203,7 @@ public final class PrimordialEvents {
 
 	private static void tickLevel(ServerLevel level) {
 		com.primordial.world.OceanLife.tickLevel(level);
+		com.primordial.world.TimedBlocks.tick(level);
 		for (ServerPlayer player : level.players()) {
 			if (!Creatures.isCreature(player) || player.isSpectator()) {
 				continue;
@@ -192,6 +211,7 @@ public final class PrimordialEvents {
 			eatNearbyMorsels(level, player);
 			com.primordial.world.SeabedSeeder.tick(level, player);
 			com.primordial.ability.Passives.tick(player);
+			com.primordial.world.Geysers.tickPlayer(level, player);
 			com.primordial.capability.InventoryRules.enforce(player);
 			if (player.tickCount % 40 == 0) {
 				com.primordial.journal.JournalService.scanNearby(player);

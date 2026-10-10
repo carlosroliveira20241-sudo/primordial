@@ -1,0 +1,10 @@
+{
+ "rarity": "legendary",
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 6
+  }
+ ],
+ "passive": "cooldown_down_big"
+}

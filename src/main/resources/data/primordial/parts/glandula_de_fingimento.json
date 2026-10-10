@@ -1,0 +1,17 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:fingidor",
+ "families": [
+  "sombra"
+ ],
+ "ability": "primordial:fingir_de_morto",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "bulb"
+  ],
+  "tint": "#8D8D7A"
+ }
+}

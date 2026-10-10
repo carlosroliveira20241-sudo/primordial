@@ -16,6 +16,9 @@ public final class CombatEffects {
 	}
 
 	public static void init() {
+		// Segunda Vida: a mutação que salva de um golpe fatal.
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
+			!(entity instanceof ServerPlayer player && Creatures.isCreature(player) && com.primordial.mutation.MutationEffects.trySecondLife(player)));
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, source, baseDamage, damage, blocked) -> {
 			if (inside || blocked || damage <= 0 || !(victim.level() instanceof ServerLevel level)) {
 				return;
@@ -25,6 +28,11 @@ public final class CombatEffects {
 				// Espinhos: quem bate em você leva de volta.
 				if (victim instanceof ServerPlayer defender && Creatures.isCreature(defender)
 					&& source.getEntity() instanceof LivingEntity attacker && attacker != defender) {
+					// Escamas espelhadas: parte do dano volta para quem bateu.
+					int mirror = Creatures.passiveLevel(defender, "mirror");
+					if (mirror > 0) {
+						attacker.hurtServer(level, defender.damageSources().thorns(defender), damage * (mirror >= 3 ? 0.5F : 0.25F));
+					}
 					double thorns = defender.getAttributeValue(PrimordialAttributes.THORNS);
 					if (thorns > 0) {
 						attacker.hurtServer(level, defender.damageSources().thorns(defender), (float) thorns);

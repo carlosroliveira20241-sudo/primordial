@@ -1,0 +1,10 @@
+{
+ "rarity": "rare",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.5
+  }
+ ],
+ "passive": "night_vision"
+}

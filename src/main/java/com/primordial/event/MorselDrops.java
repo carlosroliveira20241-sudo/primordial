@@ -32,6 +32,22 @@ public final class MorselDrops {
 			CreatureService.setProgress(killer, before.withBigKills(before.bigKills() + 1));
 		}
 		CreatureDef def = CreatureRegistry.get(species);
+		if (def != null && def.has("boss")) {
+			com.primordial.journal.JournalService.bump(killer, "boss_kill", 1);
+		}
+		if (def != null && def.has("eggs")) {
+			// Ninho de Ovos: muito DNA, mas os pais chegam furiosos.
+			CreatureService.addDna(killer, 25);
+			net.minecraft.world.entity.EntityType<?> guard = CreatureRegistry.types().get(com.primordial.Primordial.id("moreia"));
+			for (int i = 0; guard != null && i < 3; i++) {
+				net.minecraft.world.entity.Entity e = guard.create(killer.level(), net.minecraft.world.entity.EntitySpawnReason.EVENT);
+				if (e instanceof net.minecraft.world.entity.Mob mob) {
+					mob.setPos(victim.getX() + (i - 1), victim.getY(), victim.getZ() + (i % 2));
+					killer.level().addFreshEntity(mob);
+					mob.setTarget(killer);
+				}
+			}
+		}
 		if (def != null) {
 			com.primordial.journal.JournalService.recordKill(killer, species);
 			if (victim.entityTags().contains(ALPHA_TAG)) {

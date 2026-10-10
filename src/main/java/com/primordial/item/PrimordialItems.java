@@ -29,6 +29,8 @@ public final class PrimordialItems {
 	public static final Item ALGA = register("alga_marinha");
 	public static final Item CARNE = register("carne_marinha");
 	public static final Item PLANCTON = register("plancton");
+	/** Achada em naufrágios e ruínas: dá DNA e, às vezes, uma Melhoria. */
+	public static final Item CAPSULA = register("capsula_de_dna");
 	/** Ferramenta feita de coral (3 corais na grade de criação): quebra pedra como uma picareta de pedra. */
 	public static final Item CORAL_TOOL = registerTool("ferramenta_de_coral");
 

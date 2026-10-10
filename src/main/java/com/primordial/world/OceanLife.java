@@ -35,7 +35,33 @@ public final class OceanLife {
 	public static long frenzyUntil;
 
 	private static final List<Cloud> CLOUDS = new ArrayList<>();
+	private static final List<Cloud> CARCASSES = new ArrayList<>();
+	private static long stormUntil;
+
+	/** Uma criatura grande morreu: o corpo atrai predadores por 90 segundos. */
+	public static void addCarcass(net.minecraft.world.entity.LivingEntity dead) {
+		if (!(dead.level() instanceof ServerLevel) || CARCASSES.size() > 30 || dead.getMaxHealth() < 8.0F
+			|| com.primordial.entity.CreatureRegistry.of(dead.getType()) == null || com.primordial.entity.CreatureRegistry.of(dead.getType()).has("undead")) {
+			return;
+		}
+		CARCASSES.add(new Cloud(dead.position(), dead.level().getGameTime() + 1800));
+	}
+
+	/** Para a IA dos predadores: a carcaça mais próxima, ou nulo. */
+	public static Vec3 nearestCarcass(ServerLevel level, Vec3 from, double range) {
+		Vec3 best = null;
+		double bestDist = range * range;
+		for (Cloud c : CARCASSES) {
+			double d = c.pos.distanceToSqr(from);
+			if (d < bestDist && level.getGameTime() < c.expires) {
+				best = c.pos;
+				bestDist = d;
+			}
+		}
+		return best;
+	}
 	private static long nextEvent = -1;
+	private static final java.util.Set<java.util.UUID> DANGER_SENT = new java.util.HashSet<>();
 	private static BlockPos tideCenter;
 	private static long tideUntil;
 
@@ -76,6 +102,16 @@ public final class OceanLife {
 			spawnPlankton(level, swimmers.get(level.getRandom().nextInt(swimmers.size())), now);
 		}
 		tickClouds(level, swimmers, now);
+		CARCASSES.removeIf(c -> now > c.expires);
+		if (now % 20 == 0) {
+			for (Cloud carcass : CARCASSES) {
+				level.sendParticles(new DustParticleOptions(0xAA1111, 1.5F), carcass.pos.x, carcass.pos.y + 0.3, carcass.pos.z, 8, 0.5, 0.4, 0.5, 0.0);
+			}
+		}
+		tickStorm(level, swimmers, now);
+		if (now % 10 == 0) {
+			sendDanger(level, swimmers);
+		}
 		tickTide(level, now);
 		tickEvents(level, swimmers, now);
 	}
@@ -138,11 +174,13 @@ public final class OceanLife {
 		int span = Math.max(1, config.eventMaxMinutes - config.eventMinMinutes);
 		nextEvent = now + 20L * 60 * (config.eventMinMinutes + level.getRandom().nextInt(span + 1));
 		ServerPlayer target = swimmers.get(level.getRandom().nextInt(swimmers.size()));
-		switch (level.getRandom().nextInt(4)) {
+		switch (level.getRandom().nextInt(6)) {
 			case 0 -> spawning(level, target);
 			case 1 -> frenzy(level, target, now);
 			case 2 -> redTide(level, target, now);
-			default -> leviathan(level, target);
+			case 3 -> leviathan(level, target);
+			case 4 -> whale(level, target);
+			default -> storm(level, now);
 		}
 	}
 
@@ -179,6 +217,98 @@ public final class OceanLife {
 		}
 		announce(level, "event.primordial.leviathan", ChatFormatting.DARK_PURPLE);
 		spawnNear(level, target, "leviata_ancestral", 28);
+	}
+
+	/** Migração da Baleia-Colosso: uma baleia gigante passa; nadar na esteira dela dá velocidade e vida. */
+	private static void whale(ServerLevel level, ServerPlayer target) {
+		announce(level, "event.primordial.whale", ChatFormatting.AQUA);
+		EntityType<?> type = CreatureRegistry.types().get(Primordial.id("baleia_colosso"));
+		if (type == null) {
+			return;
+		}
+		double ang = level.getRandom().nextDouble() * Math.PI * 2;
+		double x = target.getX() + Math.cos(ang) * 40;
+		double z = target.getZ() + Math.sin(ang) * 40;
+		Entity whale = type.create(level, EntitySpawnReason.EVENT);
+		if (whale != null) {
+			whale.setPos(x, target.getY() + 2, z);
+			whale.setYRot((float) (Math.toDegrees(Math.atan2(-(target.getX() - x), target.getZ() - z))));
+			level.addFreshEntity(whale);
+			for (int i = 0; i < 6; i++) {
+				spawnNearPoint(level, "parasita", x, whale.getY(), z, 5);
+			}
+		}
+	}
+
+	/** Tempestade: raios caem na superfície por 90 segundos e as criaturas elétricas ficam mais fortes. */
+	private static void storm(ServerLevel level, long now) {
+		announce(level, "event.primordial.storm", ChatFormatting.YELLOW);
+		stormUntil = now + 20L * 90;
+	}
+
+	private static void tickStorm(ServerLevel level, List<ServerPlayer> swimmers, long now) {
+		if (now >= stormUntil) {
+			return;
+		}
+		if (now % 40 == 0) {
+			ServerPlayer near = swimmers.get(level.getRandom().nextInt(swimmers.size()));
+			double x = near.getX() + (level.getRandom().nextDouble() - 0.5) * 36;
+			double z = near.getZ() + (level.getRandom().nextDouble() - 0.5) * 36;
+			net.minecraft.world.entity.LightningBolt bolt = net.minecraft.world.entity.EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+			if (bolt != null) {
+				bolt.setPos(x, level.getSeaLevel(), z);
+				bolt.setVisualOnly(true);
+				level.addFreshEntity(bolt);
+			}
+			for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(x - 7, level.getSeaLevel() - 10, z - 7, x + 7, level.getSeaLevel() + 2, z + 7), e -> e.isInWater())) {
+				if (!(hit instanceof ServerPlayer p && (p.isCreative() || p.isSpectator()))) {
+					hit.hurtServer(level, level.damageSources().lightningBolt(), 4.0F);
+				}
+			}
+		}
+		if (now % 100 == 0) {
+			for (ServerPlayer p : swimmers) {
+				for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, p.getBoundingBox().inflate(40.0))) {
+					var def = com.primordial.entity.CreatureRegistry.of(e.getType());
+					if (def != null && (def.has("shock_hit") || def.has("shock_touch"))) {
+						e.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 140, 1));
+					}
+				}
+			}
+		}
+	}
+
+	/** Seta de perigo: avisa o jogador de onde vêm os predadores que estão atrás dele. */
+	private static void sendDanger(ServerLevel level, List<ServerPlayer> swimmers) {
+		for (ServerPlayer player : swimmers) {
+			List<BlockPos> hunters = new ArrayList<>();
+			for (net.minecraft.world.entity.Mob mob : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, player.getBoundingBox().inflate(40.0), m -> m.getTarget() == player)) {
+				if (hunters.size() < 3) {
+					hunters.add(mob.blockPosition());
+				}
+			}
+			boolean had = DANGER_SENT.contains(player.getUUID());
+			if (!hunters.isEmpty() || had) {
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new com.primordial.net.Payloads.Danger(hunters));
+				if (hunters.isEmpty()) {
+					DANGER_SENT.remove(player.getUUID());
+				} else {
+					DANGER_SENT.add(player.getUUID());
+				}
+			}
+		}
+	}
+
+	private static void spawnNearPoint(ServerLevel level, String creature, double x, double y, double z, int radius) {
+		EntityType<?> type = CreatureRegistry.types().get(Primordial.id(creature));
+		if (type == null) {
+			return;
+		}
+		Entity entity = type.create(level, EntitySpawnReason.EVENT);
+		if (entity != null) {
+			entity.setPos(x + (level.getRandom().nextDouble() - 0.5) * 2 * radius, y, z + (level.getRandom().nextDouble() - 0.5) * 2 * radius);
+			level.addFreshEntity(entity);
+		}
 	}
 
 	/** Maré Vermelha: uma mancha de alga tóxica que envenena quem nada nela por 90 s. */

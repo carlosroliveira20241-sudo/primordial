@@ -13,14 +13,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 
 /**
- * Escolha do corpo e da cor. As formas vêm de {@code looks/*.json} (as mesmas que as criaturas do mod usam).
- * Sem origem: é o editor de aparência (tecla K), que custa um pouco de DNA. Com origem: é o fim da criação do personagem.
+ * Escolha do corpo, da cor, do padrão de pele e (na criação) do nome da espécie. As formas vêm de
+ * {@code looks/*.json}, as mesmas que as criaturas do mod usam. Sem origem: é o editor de aparência, que custa DNA.
  */
 public class LookScreen extends Screen {
 	private static final int[] COLORS = {
@@ -31,7 +32,10 @@ public class LookScreen extends Screen {
 	private final List<Identifier> looks = LookRegistry.selectable();
 	private int lookIndex;
 	private int colorIndex;
+	private Pattern pattern = Pattern.LISO;
 	private Button lookButton;
+	private Button patternButton;
+	private EditBox nameBox;
 
 	public LookScreen() {
 		this(null);
@@ -43,8 +47,8 @@ public class LookScreen extends Screen {
 		Minecraft mc = Minecraft.getInstance();
 		if (origin == null && mc.player != null) {
 			CreatureBody body = Creatures.body(mc.player);
-			int at = this.looks.indexOf(body.look());
-			this.lookIndex = Math.max(at, 0);
+			this.lookIndex = Math.max(this.looks.indexOf(body.look()), 0);
+			this.pattern = body.pattern();
 			for (int i = 1; i < COLORS.length; i++) {
 				if (COLORS[i] == body.primaryColor()) {
 					this.colorIndex = i;
@@ -56,27 +60,46 @@ public class LookScreen extends Screen {
 	@Override
 	protected void init() {
 		int cx = this.width / 2;
-		int y = this.height / 2 - 40;
+		int y = this.height / 2 - 78;
 
 		this.addRenderableWidget(Button.builder(Component.literal("<"), b -> shiftLook(-1)).bounds(cx - 130, y, 20, 20).build());
 		this.lookButton = this.addRenderableWidget(Button.builder(lookLabel(), b -> shiftLook(1)).bounds(cx - 106, y, 212, 20).build());
 		this.addRenderableWidget(Button.builder(Component.literal(">"), b -> shiftLook(1)).bounds(cx + 110, y, 20, 20).build());
 
-		y += 30;
+		y += 28;
 		int x = cx - (COLORS.length * 22) / 2;
 		for (int i = 0; i < COLORS.length; i++) {
 			int index = i;
 			Component label = i == 0 ? Component.translatable("screen.primordial.look.default_color")
-				: Component.literal("■").withStyle(Style.EMPTY.withColor(COLORS[i]));
-			this.addRenderableWidget(Button.builder(label, b -> this.colorIndex = index).bounds(x + i * 22, y, i == 0 ? 20 : 20, 20).build());
+				: Component.literal("\u25A0").withStyle(Style.EMPTY.withColor(COLORS[i]));
+			this.addRenderableWidget(Button.builder(label, b -> this.colorIndex = index).bounds(x + i * 22, y, 20, 20).build());
 		}
 
-		y += 40;
+		y += 28;
+		this.patternButton = this.addRenderableWidget(Button.builder(patternLabel(), b -> {
+			Pattern[] all = Pattern.values();
+			this.pattern = all[(this.pattern.ordinal() + 1) % all.length];
+			this.patternButton.setMessage(patternLabel());
+		}).bounds(cx - 106, y, 212, 20).build());
+
+		y += 28;
+		if (this.origin != null) {
+			this.nameBox = new EditBox(this.font, cx - 106, y, 212, 20, Component.translatable("screen.primordial.look.name"));
+			this.nameBox.setMaxLength(24);
+			this.nameBox.setHint(Component.translatable("screen.primordial.look.name"));
+			this.addRenderableWidget(this.nameBox);
+			y += 28;
+		}
+
 		Component confirm = Component.translatable(this.origin == null ? "screen.primordial.look.apply" : "screen.primordial.look.confirm", CreatureService.LOOK_CHANGE_COST);
 		this.addRenderableWidget(Button.builder(confirm, b -> confirm()).bounds(cx - 100, y, 200, 20).build());
 		if (this.origin == null) {
 			this.addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), b -> this.onClose()).bounds(cx - 100, y + 24, 200, 20).build());
 		}
+	}
+
+	private Component patternLabel() {
+		return Component.translatable("screen.primordial.look.pattern", Component.translatable(this.pattern.translationKey()));
 	}
 
 	private Identifier currentLook() {
@@ -102,10 +125,11 @@ public class LookScreen extends Screen {
 	private void confirm() {
 		int color = currentColor();
 		if (this.origin != null) {
-			ClientPlayNetworking.send(new Payloads.ChooseOrigin(this.origin, "", color, CreatureBody.DEFAULT_SECONDARY, Pattern.LISO, currentLook()));
+			String name = this.nameBox == null ? "" : this.nameBox.getValue();
+			ClientPlayNetworking.send(new Payloads.ChooseOrigin(this.origin, name, color, CreatureBody.DEFAULT_SECONDARY, this.pattern, currentLook()));
 		} else {
 			CreatureBody body = Creatures.body(Minecraft.getInstance().player);
-			ClientPlayNetworking.send(new Payloads.SetLook(color, body.secondaryColor(), body.detailColor(), body.pattern(), currentLook()));
+			ClientPlayNetworking.send(new Payloads.SetLook(color, body.secondaryColor(), body.detailColor(), this.pattern, currentLook()));
 		}
 		this.onClose();
 	}
@@ -128,15 +152,15 @@ public class LookScreen extends Screen {
 	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
 		super.extractRenderState(graphics, mouseX, mouseY, a);
 		int cx = this.width / 2;
-		graphics.centeredText(this.font, this.title, cx, this.height / 2 - 72, 0xFFFFFFFF);
-		graphics.centeredText(this.font, Component.translatable("screen.primordial.look.sub"), cx, this.height / 2 - 60, 0xFFAAAAAA);
+		graphics.centeredText(this.font, this.title, cx, this.height / 2 - 108, 0xFFFFFFFF);
+		graphics.centeredText(this.font, Component.translatable("screen.primordial.look.sub"), cx, this.height / 2 - 96, 0xFFAAAAAA);
 
 		// Prévia simples: o corpo desenhado com as proporções da forma, na cor escolhida.
 		Look look = LookRegistry.get(currentLook());
 		int color = 0xFF000000 | currentColor();
 		int w = Math.round(24 * look.sz());
 		int h = Math.round(10 * look.sy() * Math.max(look.sx(), 0.8F));
-		int py = this.height / 2 + 70;
+		int py = this.height / 2 + 112;
 		graphics.fill(cx - w / 2, py - h / 2, cx + w / 2, py + h / 2, color);
 		graphics.fill(cx + w / 2, py - h / 2 - 2, cx + w / 2 + 8, py + h / 2 + 2, color);
 		graphics.fill(cx - w / 2 + 3, py - h / 4, cx - w / 2 + 6, py - h / 4 + 3, 0xFF101010);

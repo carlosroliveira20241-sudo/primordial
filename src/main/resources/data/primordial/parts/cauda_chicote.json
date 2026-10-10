@@ -1,0 +1,23 @@
+{
+ "slot": "tail",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:raia_planadora",
+ "families": [
+  "predador"
+ ],
+ "ability": "primordial:chicotada_giratoria",
+ "modifiers": [
+  {
+   "attribute": "minecraft:entity_interaction_range",
+   "base": 0.4,
+   "per_level": 0.2
+  }
+ ],
+ "visual": {
+  "features": [
+   "bigtail"
+  ],
+  "tint": "#5B7FA6"
+ }
+}

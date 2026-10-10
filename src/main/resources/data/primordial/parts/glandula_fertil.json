@@ -1,0 +1,17 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:peixe_papagaio",
+ "families": [
+  "natureza"
+ ],
+ "ability": "primordial:florescer",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "tentacles"
+  ],
+  "tint": "#7DCEA0"
+ }
+}

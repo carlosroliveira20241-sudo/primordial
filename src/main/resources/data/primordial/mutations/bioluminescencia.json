@@ -1,0 +1,10 @@
+{
+ "rarity": "rare",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": -1
+  }
+ ],
+ "passive": "night_regen"
+}

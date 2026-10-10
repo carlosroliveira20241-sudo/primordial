@@ -99,6 +99,7 @@ public final class SeabedSeeder {
 
 	private static void scanChunk(ServerLevel level, Identifier dim, int cx, int cz, long chunkKey) {
 		Lairs.maybeBuild(level, cx, cz);
+		Geysers.scan(level, cx, cz);
 		List<BlockPos> glowing = new ArrayList<>();
 		int sea = level.getSeaLevel();
 		for (int dx = 0; dx < 16; dx++) {

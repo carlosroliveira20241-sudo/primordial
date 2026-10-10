@@ -1,0 +1,17 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:serpente_brasa",
+ "families": [
+  "ardente"
+ ],
+ "ability": "primordial:intimidar",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "sail"
+  ],
+  "tint": "#E5683A"
+ }
+}

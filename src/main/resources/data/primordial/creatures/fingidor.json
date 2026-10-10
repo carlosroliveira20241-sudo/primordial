@@ -1,0 +1,25 @@
+{
+ "behavior": "fish",
+ "size": [
+  0.7,
+  0.6
+ ],
+ "health": 8,
+ "damage": 2.0,
+ "speed": 0.5,
+ "power": 0.5,
+ "traits": [],
+ "look": "primordial:fingidor",
+ "features": [
+  "bulb"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "ambient",
+  "weight": 6,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:lobo_gelido",
+ "families": [
+  "abissal"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:sopro_congelante",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "crystals"
+  ],
+  "tint": "#BFE9FF"
+ }
+}

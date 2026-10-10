@@ -1,0 +1,13 @@
+{
+ "rarity": "common",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_speed",
+   "base": 0.3
+  },
+  {
+   "attribute": "minecraft:armor",
+   "base": -1
+  }
+ ]
+}

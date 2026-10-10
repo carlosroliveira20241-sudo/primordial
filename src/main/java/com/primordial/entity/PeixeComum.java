@@ -27,7 +27,7 @@ public class PeixeComum extends AbstractFish {
 	public PeixeComum(EntityType<? extends AbstractFish> type, Level level) {
 		super(type, level);
 		this.def = CreatureRegistry.of(type);
-		if (has("still")) {
+		if (has("still") || has("whale")) {
 			this.setNoAi(true);
 		}
 		if (has("glow")) {
@@ -55,6 +55,35 @@ public class PeixeComum extends AbstractFish {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (this.level() instanceof ServerLevel world) {
+			if (has("anemone") && this.tickCount % 20 == 0) {
+				// Anêmona: cura quem é criatura e machuca quem a incomoda.
+				for (LivingEntity near : world.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.5), e -> e != this)) {
+					if (near instanceof net.minecraft.server.level.ServerPlayer p && com.primordial.creature.Creatures.isCreature(p)) {
+						p.heal(1.0F);
+						world.sendParticles(ParticleTypes.HEART, p.getX(), p.getY() + 0.6, p.getZ(), 1, 0.2, 0.2, 0.2, 0.0);
+					} else if (near instanceof com.primordial.entity.Predador || near instanceof net.minecraft.world.entity.monster.Monster) {
+						near.hurtServer(world, this.damageSources().mobAttack(this), 2.0F);
+						near.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
+					}
+				}
+			}
+			if (has("whale")) {
+				// Baleia-Colosso: segue em linha reta e abençoa quem nada na esteira dela.
+				net.minecraft.world.phys.Vec3 heading = net.minecraft.world.phys.Vec3.directionFromRotation(0.0F, this.getYRot());
+				this.move(net.minecraft.world.entity.MoverType.SELF, heading.scale(0.14));
+				if (this.tickCount > 6000) {
+					this.discard();
+				}
+				if (this.tickCount % 20 == 0) {
+					for (net.minecraft.server.level.ServerPlayer p : world.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class, this.getBoundingBox().inflate(14.0))) {
+						p.addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 1));
+						p.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0));
+					}
+					world.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, this.getX(), this.getY(), this.getZ(), 20, 3.0, 1.5, 3.0, 0.02);
+				}
+			}
+		}
 		if (has("symbiont")) {
 			Symbionts.tick(this);
 		}

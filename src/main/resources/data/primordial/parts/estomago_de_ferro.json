@@ -1,0 +1,25 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 25,
+ "source": "primordial:lesma_pedreira",
+ "families": [
+  "predador"
+ ],
+ "passives": [
+  "iron_stomach"
+ ],
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": 2.0,
+   "per_level": 1.0
+  }
+ ],
+ "visual": {
+  "features": [
+   "bulb"
+  ],
+  "tint": "#8C7A5B"
+ }
+}

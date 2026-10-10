@@ -1,0 +1,18 @@
+{
+ "slot": "organ",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:enguia_eletrica",
+ "families": [
+  "predador"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:frenesi",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "spikes"
+  ],
+  "tint": "#E74C3C"
+ }
+}

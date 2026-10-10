@@ -1,0 +1,29 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:gargula_do_recife",
+ "families": [
+  "couracado"
+ ],
+ "rarity": "rare",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 3.0,
+   "per_level": 1.0
+  },
+  {
+   "attribute": "minecraft:knockback_resistance",
+   "base": 0.2,
+   "per_level": 0.1
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell",
+   "spikes"
+  ],
+  "tint": "#6A6F7A"
+ }
+}

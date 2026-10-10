@@ -1,0 +1,29 @@
+{
+ "slot": "back",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:linguado",
+ "families": [
+  "sombra"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:enterrar_se",
+ "modifiers": [
+  {
+   "attribute": "minecraft:armor",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "features": [
+   "shell"
+  ],
+  "scale": [
+   1.3,
+   0.7,
+   1.1
+  ],
+  "tint": "#C9B18A"
+ }
+}

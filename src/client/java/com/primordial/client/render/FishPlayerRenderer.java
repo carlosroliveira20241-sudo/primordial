@@ -23,7 +23,7 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 
 	@Override
 	public Identifier getTextureLocation(FishPlayerState state) {
-		return FishLook.TEXTURE;
+		return FishLook.texture(state.pattern);
 	}
 
 	@Override
@@ -49,6 +49,11 @@ public class FishPlayerRenderer extends LivingEntityRenderer<AbstractClientPlaye
 			state.features.add(brain >= 6 ? "brain_l" : brain >= 4 ? "brain_m" : "brain_s");
 		}
 		state.shape = FishLook.shapeOf(look.model());
+		state.pattern = body.pattern();
+		// o nome da espécie aparece junto do nome do jogador
+		if (!body.speciesName().isEmpty() && state.nameTag != null) {
+			state.nameTag = net.minecraft.network.chat.Component.literal(body.speciesName() + " (").append(state.nameTag).append(")");
+		}
 	}
 
 	@Override

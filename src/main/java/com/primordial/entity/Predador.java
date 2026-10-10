@@ -93,6 +93,9 @@ public class Predador extends AbstractFish {
 		if (player.isCreative() || player.isSpectator()) {
 			return false;
 		}
+		if (com.primordial.ability.Hiding.isHidden(player)) {
+			return false;
+		}
 		float power = this.def != null ? this.def.power() : 0.5F;
 		return !Creatures.isCreature(player) || Creatures.body(player).stage().scale < power;
 	}
@@ -100,6 +103,12 @@ public class Predador extends AbstractFish {
 	@Override
 	public void aiStep() {
 		super.aiStep();
+		if (this.getTarget() == null && this.tickCount % 30 == 0 && this.level() instanceof ServerLevel world) {
+			net.minecraft.world.phys.Vec3 carcass = com.primordial.world.OceanLife.nearestCarcass(world, this.position(), 32.0);
+			if (carcass != null) {
+				this.getNavigation().moveTo(carcass.x, carcass.y, carcass.z, 1.1);
+			}
+		}
 		if (this.bossBar != null) {
 			this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
 		}

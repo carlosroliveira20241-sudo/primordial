@@ -1,0 +1,10 @@
+{
+ "rarity": "common",
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": -2
+  }
+ ],
+ "passive": "regen"
+}

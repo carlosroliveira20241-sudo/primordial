@@ -1,0 +1,27 @@
+{
+ "slot": "mouth",
+ "min_stage": 2,
+ "cost": 30,
+ "source": "primordial:serpente_marinha",
+ "families": [
+  "predador",
+  "sombra"
+ ],
+ "rarity": "rare",
+ "diet": "carnivore",
+ "ability": "primordial:bote_venenoso",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 1.0,
+   "per_level": 0.5
+  }
+ ],
+ "visual": {
+  "features": [
+   "jaw",
+   "teeth"
+  ],
+  "tint": "#6BCB6B"
+ }
+}

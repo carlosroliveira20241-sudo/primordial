@@ -1,0 +1,14 @@
+{
+ "rarity": "legendary",
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": 0.25
+  },
+  {
+   "attribute": "minecraft:attack_speed",
+   "base": 0.3
+  }
+ ],
+ "passive": "water_burst"
+}

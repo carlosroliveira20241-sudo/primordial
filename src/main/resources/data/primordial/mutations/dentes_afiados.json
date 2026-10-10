@@ -1,0 +1,13 @@
+{
+ "rarity": "common",
+ "modifiers": [
+  {
+   "attribute": "minecraft:attack_damage",
+   "base": 0.8
+  },
+  {
+   "attribute": "minecraft:armor",
+   "base": -0.5
+  }
+ ]
+}

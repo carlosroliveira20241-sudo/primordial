@@ -33,6 +33,7 @@ public final class PrimordialNetwork {
 		s2c.register(Payloads.Cooldowns.TYPE, Payloads.Cooldowns.CODEC);
 		s2c.register(Payloads.PartToast.TYPE, Payloads.PartToast.CODEC);
 		s2c.register(Payloads.Evolved.TYPE, Payloads.Evolved.CODEC);
+		s2c.register(Payloads.Danger.TYPE, Payloads.Danger.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(Payloads.ChooseOrigin.TYPE, (p, ctx) ->
 			CreatureService.chooseOrigin(ctx.player(), p.origin(), p.speciesName(), p.primary(), p.secondary(), p.pattern(), p.look()));

@@ -163,6 +163,18 @@ public final class Payloads {
 		}
 	}
 
+	/** Servidor para cliente: de onde vêm os predadores que estão caçando o jogador. */
+	public record Danger(java.util.List<net.minecraft.core.BlockPos> hunters) implements CustomPacketPayload {
+		public static final Type<Danger> TYPE = typeOf("danger");
+		public static final StreamCodec<ByteBuf, Danger> CODEC = StreamCodec.composite(
+			net.minecraft.core.BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list(4)), Danger::hunters, Danger::new);
+
+		@Override
+		public Type<Danger> type() {
+			return TYPE;
+		}
+	}
+
 	public record SetLook(int primary, int secondary, int detail, Pattern pattern, Identifier look) implements CustomPacketPayload {
 		public static final Type<SetLook> TYPE = typeOf("set_look");
 		public static final StreamCodec<ByteBuf, SetLook> CODEC = StreamCodec.composite(

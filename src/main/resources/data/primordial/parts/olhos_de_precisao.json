@@ -1,0 +1,18 @@
+{
+ "slot": "eyes",
+ "min_stage": 3,
+ "cost": 30,
+ "source": "primordial:cristalino",
+ "families": [
+  "predador"
+ ],
+ "rarity": "rare",
+ "ability": "primordial:marcar_presa",
+ "modifiers": [],
+ "visual": {
+  "features": [
+   "big_eyes"
+  ],
+  "tint": "#A7E8E0"
+ }
+}

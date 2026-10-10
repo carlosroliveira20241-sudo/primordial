@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.primordial.part.PartModifier;
 import com.primordial.part.PartRarity;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -12,10 +13,11 @@ import net.minecraft.resources.Identifier;
  * Uma mutação, lida de {@code data/primordial/mutations/<nome>.json}. Costuma ter um lado bom e um ruim (dois
  * modificadores). Nome e descrição: {@code mutation.primordial.<nome>} e {@code .desc} no idioma.
  */
-public record Mutation(PartRarity rarity, List<PartModifier> modifiers) {
+public record Mutation(PartRarity rarity, List<PartModifier> modifiers, Optional<String> passive) {
 	public static final Codec<Mutation> CODEC = RecordCodecBuilder.create(i -> i.group(
 		PartRarity.CODEC.optionalFieldOf("rarity", PartRarity.COMMON).forGetter(Mutation::rarity),
-		PartModifier.CODEC.listOf().fieldOf("modifiers").forGetter(Mutation::modifiers)
+		PartModifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(Mutation::modifiers),
+		Codec.STRING.optionalFieldOf("passive").forGetter(Mutation::passive)
 	).apply(i, Mutation::new));
 
 	public static Component name(Identifier id) {

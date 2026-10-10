@@ -49,6 +49,7 @@ public final class Abilities {
 	}
 
 	public static void init() {
+		MoreAbilities.init();
 		register("investida", 50, (player, level) -> {
 			ServerLevel world = player.level();
 			Vec3 look = player.getLookAngle();
@@ -364,15 +365,15 @@ public final class Abilities {
 		target.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks, 0));
 	}
 
-	private static Iterable<LivingEntity> around(ServerLevel world, ServerPlayer player, double radius) {
+	static Iterable<LivingEntity> around(ServerLevel world, ServerPlayer player, double radius) {
 		return world.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius), e -> e != player && e.distanceTo(player) <= radius);
 	}
 
-	private static void burst(ServerLevel world, ParticleOptions particle, LivingEntity at, int count, double speed) {
+	static void burst(ServerLevel world, ParticleOptions particle, LivingEntity at, int count, double speed) {
 		world.sendParticles(particle, at.getX(), at.getY() + at.getBbHeight() * 0.5, at.getZ(), count, 0.4, 0.3, 0.4, speed);
 	}
 
-	private static void sound(ServerPlayer player, SoundEvent event, float volume, float pitch) {
+	static void sound(ServerPlayer player, SoundEvent event, float volume, float pitch) {
 		CreatureService.playSound(player, event, volume, pitch);
 	}
 }

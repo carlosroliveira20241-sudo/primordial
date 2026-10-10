@@ -70,7 +70,8 @@ public final class FeedingService {
 		} else {
 			banquet(player);
 		}
-		CreatureService.addDna(player, Math.max(1, Math.round(dna * efficiency)));
+		float stomach = meat && Creatures.hasPassive(player, "iron_stomach") ? (Creatures.passiveLevel(player, "iron_stomach") >= 3 ? 3.0F : 2.0F) : 1.0F;
+		CreatureService.addDna(player, Math.max(1, Math.round(dna * efficiency * stomach)));
 		CreatureService.addXp(player, xp);
 		CreatureService.playSound(player, SoundEvents.DOLPHIN_EAT, 0.6F, meat ? 0.9F : 1.4F);
 		return true;

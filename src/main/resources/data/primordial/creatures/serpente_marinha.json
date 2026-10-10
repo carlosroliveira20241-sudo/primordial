@@ -1,0 +1,25 @@
+{
+ "behavior": "predator",
+ "size": [
+  1.3,
+  0.5
+ ],
+ "health": 18,
+ "damage": 4,
+ "speed": 0.55,
+ "power": 0.55,
+ "traits": [],
+ "look": "primordial:serpente_verde",
+ "features": [
+  "teeth"
+ ],
+ "big": false,
+ "spawn": {
+  "biomes": "ocean",
+  "category": "creature",
+  "weight": 5,
+  "min": 1,
+  "max": 2,
+  "night_only": false
+ }
+}

@@ -17,6 +17,10 @@ public final class FishLook {
 	private FishLook() {
 	}
 
+	public static Identifier texture(com.primordial.creature.Pattern pattern) {
+		return Primordial.id("textures/entity/modular_" + pattern.getSerializedName() + ".png");
+	}
+
 	/** "cod", "fish" ou desconhecido = peixe; "blob" e "serpent" são as outras formas. */
 	public static String shapeOf(String model) {
 		return model.equals("blob") || model.equals("serpent") ? model : "fish";

@@ -1,0 +1,10 @@
+{
+ "rarity": "epic",
+ "modifiers": [
+  {
+   "attribute": "primordial:swim_speed",
+   "base": -0.04
+  }
+ ],
+ "passive": "regen_strong"
+}

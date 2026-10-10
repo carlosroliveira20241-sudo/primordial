@@ -35,7 +35,7 @@ public final class MutationService {
 			return;
 		}
 		MutationState state = state(player);
-		List<Identifier> offer = state.offer().isEmpty() ? roll(player.getRandom(), state) : state.offer();
+		List<Identifier> offer = state.offer().isEmpty() ? roll(player.getRandom(), state, legendary(player)) : state.offer();
 		player.setAttached(PrimordialAttachments.MUTATIONS, state.withPending(state.pending() + gained, offer));
 		player.sendSystemMessage(Component.translatable("msg.primordial.mutation_ready").withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
@@ -48,7 +48,7 @@ public final class MutationService {
 		}
 		MutationState next = state.withChosen(id, state.pending() - 1, List.of());
 		if (next.pending() > 0) {
-			next = next.withPending(next.pending(), roll(player.getRandom(), next));
+			next = next.withPending(next.pending(), roll(player.getRandom(), next, legendary(player)));
 		}
 		player.setAttached(PrimordialAttachments.MUTATIONS, next);
 		CreatureStats.apply(player);
@@ -58,13 +58,19 @@ public final class MutationService {
 	}
 
 	/** Sorteia até 3 cartas que o jogador ainda não tem; as mais raras aparecem menos. */
-	private static List<Identifier> roll(RandomSource random, MutationState state) {
+	/** Mutações lendárias só aparecem para quem já derrotou um chefe. */
+	private static boolean legendary(Player player) {
+		return com.primordial.journal.JournalService.state(player).counter("boss_kill") > 0;
+	}
+
+	private static List<Identifier> roll(RandomSource random, MutationState state, boolean legendary) {
 		List<Identifier> pool = new ArrayList<>();
 		MutationRegistry.all().forEach((id, mutation) -> {
 			if (!state.chosen().contains(id)) {
 				int weight = switch (mutation.rarity()) {
 					case COMMON -> 6;
 					case RARE -> 3;
+					case LEGENDARY -> legendary ? 2 : 0;
 					default -> 1;
 				};
 				for (int i = 0; i < weight; i++) {

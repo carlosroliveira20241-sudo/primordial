@@ -26,6 +26,7 @@ public final class Passives {
 	}
 
 	public static void tick(ServerPlayer player) {
+		com.primordial.mutation.MutationEffects.tick(player);
 		CreatureBody body = Creatures.body(player);
 		Map<String, Integer> active = new HashMap<>();
 		for (PartRef ref : body.parts().values()) {
@@ -121,6 +122,12 @@ public final class Passives {
 				case "slipstream" -> {
 					if (water && MOVING.getOrDefault(player.getUUID(), 0) >= 60) {
 						give(player, MobEffects.SPEED, 40, level >= 3 ? 1 : 0);
+					}
+				}
+				// Hibernação: parado por 5 segundos, regenera muito rápido.
+				case "hibernation" -> {
+					if (STILL.getOrDefault(player.getUUID(), 0) >= 100) {
+						give(player, MobEffects.REGENERATION, 40, level >= 3 ? 3 : 2);
 					}
 				}
 				// Calor do corpo: imune a fogo e lava.

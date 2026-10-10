@@ -1,0 +1,10 @@
+{
+ "rarity": "epic",
+ "modifiers": [
+  {
+   "attribute": "minecraft:max_health",
+   "base": -2
+  }
+ ],
+ "passive": "second_life"
+}

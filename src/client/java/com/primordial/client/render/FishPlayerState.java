@@ -9,6 +9,7 @@ public class FishPlayerState extends AvatarRenderState implements ModularFishMod
 	public float sy = 1.0F;
 	public float sz = 1.0F;
 	public String shape = "fish";
+	public com.primordial.creature.Pattern pattern = com.primordial.creature.Pattern.LISO;
 	public Set<String> features = Set.of();
 
 	@Override
